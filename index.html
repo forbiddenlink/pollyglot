@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PollyGlot - AI Translation</title>
+    <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Polly<span class="accent">Glot</span></h1>
+            <p class="subtitle">AI-Powered Translation</p>
+        </header>
+        
+        <main class="translation-container">
+            <div class="translation-grid">
+                <div class="input-section panel">
+                    <h2>Source Language</h2>
+                    <div class="language-selector source-lang">
+                        <div class="lang-option">
+                            <img src="assets/fr-flag.png" alt="French" data-lang="fr" class="lang-flag">
+                            <span class="lang-label">French</span>
+                        </div>
+                        <div class="lang-option">
+                            <img src="assets/sp-flag.png" alt="Spanish" data-lang="es" class="lang-flag">
+                            <span class="lang-label">Spanish</span>
+                        </div>
+                        <div class="lang-option">
+                            <img src="assets/jpn-flag.png" alt="Japanese" data-lang="ja" class="lang-flag">
+                            <span class="lang-label">Japanese</span>
+                        </div>
+                    </div>
+                    <button class="detect-lang">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M12 16c2.206 0 4-1.794 4-4s-1.794-4-4-4-4 1.794-4 4 1.794 4 4 4zm0-6c1.103 0 2 .897 2 2s-.897 2-2 2-2-.897-2-2 .897-2 2-2z"/>
+                            <path fill="currentColor" d="M12 20c4.411 0 8-3.589 8-8s-3.589-8-8-8-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"/>
+                        </svg>
+                        Detect Language
+                    </button>
+                    <div class="text-container">
+                        <textarea 
+                            class="text-input"
+                            placeholder="Enter text to translate..."
+                        ></textarea>
+                        <button class="speak-btn input-speak">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
+                            </svg>
+                            Listen
+                        </button>
+                    </div>
+                    <div class="char-counter">0 characters</div>
+                </div>
+
+                <button class="translate-btn">
+                    <img src="assets/parrot.png" alt="Translate" class="parrot-icon">
+                    Translate
+                </button>
+
+                <div class="output-section panel">
+                    <h2>Target Language</h2>
+                    <div class="language-selector target-lang">
+                        <div class="lang-option">
+                            <img src="assets/fr-flag.png" alt="French" data-lang="fr" class="lang-flag">
+                            <span class="lang-label">French</span>
+                        </div>
+                        <div class="lang-option">
+                            <img src="assets/sp-flag.png" alt="Spanish" data-lang="es" class="lang-flag">
+                            <span class="lang-label">Spanish</span>
+                        </div>
+                        <div class="lang-option">
+                            <img src="assets/jpn-flag.png" alt="Japanese" data-lang="ja" class="lang-flag">
+                            <span class="lang-label">Japanese</span>
+                        </div>
+                    </div>
+                    <div class="text-container">
+                        <div class="text-output"></div>
+                        <div class="output-actions">
+                            <button class="speak-btn output-speak">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
+                                </svg>
+                                Listen
+                            </button>
+                            <button class="copy-btn">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by OpenAI GPT-3.5 • Built by Elizabeth Stein</p>
+        </footer>
+
+        <div class="loading-overlay hidden">
+            <div class="loading-spinner"></div>
+            <p>Translating...</p>
+        </div>
+
+        <div class="toast hidden">
+            <p>Translation copied to clipboard!</p>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>
