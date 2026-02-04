@@ -304,7 +304,7 @@ app.post('/pronunciation', async (req, res) => {
 });
 
 // Alternative translations endpoint (for short phrases)
-app.post('/api/alternatives', async (req, res) => {
+app.post('/alternatives', async (req, res) => {
     try {
         const clientIp = req.ip || req.connection.remoteAddress;
 
