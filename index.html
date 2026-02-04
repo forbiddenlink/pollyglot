@@ -3,33 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered translation app with 12 languages, voice input, dark mode, and translation history">
+    <meta name="theme-color" content="#4299e1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PollyGlot">
     <title>PollyGlot - AI Translation</title>
     <link rel="stylesheet" href="index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/parrot.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/parrot.png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Polly<span class="accent">Glot</span></h1>
-            <p class="subtitle">AI-Powered Translation</p>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>Polly<span class="accent">Glot</span></h1>
+                    <p class="subtitle">AI-Powered Translation</p>
+                </div>
+                <div class="header-right">
+                    <button class="fullscreen-toggle" aria-label="Toggle fullscreen mode" title="Fullscreen (F11)">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                        </svg>
+                    </button>
+                    <button class="settings-toggle" aria-label="Open settings" title="Settings">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                        </svg>
+                    </button>
+                    <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+                        <svg class="icon sun-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M12 17.5C14.7614 17.5 17 15.2614 17 12.5C17 9.73858 14.7614 7.5 12 7.5C9.23858 7.5 7 9.73858 7 12.5C7 15.2614 9.23858 17.5 12 17.5Z"/>
+                            <path fill="currentColor" d="M12 1.25V3.75M12 21.25V23.75M3.75 12.5H1.25M22.75 12.5H20.25M19.0711 19.0711L17.3033 17.3033M6.69672 6.69672L4.92894 4.92894M19.0711 5.92894L17.3033 7.69672M6.69672 17.3033L4.92894 19.0711"/>
+                        </svg>
+                        <svg class="icon moon-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M21.53 15.93c-.16-.27-.61-.69-1.73-.49a8.46 8.46 0 01-1.88.13 8.409 8.409 0 01-5.91-2.82 8.068 8.068 0 01-1.44-8.66c.44-1.01.13-1.54-.09-1.76s-.77-.55-1.83-.11a10.318 10.318 0 00-6.32 10.21 10.475 10.475 0 007.04 8.99 10 10 0 002.89.55c.16.01.32.02.48.02a10.5 10.5 0 008.47-4.27c.67-.93.49-1.519.32-1.79z"/>
+                        </svg>
+                    </button>
+                    <button class="history-toggle" aria-label="Toggle translation history" title="History">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </header>
         
         <main class="translation-container">
             <div class="translation-grid">
                 <div class="input-section panel">
-                    <h2>Source Language</h2>
+                    <div class="panel-header">
+                        <h2>Source Language</h2>
+                        <button class="clear-text-btn" title="Clear text">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="language-search-container">
+                        <input type="text" class="language-search source-search" placeholder="Search languages..." aria-label="Search source languages">
+                        <svg class="search-icon icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                    </div>
                     <div class="language-selector source-lang">
-                        <div class="lang-option">
-                            <img src="assets/fr-flag.png" alt="French" data-lang="fr" class="lang-flag">
-                            <span class="lang-label">French</span>
+                        <div class="lang-option" data-lang="en">
+                            <div class="lang-flag">🇬🇧</div>
+                            <span class="lang-label">English</span>
                         </div>
-                        <div class="lang-option">
-                            <img src="assets/sp-flag.png" alt="Spanish" data-lang="es" class="lang-flag">
+                        <div class="lang-option" data-lang="es">
+                            <div class="lang-flag">🇪🇸</div>
                             <span class="lang-label">Spanish</span>
                         </div>
-                        <div class="lang-option">
-                            <img src="assets/jpn-flag.png" alt="Japanese" data-lang="ja" class="lang-flag">
+                        <div class="lang-option" data-lang="fr">
+                            <div class="lang-flag">🇫🇷</div>
+                            <span class="lang-label">French</span>
+                        </div>
+                        <div class="lang-option" data-lang="de">
+                            <div class="lang-flag">🇩🇪</div>
+                            <span class="lang-label">German</span>
+                        </div>
+                        <div class="lang-option" data-lang="it">
+                            <div class="lang-flag">🇮🇹</div>
+                            <span class="lang-label">Italian</span>
+                        </div>
+                        <div class="lang-option" data-lang="pt">
+                            <div class="lang-flag">🇵🇹</div>
+                            <span class="lang-label">Portuguese</span>
+                        </div>
+                        <div class="lang-option" data-lang="ru">
+                            <div class="lang-flag">🇷🇺</div>
+                            <span class="lang-label">Russian</span>
+                        </div>
+                        <div class="lang-option" data-lang="zh">
+                            <div class="lang-flag">🇨🇳</div>
+                            <span class="lang-label">Chinese</span>
+                        </div>
+                        <div class="lang-option" data-lang="ja">
+                            <div class="lang-flag">🇯🇵</div>
                             <span class="lang-label">Japanese</span>
+                        </div>
+                        <div class="lang-option" data-lang="ko">
+                            <div class="lang-flag">🇰🇷</div>
+                            <span class="lang-label">Korean</span>
+                        </div>
+                        <div class="lang-option" data-lang="ar">
+                            <div class="lang-flag">🇸🇦</div>
+                            <span class="lang-label">Arabic</span>
+                        </div>
+                        <div class="lang-option" data-lang="hi">
+                            <div class="lang-flag">🇮🇳</div>
+                            <span class="lang-label">Hindi</span>
+                        </div>
+                        <div class="lang-option" data-lang="nl">
+                            <div class="lang-flag">🇳🇱</div>
+                            <span class="lang-label">Dutch</span>
+                        </div>
+                        <div class="lang-option" data-lang="pl">
+                            <div class="lang-flag">🇵🇱</div>
+                            <span class="lang-label">Polish</span>
+                        </div>
+                        <div class="lang-option" data-lang="tr">
+                            <div class="lang-flag">🇹🇷</div>
+                            <span class="lang-label">Turkish</span>
+                        </div>
+                        <div class="lang-option" data-lang="vi">
+                            <div class="lang-flag">🇻🇳</div>
+                            <span class="lang-label">Vietnamese</span>
+                        </div>
+                        <div class="lang-option" data-lang="th">
+                            <div class="lang-flag">🇹🇭</div>
+                            <span class="lang-label">Thai</span>
+                        </div>
+                        <div class="lang-option" data-lang="sv">
+                            <div class="lang-flag">🇸🇪</div>
+                            <span class="lang-label">Swedish</span>
+                        </div>
+                        <div class="lang-option" data-lang="el">
+                            <div class="lang-flag">🇬🇷</div>
+                            <span class="lang-label">Greek</span>
+                        </div>
+                        <div class="lang-option" data-lang="he">
+                            <div class="lang-flag">🇮🇱</div>
+                            <span class="lang-label">Hebrew</span>
                         </div>
                     </div>
                     <button class="detect-lang">
@@ -37,67 +156,307 @@
                             <path fill="currentColor" d="M12 16c2.206 0 4-1.794 4-4s-1.794-4-4-4-4 1.794-4 4 1.794 4 4 4zm0-6c1.103 0 2 .897 2 2s-.897 2-2 2-2-.897-2-2 .897-2 2-2z"/>
                             <path fill="currentColor" d="M12 20c4.411 0 8-3.589 8-8s-3.589-8-8-8-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"/>
                         </svg>
-                        Detect Language
+                        Auto-Detect
                     </button>
                     <div class="text-container">
-                        <textarea 
+                        <div class="example-phrases" id="example-phrases">
+                            <p class="example-title">Try an example:</p>
+                            <div class="example-buttons">
+                                <button class="example-btn" data-text="Hello, how are you today?">Hello, how are you?</button>
+                                <button class="example-btn" data-text="Where is the nearest restaurant?">Where is the restaurant?</button>
+                                <button class="example-btn" data-text="Thank you very much for your help!">Thank you for your help!</button>
+                                <button class="example-btn" data-text="I would like to book a room for two nights.">Book a room</button>
+                            </div>
+                        </div>
+                        <textarea
                             class="text-input"
-                            placeholder="Enter text to translate..."
+                            placeholder="Enter text to translate... (Press Enter to translate)"
+                            maxlength="5000"
                         ></textarea>
                         <button class="speak-btn input-speak">
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
                             </svg>
-                            Listen
+                        </button>
+                        <button class="voice-input-btn" title="Voice input">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path fill="currentColor" d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
                         </button>
                     </div>
-                    <div class="char-counter">0 characters</div>
+                    <div class="text-stats">
+                        <div class="stats-row">
+                            <div class="word-counter">0 words</div>
+                            <div class="reading-time">~0 min read</div>
+                        </div>
+                        <div class="char-counter">0 / 5000 characters</div>
+                    </div>
                 </div>
 
-                <button class="translate-btn">
-                    <img src="assets/parrot.png" alt="Translate" class="parrot-icon">
-                    Translate
-                </button>
+                <div class="middle-controls">
+                    <div class="formality-selector">
+                        <label for="formality">Tone:</label>
+                        <select id="formality" class="formality-select">
+                            <option value="neutral">Neutral</option>
+                            <option value="formal">Formal</option>
+                            <option value="informal">Casual</option>
+                        </select>
+                    </div>
+                    <button class="translate-btn">
+                        <img src="assets/parrot.png" alt="Translate" class="parrot-icon">
+                        <span>Translate</span>
+                    </button>
+                    <button class="swap-lang-btn" title="Swap languages">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/>
+                        </svg>
+                    </button>
+                </div>
 
                 <div class="output-section panel">
-                    <h2>Target Language</h2>
-                    <div class="language-selector target-lang">
-                        <div class="lang-option">
-                            <img src="assets/fr-flag.png" alt="French" data-lang="fr" class="lang-flag">
-                            <span class="lang-label">French</span>
-                        </div>
-                        <div class="lang-option">
-                            <img src="assets/sp-flag.png" alt="Spanish" data-lang="es" class="lang-flag">
-                            <span class="lang-label">Spanish</span>
-                        </div>
-                        <div class="lang-option">
-                            <img src="assets/jpn-flag.png" alt="Japanese" data-lang="ja" class="lang-flag">
-                            <span class="lang-label">Japanese</span>
+                    <div class="panel-header">
+                        <h2>Target Language</h2>
+                        <div class="panel-actions">
+                            <button class="share-btn" title="Share translation" style="display:none;">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
+                            <button class="save-translation-btn" title="Save to history">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
+                                </svg>
+                            </button>
+                            <button class="favorite-btn" title="Add to favorites">
+                                <svg class="icon star-outline" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                </svg>
+                            </button>
                         </div>
                     </div>
-                    <div class="text-container">
-                        <div class="text-output"></div>
+                    <div class="language-search-container">
+                        <input type="text" class="language-search target-search" placeholder="Search languages..." aria-label="Search target languages">
+                        <svg class="search-icon icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/>
+                        </svg>
+                    </div>
+                    <div class="language-selector target-lang">
+                        <div class="lang-option" data-lang="en">
+                            <div class="lang-flag">🇬🇧</div>
+                            <span class="lang-label">English</span>
+                        </div>
+                        <div class="lang-option" data-lang="es">
+                            <div class="lang-flag">🇪🇸</div>
+                            <span class="lang-label">Spanish</span>
+                        </div>
+                        <div class="lang-option" data-lang="fr">
+                            <div class="lang-flag">🇫🇷</div>
+                            <span class="lang-label">French</span>
+                        </div>
+                        <div class="lang-option" data-lang="de">
+                            <div class="lang-flag">🇩🇪</div>
+                            <span class="lang-label">German</span>
+                        </div>
+                        <div class="lang-option" data-lang="it">
+                            <div class="lang-flag">🇮🇹</div>
+                            <span class="lang-label">Italian</span>
+                        </div>
+                        <div class="lang-option" data-lang="pt">
+                            <div class="lang-flag">🇵🇹</div>
+                            <span class="lang-label">Portuguese</span>
+                        </div>
+                        <div class="lang-option" data-lang="ru">
+                            <div class="lang-flag">🇷🇺</div>
+                            <span class="lang-label">Russian</span>
+                        </div>
+                        <div class="lang-option" data-lang="zh">
+                            <div class="lang-flag">🇨🇳</div>
+                            <span class="lang-label">Chinese</span>
+                        </div>
+                        <div class="lang-option" data-lang="ja">
+                            <div class="lang-flag">🇯🇵</div>
+                            <span class="lang-label">Japanese</span>
+                        </div>
+                        <div class="lang-option" data-lang="ko">
+                            <div class="lang-flag">🇰🇷</div>
+                            <span class="lang-label">Korean</span>
+                        </div>
+                        <div class="lang-option" data-lang="ar">
+                            <div class="lang-flag">🇸🇦</div>
+                            <span class="lang-label">Arabic</span>
+                        </div>
+                        <div class="lang-option" data-lang="hi">
+                            <div class="lang-flag">🇮🇳</div>
+                            <span class="lang-label">Hindi</span>
+                        </div>
+                        <div class="lang-option" data-lang="nl">
+                            <div class="lang-flag">🇳🇱</div>
+                            <span class="lang-label">Dutch</span>
+                        </div>
+                        <div class="lang-option" data-lang="pl">
+                            <div class="lang-flag">🇵🇱</div>
+                            <span class="lang-label">Polish</span>
+                        </div>
+                        <div class="lang-option" data-lang="tr">
+                            <div class="lang-flag">🇹🇷</div>
+                            <span class="lang-label">Turkish</span>
+                        </div>
+                        <div class="lang-option" data-lang="vi">
+                            <div class="lang-flag">🇻🇳</div>
+                            <span class="lang-label">Vietnamese</span>
+                        </div>
+                        <div class="lang-option" data-lang="th">
+                            <div class="lang-flag">🇹🇭</div>
+                            <span class="lang-label">Thai</span>
+                        </div>
+                        <div class="lang-option" data-lang="sv">
+                            <div class="lang-flag">🇸🇪</div>
+                            <span class="lang-label">Swedish</span>
+                        </div>
+                        <div class="lang-option" data-lang="el">
+                            <div class="lang-flag">🇬🇷</div>
+                            <span class="lang-label">Greek</span>
+                        </div>
+                        <div class="lang-option" data-lang="he">
+                            <div class="lang-flag">🇮🇱</div>
+                            <span class="lang-label">Hebrew</span>
+                        </div>
+                    </div>
+                    <div class="text-container output-container">
+                        <div class="text-output" placeholder="Translation will appear here..."></div>
                         <div class="output-actions">
                             <button class="speak-btn output-speak">
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
                                 </svg>
-                                Listen
                             </button>
                             <button class="copy-btn">
                                 <svg class="icon" viewBox="0 0 24 24">
                                     <path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
                                 </svg>
-                                Copy
                             </button>
                         </div>
+                        <div class="pronunciation-guide" style="display: none;">
+                            <span class="pronunciation-label">Pronunciation:</span>
+                            <span class="pronunciation-text"></span>
+                        </div>
+                    </div>
+                    <div class="text-stats">
+                        <div class="word-counter output-word-counter">0 words</div>
+                    </div>
+                    <div class="alternatives-section" style="display: none;">
+                        <h4>Alternative translations:</h4>
+                        <div class="alternatives-list"></div>
                     </div>
                 </div>
             </div>
         </main>
 
+        <!-- Translation History Sidebar -->
+        <div class="history-sidebar">
+            <div class="history-header">
+                <div class="history-tabs">
+                    <button class="history-tab active" data-tab="history">History</button>
+                    <button class="history-tab" data-tab="favorites">Favorites</button>
+                </div>
+                <div class="history-actions">
+                    <button class="export-history-btn" title="Export history">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M12,19L8,15H10.5V12H13.5V15H16L12,19Z"/>
+                        </svg>
+                    </button>
+                    <button class="clear-history-btn">Clear All</button>
+                    <button class="close-history-btn" aria-label="Close history" title="Close">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="history-list"></div>
+            <div class="favorites-list" style="display: none;"></div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="settings-modal hidden">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3>Settings</h3>
+                    <button class="close-settings" aria-label="Close settings">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="settings-body">
+                    <div class="setting-group">
+                        <h4>Appearance</h4>
+                        <label class="setting-item">
+                            <input type="checkbox" id="auto-theme" />
+                            <span>Auto-detect system theme</span>
+                        </label>
+                        <label class="setting-item">
+                            <input type="checkbox" id="animations-enabled" checked />
+                            <span>Enable animations</span>
+                        </label>
+                    </div>
+                    <div class="setting-group">
+                        <h4>Translation</h4>
+                        <label class="setting-item">
+                            <input type="checkbox" id="auto-translate" />
+                            <span>Auto-translate on language change</span>
+                        </label>
+                        <label class="setting-item">
+                            <input type="checkbox" id="auto-save" checked />
+                            <span>Auto-save translations to history</span>
+                        </label>
+                        <label class="setting-item">
+                            <input type="checkbox" id="auto-detect-input" />
+                            <span>Auto-detect source language</span>
+                        </label>
+                    </div>
+                    <div class="setting-group">
+                        <h4>Audio</h4>
+                        <label class="setting-item">
+                            <span>Speech rate</span>
+                            <input type="range" id="speech-rate" min="0.5" max="2" step="0.1" value="0.9" />
+                            <span class="range-value">0.9x</span>
+                        </label>
+                        <label class="setting-item">
+                            <input type="checkbox" id="auto-speak" />
+                            <span>Auto-speak translations</span>
+                        </label>
+                    </div>
+                    <div class="setting-group">
+                        <h4>Data</h4>
+                        <label class="setting-item">
+                            <span>History limit</span>
+                            <select id="history-limit">
+                                <option value="20">20 translations</option>
+                                <option value="50" selected>50 translations</option>
+                                <option value="100">100 translations</option>
+                                <option value="200">200 translations</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-footer">
+                    <button class="reset-settings-btn">Reset to Defaults</button>
+                </div>
+            </div>
+        </div>
+
         <footer>
-            <p>Powered by OpenAI GPT-3.5 • Built by Elizabeth Stein</p>
+            <div class="footer-content">
+                <p>Powered by OpenAI GPT-4o-mini • Built by Elizabeth Stein</p>
+                <div class="keyboard-shortcuts">
+                    <span class="shortcut-hint"><kbd>Enter</kbd> translate</span>
+                    <span class="shortcut-hint"><kbd>Esc</kbd> clear</span>
+                    <span class="shortcut-hint"><kbd>⌘K</kbd> swap</span>
+                    <span class="shortcut-hint"><kbd>⌘Z</kbd> undo</span>
+                </div>
+            </div>
         </footer>
 
         <div class="loading-overlay hidden">
@@ -108,6 +467,9 @@
         <div class="toast hidden">
             <p>Translation copied to clipboard!</p>
         </div>
+
+        <!-- Screen reader announcements -->
+        <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
     </div>
     <script src="index.js"></script>
 </body>

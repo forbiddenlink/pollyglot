@@ -33,4 +33,7 @@ out/
 # Cache directories
 .cache/
 .npm/
-.eslintcache 
+.eslintcache
+
+# Claude Code
+.claude/

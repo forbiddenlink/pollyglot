@@ -7,80 +7,369 @@ const loadingOverlay = document.querySelector('.loading-overlay');
 const sourceLangOptions = document.querySelectorAll('.source-lang .lang-option');
 const targetLangOptions = document.querySelectorAll('.target-lang .lang-option');
 const charCounter = document.querySelector('.char-counter');
+const wordCounter = document.querySelector('.word-counter');
+const outputWordCounter = document.querySelector('.output-word-counter');
 const copyBtn = document.querySelector('.copy-btn');
 const toast = document.querySelector('.toast');
 const inputSpeakBtn = document.querySelector('.input-speak');
 const outputSpeakBtn = document.querySelector('.output-speak');
+const themeToggle = document.querySelector('.theme-toggle');
+const historyToggle = document.querySelector('.history-toggle');
+const historySidebar = document.querySelector('.history-sidebar');
+const historyList = document.querySelector('.history-list');
+const clearHistoryBtn = document.querySelector('.clear-history-btn');
+const swapLangBtn = document.querySelector('.swap-lang-btn');
+const clearTextBtn = document.querySelector('.clear-text-btn');
+const saveTranslationBtn = document.querySelector('.save-translation-btn');
+const voiceInputBtn = document.querySelector('.voice-input-btn');
+const shareBtn = document.querySelector('.share-btn');
+const exportHistoryBtn = document.querySelector('.export-history-btn');
+const settingsToggle = document.querySelector('.settings-toggle');
+const settingsModal = document.querySelector('.settings-modal');
+const closeSettings = document.querySelector('.close-settings');
+const fullscreenToggle = document.querySelector('.fullscreen-toggle');
+const sourceSearch = document.querySelector('.source-search');
+const targetSearch = document.querySelector('.target-search');
+const closeHistoryBtn = document.querySelector('.close-history-btn');
+const favoriteBtn = document.querySelector('.favorite-btn');
+const favoritesList = document.querySelector('.favorites-list');
+const historyTabs = document.querySelectorAll('.history-tab');
+const alternativesSection = document.querySelector('.alternatives-section');
+const alternativesList = document.querySelector('.alternatives-list');
+const pronunciationGuide = document.querySelector('.pronunciation-guide');
+const pronunciationText = document.querySelector('.pronunciation-text');
 
 // State
 let selectedSourceLang = null;
-let selectedTargetLang = null;
+let selectedTargetLang = 'es'; // Default to Spanish
 let currentSpeech = null;
 let availableVoices = [];
+let translationHistory = [];
+let recognition = null;
+let favoriteLanguages = [];
+let favoriteTranslations = [];
+let undoStack = [];
+let appSettings = {
+    autoTheme: false,
+    animationsEnabled: true,
+    autoTranslate: false,
+    autoSave: true,
+    autoDetectInput: false,
+    speechRate: 0.9,
+    autoSpeak: false,
+    historyLimit: 50
+};
 
-// Language mapping
+// Language mapping with full names
 const languageNames = {
-    'fr': 'French',
+    'en': 'English',
     'es': 'Spanish',
-    'ja': 'Japanese'
+    'fr': 'French',
+    'de': 'German',
+    'it': 'Italian',
+    'pt': 'Portuguese',
+    'ru': 'Russian',
+    'zh': 'Chinese',
+    'ja': 'Japanese',
+    'ko': 'Korean',
+    'ar': 'Arabic',
+    'hi': 'Hindi',
+    'nl': 'Dutch',
+    'pl': 'Polish',
+    'tr': 'Turkish',
+    'vi': 'Vietnamese',
+    'th': 'Thai',
+    'sv': 'Swedish',
+    'el': 'Greek',
+    'he': 'Hebrew'
 };
 
 // BCP 47 language tags for speech synthesis
 const speechLangs = {
-    'fr': 'fr-FR',
+    'en': 'en-US',
     'es': 'es-ES',
-    'ja': 'ja-JP'
+    'fr': 'fr-FR',
+    'de': 'de-DE',
+    'it': 'it-IT',
+    'pt': 'pt-PT',
+    'ru': 'ru-RU',
+    'zh': 'zh-CN',
+    'ja': 'ja-JP',
+    'ko': 'ko-KR',
+    'ar': 'ar-SA',
+    'hi': 'hi-IN',
+    'nl': 'nl-NL',
+    'pl': 'pl-PL',
+    'tr': 'tr-TR',
+    'vi': 'vi-VN',
+    'th': 'th-TH',
+    'sv': 'sv-SE',
+    'el': 'el-GR',
+    'he': 'he-IL'
 };
 
+// Initialize
+function init() {
+    loadTheme();
+    loadHistory();
+    loadSettings();
+    loadFavorites();
+    detectBrowserLanguage();
+    updateCharCounter();
+    selectDefaultLanguages();
+    initializeSpeechSynthesis();
+    initializeVoiceRecognition();
+    attachEventListeners();
+    registerServiceWorker();
+}
+
 // Event Listeners
-sourceLangOptions.forEach(option => {
-    option.addEventListener('click', () => selectLanguage(option, 'source'));
-});
+function attachEventListeners() {
+    // Language selection with keyboard accessibility
+    sourceLangOptions.forEach(option => {
+        option.setAttribute('tabindex', '0');
+        option.setAttribute('role', 'button');
+        option.addEventListener('click', () => selectLanguage(option, 'source'));
+        option.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                selectLanguage(option, 'source');
+            }
+        });
+    });
 
-targetLangOptions.forEach(option => {
-    option.addEventListener('click', () => selectLanguage(option, 'target'));
-});
+    targetLangOptions.forEach(option => {
+        option.setAttribute('tabindex', '0');
+        option.setAttribute('role', 'button');
+        option.addEventListener('click', () => selectLanguage(option, 'target'));
+        option.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                selectLanguage(option, 'target');
+            }
+        });
+    });
 
-translateBtn.addEventListener('click', handleTranslation);
-detectLangBtn.addEventListener('click', detectLanguage);
-textInput.addEventListener('input', updateCharCounter);
-copyBtn.addEventListener('click', copyTranslation);
-inputSpeakBtn.addEventListener('click', () => speakText(textInput.value, selectedSourceLang));
-outputSpeakBtn.addEventListener('click', () => speakText(textOutput.textContent, selectedTargetLang));
+    // Translation
+    translateBtn.addEventListener('click', handleTranslation);
+    detectLangBtn.addEventListener('click', detectLanguage);
+    
+    // Text input
+    textInput.addEventListener('input', updateCharCounter);
+    textInput.addEventListener('keydown', handleKeyPress);
+    textInput.addEventListener('paste', handlePaste);
 
-// Functions
+    // Example phrases
+    document.querySelectorAll('.example-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            textInput.value = btn.dataset.text;
+            textInput.focus();
+            updateCharCounter();
+            document.getElementById('example-phrases').classList.add('hidden');
+        });
+    });
+    
+    // Actions
+    copyBtn.addEventListener('click', copyTranslation);
+    inputSpeakBtn.addEventListener('click', () => speakText(textInput.value, selectedSourceLang));
+    outputSpeakBtn.addEventListener('click', () => speakText(textOutput.textContent, selectedTargetLang));
+
+    // Click on output to skip typing animation
+    textOutput.addEventListener('click', skipTypingAnimation);
+    
+    // Theme and history
+    themeToggle.addEventListener('click', toggleTheme);
+    historyToggle.addEventListener('click', toggleHistory);
+    clearHistoryBtn.addEventListener('click', clearHistory);
+    closeHistoryBtn.addEventListener('click', () => historySidebar.classList.remove('open'));
+
+    // Favorites
+    favoriteBtn.addEventListener('click', toggleFavorite);
+    historyTabs.forEach(tab => {
+        tab.addEventListener('click', () => switchHistoryTab(tab.dataset.tab));
+    });
+    
+    // New features
+    swapLangBtn.addEventListener('click', swapLanguages);
+    clearTextBtn.addEventListener('click', clearText);
+    saveTranslationBtn.addEventListener('click', saveCurrentTranslation);
+    voiceInputBtn.addEventListener('click', toggleVoiceInput);
+    shareBtn.addEventListener('click', shareTranslation);
+    exportHistoryBtn.addEventListener('click', exportHistory);
+    
+    // Settings
+    settingsToggle.addEventListener('click', openSettings);
+    closeSettings.addEventListener('click', closeSettingsModal);
+    document.querySelectorAll('.settings-modal input, .settings-modal select').forEach(input => {
+        input.addEventListener('change', saveSettings);
+    });
+    document.querySelector('.reset-settings-btn').addEventListener('click', resetSettings);
+    
+    // Fullscreen
+    fullscreenToggle.addEventListener('click', toggleFullscreen);
+    
+    // Language search
+    sourceSearch.addEventListener('input', (e) => filterLanguages(e.target.value, 'source'));
+    targetSearch.addEventListener('input', (e) => filterLanguages(e.target.value, 'target'));
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', handleGlobalKeyPress);
+    
+    // Close modals when clicking outside
+    document.addEventListener('click', (e) => {
+        if (historySidebar.classList.contains('open') && 
+            !historySidebar.contains(e.target) && 
+            !historyToggle.contains(e.target)) {
+            historySidebar.classList.remove('open');
+        }
+        if (!settingsModal.classList.contains('hidden') && 
+            !settingsModal.querySelector('.settings-content').contains(e.target) &&
+            !settingsToggle.contains(e.target)) {
+            closeSettingsModal();
+        }
+    });
+}
+
+// Language Selection
 function selectLanguage(option, type) {
     const options = type === 'source' ? sourceLangOptions : targetLangOptions;
     options.forEach(opt => opt.classList.remove('selected'));
     option.classList.add('selected');
-    
-    const langCode = option.querySelector('.lang-flag').dataset.lang;
+
+    const langCode = option.dataset.lang;
     if (type === 'source') {
         selectedSourceLang = langCode;
     } else {
         selectedTargetLang = langCode;
     }
+
+    // Save language pair to localStorage
+    saveLanguagePair();
 }
 
+function saveLanguagePair() {
+    localStorage.setItem('languagePair', JSON.stringify({
+        source: selectedSourceLang,
+        target: selectedTargetLang
+    }));
+}
+
+function loadLanguagePair() {
+    try {
+        const saved = localStorage.getItem('languagePair');
+        if (saved) {
+            const { source, target } = JSON.parse(saved);
+            if (source) {
+                sourceLangOptions.forEach(opt => {
+                    if (opt.dataset.lang === source) {
+                        selectLanguage(opt, 'source');
+                    }
+                });
+            }
+            if (target) {
+                targetLangOptions.forEach(opt => {
+                    if (opt.dataset.lang === target) {
+                        selectLanguage(opt, 'target');
+                    }
+                });
+            }
+            return true;
+        }
+    } catch (error) {
+        console.error('Failed to load language pair:', error);
+    }
+    return false;
+}
+
+function selectDefaultLanguages() {
+    // Try to load saved language pair first
+    if (loadLanguagePair()) {
+        return;
+    }
+
+    // Select Spanish as default target if no saved pair
+    targetLangOptions.forEach(opt => {
+        if (opt.dataset.lang === 'es') {
+            selectLanguage(opt, 'target');
+        }
+    });
+}
+
+// Character and Word Counter
 function updateCharCounter() {
-    const count = textInput.value.length;
-    charCounter.textContent = `${count} character${count !== 1 ? 's' : ''}`;
+    const text = textInput.value;
+    const charCount = text.length;
+    const max = 5000;
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    const wordCount = text.trim() === '' ? 0 : words.length;
+
+    charCounter.textContent = `${charCount} / ${max} characters`;
+    wordCounter.textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
+
+    // Calculate reading time (average 200 words per minute)
+    const readingTime = document.querySelector('.reading-time');
+    if (readingTime) {
+        const minutes = Math.ceil(wordCount / 200);
+        if (wordCount === 0) {
+            readingTime.textContent = '~0 min read';
+        } else if (minutes < 1) {
+            readingTime.textContent = '<1 min read';
+        } else {
+            readingTime.textContent = `~${minutes} min read`;
+        }
+    }
+
+    charCounter.classList.remove('warning', 'error');
+    if (charCount > max * 0.9) {
+        charCounter.classList.add('warning');
+    }
+    if (charCount >= max) {
+        charCounter.classList.add('error');
+    }
+
+    // Show/hide example phrases
+    const examplePhrases = document.getElementById('example-phrases');
+    if (examplePhrases) {
+        examplePhrases.classList.toggle('hidden', charCount > 0);
+    }
 }
 
+function updateOutputWordCounter() {
+    const text = textOutput.textContent;
+    const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+    const wordCount = text.trim() === '' ? 0 : words.length;
+    outputWordCounter.textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
+}
+
+// Translation
 async function handleTranslation() {
     const text = textInput.value.trim();
     if (!text) {
-        showToast('Please enter some text to translate');
+        showToast('Please enter some text to translate', 'warning');
+        return;
+    }
+
+    if (text.length > 5000) {
+        showToast('Text is too long. Maximum 5000 characters.', 'error');
         return;
     }
 
     if (!selectedTargetLang) {
-        showToast('Please select a target language');
+        showToast('Please select a target language', 'warning');
+        return;
+    }
+
+    if (selectedSourceLang === selectedTargetLang) {
+        showToast('Source and target languages must be different', 'warning');
         return;
     }
 
     try {
         showLoading(true);
+        translateBtn.disabled = true;
+        
+        const formality = document.getElementById('formality').value;
+
         const response = await fetch('/api/translate', {
             method: 'POST',
             headers: {
@@ -89,7 +378,8 @@ async function handleTranslation() {
             body: JSON.stringify({
                 text,
                 sourceLang: selectedSourceLang ? languageNames[selectedSourceLang] : undefined,
-                targetLang: languageNames[selectedTargetLang]
+                targetLang: languageNames[selectedTargetLang],
+                formality
             })
         });
 
@@ -98,21 +388,67 @@ async function handleTranslation() {
             throw new Error(data.error || 'Translation failed');
         }
 
-        textOutput.textContent = data.translation;
+        const translationText = data.translation;
+
+        // Show action buttons
         copyBtn.style.display = 'flex';
         outputSpeakBtn.style.display = 'flex';
+        saveTranslationBtn.style.display = 'flex';
+        shareBtn.style.display = 'flex';
+
+        // Type out the translation with animation
+        typeText(translationText, () => {
+            updateOutputWordCounter();
+            announceToScreenReader('Translation complete: ' + translationText);
+
+            // Auto-speak if enabled (after typing finishes)
+            if (appSettings.autoSpeak) {
+                setTimeout(() => speakText(translationText, selectedTargetLang), 300);
+            }
+        });
+
+        showToast('Translation completed!', 'success');
+
+        // Auto-save to history
+        if (appSettings.autoSave) {
+            addToHistory({
+                sourceText: text,
+                targetText: translationText,
+                sourceLang: selectedSourceLang || 'auto',
+                targetLang: selectedTargetLang,
+                timestamp: Date.now()
+            });
+        }
+
+        // Fetch alternatives for short texts
+        if (text.length <= 200) {
+            fetchAlternatives(text, translationText);
+        } else {
+            alternativesSection.style.display = 'none';
+        }
+
+        // Fetch pronunciation for non-Latin scripts
+        const nonLatinLangs = ['zh', 'ja', 'ko', 'ar', 'hi', 'ru', 'th', 'el', 'he'];
+        if (nonLatinLangs.includes(selectedTargetLang) && translationText.length <= 500) {
+            fetchPronunciation(translationText);
+        } else {
+            pronunciationGuide.style.display = 'none';
+        }
+        
     } catch (error) {
         console.error('Translation error:', error);
-        showToast('An error occurred during translation. Please try again.');
+        showToast(`Translation failed: ${error.message}`, 'error');
     } finally {
         showLoading(false);
+        translateBtn.disabled = false;
     }
 }
 
+// Language Detection
 async function detectLanguage() {
     const text = textInput.value.trim();
     if (!text) {
-        showToast('Please enter some text to detect its language');
+        showToast('Please enter some text to detect its language', 'warning');
         return;
     }
 
@@ -131,54 +467,76 @@ async function detectLanguage() {
             throw new Error(data.error || 'Language detection failed');
         }
 
+        const detectedLang = data.detectedLanguage.toLowerCase();
+        let langFound = false;
+        
         sourceLangOptions.forEach(option => {
-            const langCode = option.querySelector('.lang-flag').dataset.lang;
-            if (langCode === data.detectedLanguage) {
+            const langCode = option.dataset.lang;
+            if (langCode === detectedLang) {
                 selectLanguage(option, 'source');
+                langFound = true;
             }
         });
+
+        if (langFound) {
+            showToast(`Detected language: ${languageNames[detectedLang]}`, 'success');
+        } else {
+            showToast('Could not detect a supported language', 'warning');
+        }
     } catch (error) {
         console.error('Language detection error:', error);
-        showToast('An error occurred during language detection. Please try again.');
+        showToast('Language detection failed. Please try again.', 'error');
     } finally {
         showLoading(false);
     }
 }
 
+// Copy Translation
 async function copyTranslation() {
     const text = textOutput.textContent;
-    if (!text) return;
-
-    try {
-        await navigator.clipboard.writeText(text);
-        showToast('Translation copied to clipboard!');
-    } catch (error) {
-        console.error('Copy error:', error);
-        showToast('Failed to copy translation');
-    }
-}
-
-function speakText(text, langCode) {
-    if (!text || !langCode) {
-        showToast('Please enter text and select a language first');
+    if (!text) {
+        showToast('Nothing to copy', 'warning');
         return;
     }
 
-    // Check if speech synthesis is supported
+    try {
+        await navigator.clipboard.writeText(text);
+        showToast('Translation copied to clipboard!', 'success');
+    } catch (error) {
+        console.error('Copy error:', error);
+        showToast('Failed to copy translation', 'error');
+    }
+}
+
+// Text-to-Speech
+function speakText(text, langCode) {
+    if (!text) {
+        showToast('No text to speak', 'warning');
+        return;
+    }
+    
+    if (!langCode) {
+        showToast('Please select a language first', 'warning');
+        return;
+    }
+
     if (!window.speechSynthesis) {
-        showToast('Text-to-speech is not supported in your browser');
+        showToast('Text-to-speech is not supported in your browser', 'error');
         return;
     }
 
     // Stop any current speech
     if (currentSpeech) {
         window.speechSynthesis.cancel();
-        currentSpeech = null;
         document.querySelectorAll('.speak-btn').forEach(btn => btn.classList.remove('speaking'));
+        currentSpeech = null;
+        return;
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = speechLangs[langCode];
+    utterance.lang = speechLangs[langCode] || 'en-US';
+    utterance.rate = appSettings.speechRate;
+    utterance.pitch = 1;
     
     // Find the best voice for the language
     const voice = availableVoices.find(v => v.lang.startsWith(langCode)) || 
@@ -186,8 +544,6 @@ function speakText(text, langCode) {
     
     if (voice) {
         utterance.voice = voice;
-    } else {
-        console.log('No specific voice found for', langCode, 'using default voice');
     }
 
     // Handle speaking state
@@ -203,7 +559,7 @@ function speakText(text, langCode) {
         console.error('Speech error:', event);
         button.classList.remove('speaking');
         currentSpeech = null;
-        showToast('Text-to-speech failed. Please try again.');
+        showToast('Text-to-speech failed. Please try again.', 'error');
     };
 
     try {
@@ -212,13 +568,373 @@ function speakText(text, langCode) {
     } catch (error) {
         console.error('Speech synthesis error:', error);
         button.classList.remove('speaking');
-        showToast('Failed to start text-to-speech. Please try again.');
+        showToast('Failed to start text-to-speech.', 'error');
     }
 }
 
-function showToast(message, duration = 3000) {
+// Voice Input
+function initializeVoiceRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        voiceInputBtn.style.display = 'none';
+        console.warn('Speech recognition not supported');
+        return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        textInput.value = transcript;
+        updateCharCounter();
+        voiceInputBtn.classList.remove('recording');
+        showToast('Voice input completed!', 'success');
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Recognition error:', event.error);
+        voiceInputBtn.classList.remove('recording');
+        showToast(`Voice input error: ${event.error}`, 'error');
+    };
+
+    recognition.onend = () => {
+        voiceInputBtn.classList.remove('recording');
+    };
+}
+
+function toggleVoiceInput() {
+    if (!recognition) {
+        showToast('Voice input is not supported in your browser', 'error');
+        return;
+    }
+
+    if (voiceInputBtn.classList.contains('recording')) {
+        recognition.stop();
+        voiceInputBtn.classList.remove('recording');
+    } else {
+        const lang = selectedSourceLang ? speechLangs[selectedSourceLang] : 'en-US';
+        recognition.lang = lang;
+        recognition.start();
+        voiceInputBtn.classList.add('recording');
+        showToast('Listening... Speak now', 'success');
+    }
+}
+
+// Theme Toggle
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    showToast(`${newTheme === 'dark' ? 'Dark' : 'Light'} mode enabled`, 'success');
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+}
+
+// Translation History
+function toggleHistory() {
+    historySidebar.classList.toggle('open');
+    if (historySidebar.classList.contains('open')) {
+        renderHistory();
+    }
+}
+
+function addToHistory(translation) {
+    translationHistory.unshift(translation);
+
+    // Keep only translations up to the configured limit
+    const limit = appSettings.historyLimit || 50;
+    if (translationHistory.length > limit) {
+        translationHistory = translationHistory.slice(0, limit);
+    }
+
+    saveHistory();
+}
+
+function saveHistory() {
+    try {
+        localStorage.setItem('translationHistory', JSON.stringify(translationHistory));
+    } catch (error) {
+        console.error('Failed to save history:', error);
+    }
+}
+
+function loadHistory() {
+    try {
+        const saved = localStorage.getItem('translationHistory');
+        if (saved) {
+            translationHistory = JSON.parse(saved);
+        }
+    } catch (error) {
+        console.error('Failed to load history:', error);
+        translationHistory = [];
+    }
+}
+
+function renderHistory() {
+    if (translationHistory.length === 0) {
+        historyList.innerHTML = '<p style="text-align: center; color: var(--text-lighter); padding: 2rem;">No translation history yet</p>';
+        return;
+    }
+
+    historyList.innerHTML = translationHistory.map((item, index) => {
+        const date = new Date(item.timestamp);
+        const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        const sourceLangName = item.sourceLang === 'auto' ? 'Auto' : languageNames[item.sourceLang];
+        const targetLangName = languageNames[item.targetLang];
+        
+        return `
+            <div class="history-item" data-index="${index}">
+                <div class="history-item-header">
+                    <span class="history-item-langs">${sourceLangName} → ${targetLangName}</span>
+                    <span class="history-item-date">${dateStr}</span>
+                </div>
+                <div class="history-item-source">${escapeHtml(item.sourceText.substring(0, 100))}${item.sourceText.length > 100 ? '...' : ''}</div>
+                <div class="history-item-target">${escapeHtml(item.targetText.substring(0, 100))}${item.targetText.length > 100 ? '...' : ''}</div>
+                <div class="history-item-actions">
+                    <button class="history-item-btn use-btn" onclick="useHistoryItem(${index})">
+                        <svg class="icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                        Use
+                    </button>
+                    <button class="history-item-btn delete-btn" onclick="deleteHistoryItem(${index})">
+                        <svg class="icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function useHistoryItem(index) {
+    const item = translationHistory[index];
+    if (!item) return;
+    
+    textInput.value = item.sourceText;
+    textOutput.textContent = item.targetText;
+    
+    // Select the languages
+    if (item.sourceLang !== 'auto') {
+        sourceLangOptions.forEach(opt => {
+            if (opt.dataset.lang === item.sourceLang) {
+                selectLanguage(opt, 'source');
+            }
+        });
+    }
+    
+    targetLangOptions.forEach(opt => {
+        if (opt.dataset.lang === item.targetLang) {
+            selectLanguage(opt, 'target');
+        }
+    });
+    
+    updateCharCounter();
+    copyBtn.style.display = 'flex';
+    outputSpeakBtn.style.display = 'flex';
+    
+    historySidebar.classList.remove('open');
+    showToast('Translation loaded from history', 'success');
+}
+
+function deleteHistoryItem(index) {
+    translationHistory.splice(index, 1);
+    saveHistory();
+    renderHistory();
+    showToast('History item deleted', 'success');
+}
+
+function clearHistory() {
+    if (confirm('Are you sure you want to clear all translation history?')) {
+        translationHistory = [];
+        saveHistory();
+        renderHistory();
+        showToast('History cleared', 'success');
+    }
+}
+
+// Swap Languages
+function swapLanguages() {
+    if (!selectedSourceLang || !selectedTargetLang) {
+        showToast('Please select both source and target languages', 'warning');
+        return;
+    }
+
+    // Save state for undo
+    saveStateForUndo();
+
+    // Swap selections
+    const tempLang = selectedSourceLang;
+    selectedSourceLang = selectedTargetLang;
+    selectedTargetLang = tempLang;
+
+    // Update UI
+    sourceLangOptions.forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.lang === selectedSourceLang);
+    });
+
+    targetLangOptions.forEach(opt => {
+        opt.classList.toggle('selected', opt.dataset.lang === selectedTargetLang);
+    });
+
+    // Swap text
+    const tempText = textInput.value;
+    textInput.value = textOutput.textContent;
+    textOutput.textContent = tempText;
+    
+    updateCharCounter();
+    showToast('Languages swapped!', 'success');
+}
+
+// Undo functionality
+function saveStateForUndo() {
+    undoStack.push({
+        sourceText: textInput.value,
+        targetText: textOutput.textContent,
+        sourceLang: selectedSourceLang,
+        targetLang: selectedTargetLang
+    });
+    // Keep only last 5 states
+    if (undoStack.length > 5) {
+        undoStack.shift();
+    }
+}
+
+function undo() {
+    if (undoStack.length === 0) {
+        showToast('Nothing to undo', 'warning');
+        return;
+    }
+
+    const state = undoStack.pop();
+    textInput.value = state.sourceText;
+    textOutput.textContent = state.targetText;
+
+    if (state.sourceLang) {
+        sourceLangOptions.forEach(opt => {
+            if (opt.dataset.lang === state.sourceLang) {
+                selectLanguage(opt, 'source');
+            }
+        });
+    }
+    if (state.targetLang) {
+        targetLangOptions.forEach(opt => {
+            if (opt.dataset.lang === state.targetLang) {
+                selectLanguage(opt, 'target');
+            }
+        });
+    }
+
+    updateCharCounter();
+    if (state.targetText) {
+        copyBtn.style.display = 'flex';
+        outputSpeakBtn.style.display = 'flex';
+    }
+    showToast('Undone!', 'success');
+}
+
+// Clear Text
+function clearText() {
+    if (textInput.value || textOutput.textContent) {
+        saveStateForUndo();
+    }
+    textInput.value = '';
+    textOutput.textContent = '';
+    updateCharCounter();
+    copyBtn.style.display = 'none';
+    outputSpeakBtn.style.display = 'none';
+    saveTranslationBtn.style.display = 'none';
+    alternativesSection.style.display = 'none';
+    pronunciationGuide.style.display = 'none';
+    showToast('Text cleared (Ctrl+Z to undo)', 'success');
+}
+
+// Save Current Translation
+function saveCurrentTranslation() {
+    const sourceText = textInput.value.trim();
+    const targetText = textOutput.textContent.trim();
+    
+    if (!sourceText || !targetText) {
+        showToast('No translation to save', 'warning');
+        return;
+    }
+
+    addToHistory({
+        sourceText,
+        targetText,
+        sourceLang: selectedSourceLang || 'auto',
+        targetLang: selectedTargetLang,
+        timestamp: Date.now()
+    });
+    
+    showToast('Translation saved to history!', 'success');
+}
+
+// Handle paste event for auto-detect
+function handlePaste(event) {
+    if (appSettings.autoDetectInput) {
+        // Use setTimeout to ensure the pasted content is in the textarea
+        setTimeout(() => {
+            const text = textInput.value.trim();
+            if (text && text.length > 0 && text.length <= 1000) {
+                detectLanguage();
+            }
+        }, 100);
+    }
+}
+
+// Keyboard Shortcuts
+function handleKeyPress(event) {
+    // Enter to translate (without Shift)
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        handleTranslation();
+    }
+}
+
+function handleGlobalKeyPress(event) {
+    // Escape to clear
+    if (event.key === 'Escape') {
+        clearText();
+    }
+
+    // Ctrl/Cmd + K to swap languages
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+        event.preventDefault();
+        swapLanguages();
+    }
+
+    // Ctrl/Cmd + H to toggle history
+    if ((event.ctrlKey || event.metaKey) && event.key === 'h') {
+        event.preventDefault();
+        toggleHistory();
+    }
+
+    // Ctrl/Cmd + Z to undo (when not in text input)
+    if ((event.ctrlKey || event.metaKey) && event.key === 'z' && document.activeElement !== textInput) {
+        event.preventDefault();
+        undo();
+    }
+}
+
+// Utility Functions
+function showToast(message, type = 'success', duration = 3000) {
     const toastMessage = toast.querySelector('p');
     toastMessage.textContent = message;
+    
+    toast.className = 'toast';
+    toast.classList.add(type);
     toast.classList.remove('hidden');
     
     setTimeout(() => {
@@ -230,33 +946,584 @@ function showLoading(show) {
     loadingOverlay.classList.toggle('hidden', !show);
 }
 
-// Initialize
-updateCharCounter();
-copyBtn.style.display = 'none';
-outputSpeakBtn.style.display = 'none';
+// Typing animation for translation output
+let typingAnimation = null;
 
-// Initialize speech synthesis
-function initializeSpeechSynthesis() {
-    // Load available voices
-    availableVoices = window.speechSynthesis.getVoices();
-    
-    if (availableVoices.length === 0) {
-        // Some browsers (like Chrome) load voices asynchronously
-        window.speechSynthesis.onvoiceschanged = () => {
-            availableVoices = window.speechSynthesis.getVoices();
-            console.log('Voices loaded:', availableVoices.length);
-        };
-    } else {
-        console.log('Voices loaded:', availableVoices.length);
+function typeText(text, callback) {
+    // Cancel any existing animation
+    if (typingAnimation) {
+        clearInterval(typingAnimation);
+        typingAnimation = null;
+    }
+
+    // If animations are disabled, show immediately
+    if (!appSettings.animationsEnabled) {
+        textOutput.textContent = text;
+        if (callback) callback();
+        return;
+    }
+
+    let index = 0;
+    const speed = Math.max(5, Math.min(30, 1500 / text.length)); // Adaptive speed
+
+    textOutput.textContent = '';
+    textOutput.classList.add('typing');
+
+    typingAnimation = setInterval(() => {
+        if (index < text.length) {
+            textOutput.textContent += text.charAt(index);
+            index++;
+        } else {
+            clearInterval(typingAnimation);
+            typingAnimation = null;
+            textOutput.classList.remove('typing');
+            if (callback) callback();
+        }
+    }, speed);
+}
+
+function skipTypingAnimation() {
+    if (typingAnimation) {
+        clearInterval(typingAnimation);
+        typingAnimation = null;
+        textOutput.classList.remove('typing');
     }
 }
 
-// Check if speech synthesis is supported
-if (window.speechSynthesis) {
-    initializeSpeechSynthesis();
-} else {
-    console.warn('Speech synthesis not supported');
-    document.querySelectorAll('.speak-btn').forEach(btn => {
-        btn.style.display = 'none';
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Screen reader announcements
+function announceToScreenReader(message) {
+    const announcer = document.getElementById('sr-announcer');
+    if (announcer) {
+        announcer.textContent = '';
+        setTimeout(() => {
+            announcer.textContent = message;
+        }, 100);
+    }
+}
+
+// Fetch alternative translations
+async function fetchAlternatives(sourceText, mainTranslation) {
+    try {
+        const response = await fetch('/api/alternatives', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                text: sourceText,
+                sourceLang: selectedSourceLang ? languageNames[selectedSourceLang] : undefined,
+                targetLang: languageNames[selectedTargetLang]
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.alternatives && data.alternatives.length > 0) {
+            const filtered = data.alternatives.filter(
+                alt => alt.toLowerCase() !== mainTranslation.toLowerCase()
+            ).slice(0, 3);
+
+            if (filtered.length > 0) {
+                displayAlternatives(filtered);
+            } else {
+                alternativesSection.style.display = 'none';
+            }
+        } else {
+            alternativesSection.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Failed to fetch alternatives:', error);
+        alternativesSection.style.display = 'none';
+    }
+}
+
+function displayAlternatives(alternatives) {
+    alternativesList.textContent = '';
+
+    alternatives.forEach(alt => {
+        const item = document.createElement('div');
+        item.className = 'alternative-item';
+        item.textContent = alt;
+        item.addEventListener('click', () => {
+            textOutput.textContent = alt;
+            updateOutputWordCounter();
+            showToast('Alternative selected', 'success');
+        });
+        alternativesList.appendChild(item);
     });
+
+    alternativesSection.style.display = 'block';
+}
+
+// Fetch pronunciation guide
+async function fetchPronunciation(translatedText) {
+    try {
+        const response = await fetch('/api/pronunciation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                text: translatedText,
+                targetLang: languageNames[selectedTargetLang]
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.phonetic) {
+            pronunciationText.textContent = data.phonetic;
+            pronunciationGuide.style.display = 'block';
+        } else {
+            pronunciationGuide.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Failed to fetch pronunciation:', error);
+        pronunciationGuide.style.display = 'none';
+    }
+}
+
+// Initialize Speech Synthesis
+function initializeSpeechSynthesis() {
+    if (!window.speechSynthesis) {
+        document.querySelectorAll('.speak-btn').forEach(btn => {
+            btn.style.display = 'none';
+        });
+        console.warn('Speech synthesis not supported');
+        return;
+    }
+
+    function loadVoices() {
+        availableVoices = window.speechSynthesis.getVoices();
+        console.log('Voices loaded:', availableVoices.length);
+    }
+
+    loadVoices();
+    
+    if (availableVoices.length === 0) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+}
+
+// Language Search/Filter
+function filterLanguages(searchTerm, type) {
+    const options = type === 'source' ? sourceLangOptions : targetLangOptions;
+    const term = searchTerm.toLowerCase().trim();
+    
+    options.forEach(option => {
+        const langCode = option.dataset.lang;
+        const langName = languageNames[langCode].toLowerCase();
+        const matches = langName.includes(term) || langCode.includes(term);
+        option.style.display = matches ? 'flex' : 'none';
+    });
+}
+
+// Share Translation
+async function shareTranslation() {
+    const sourceText = textInput.value.trim();
+    const targetText = textOutput.textContent.trim();
+    
+    if (!sourceText || !targetText) {
+        showToast('No translation to share', 'warning');
+        return;
+    }
+    
+    const sourceLangName = selectedSourceLang ? languageNames[selectedSourceLang] : 'Auto';
+    const targetLangName = languageNames[selectedTargetLang];
+    const shareText = `Translation (${sourceLangName} → ${targetLangName}):\n\n${sourceText}\n\n→\n\n${targetText}\n\n(via PollyGlot)`;
+    
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Translation from PollyGlot',
+                text: shareText
+            });
+            showToast('Translation shared!', 'success');
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error('Share error:', error);
+                copyShareText(shareText);
+            }
+        }
+    } else {
+        copyShareText(shareText);
+    }
+}
+
+function copyShareText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Translation text copied for sharing!', 'success');
+    }).catch(() => {
+        showToast('Could not share translation', 'error');
+    });
+}
+
+// Export History
+function exportHistory() {
+    if (translationHistory.length === 0) {
+        showToast('No history to export', 'warning');
+        return;
+    }
+    
+    // Create CSV format
+    const csv = [
+        ['Date', 'Source Language', 'Target Language', 'Source Text', 'Translation'].join(','),
+        ...translationHistory.map(item => {
+            const date = new Date(item.timestamp).toLocaleString();
+            const sourceLang = item.sourceLang === 'auto' ? 'Auto' : languageNames[item.sourceLang];
+            const targetLang = languageNames[item.targetLang];
+            return [
+                `"${date}"`,
+                `"${sourceLang}"`,
+                `"${targetLang}"`,
+                `"${item.sourceText.replace(/"/g, '""')}"`,
+                `"${item.targetText.replace(/"/g, '""')}"`
+            ].join(',');
+        })
+    ].join('\n');
+    
+    // Download CSV file
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `pollyglot-history-${Date.now()}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showToast('History exported successfully!', 'success');
+}
+
+// Settings Management
+function openSettings() {
+    settingsModal.classList.remove('hidden');
+    loadSettingsUI();
+}
+
+function closeSettingsModal() {
+    settingsModal.classList.add('hidden');
+}
+
+let speechRateListenerAttached = false;
+
+function loadSettingsUI() {
+    document.getElementById('auto-theme').checked = appSettings.autoTheme;
+    document.getElementById('animations-enabled').checked = appSettings.animationsEnabled;
+    document.getElementById('auto-translate').checked = appSettings.autoTranslate;
+    document.getElementById('auto-save').checked = appSettings.autoSave;
+    document.getElementById('auto-detect-input').checked = appSettings.autoDetectInput;
+    document.getElementById('speech-rate').value = appSettings.speechRate;
+    document.querySelector('.range-value').textContent = appSettings.speechRate + 'x';
+    document.getElementById('auto-speak').checked = appSettings.autoSpeak;
+    document.getElementById('history-limit').value = appSettings.historyLimit;
+
+    // Add range input listener for live update (only once)
+    if (!speechRateListenerAttached) {
+        document.getElementById('speech-rate').addEventListener('input', (e) => {
+            document.querySelector('.range-value').textContent = e.target.value + 'x';
+        });
+        speechRateListenerAttached = true;
+    }
+}
+
+function saveSettings() {
+    appSettings.autoTheme = document.getElementById('auto-theme').checked;
+    appSettings.animationsEnabled = document.getElementById('animations-enabled').checked;
+    appSettings.autoTranslate = document.getElementById('auto-translate').checked;
+    appSettings.autoSave = document.getElementById('auto-save').checked;
+    appSettings.autoDetectInput = document.getElementById('auto-detect-input').checked;
+    appSettings.speechRate = parseFloat(document.getElementById('speech-rate').value);
+    appSettings.autoSpeak = document.getElementById('auto-speak').checked;
+    appSettings.historyLimit = parseInt(document.getElementById('history-limit').value);
+    
+    localStorage.setItem('appSettings', JSON.stringify(appSettings));
+    
+    // Apply animations setting
+    if (appSettings.animationsEnabled) {
+        document.body.classList.remove('no-animations');
+    } else {
+        document.body.classList.add('no-animations');
+    }
+    
+    showToast('Settings saved!', 'success');
+}
+
+function loadSettings() {
+    try {
+        const saved = localStorage.getItem('appSettings');
+        if (saved) {
+            appSettings = { ...appSettings, ...JSON.parse(saved) };
+        }
+        
+        // Apply animations setting
+        if (!appSettings.animationsEnabled) {
+            document.body.classList.add('no-animations');
+        }
+    } catch (error) {
+        console.error('Failed to load settings:', error);
+    }
+}
+
+function resetSettings() {
+    if (confirm('Reset all settings to defaults?')) {
+        appSettings = {
+            autoTheme: false,
+            animationsEnabled: true,
+            autoTranslate: false,
+            autoSave: true,
+            autoDetectInput: false,
+            speechRate: 0.9,
+            autoSpeak: false,
+            historyLimit: 50
+        };
+        localStorage.setItem('appSettings', JSON.stringify(appSettings));
+        loadSettingsUI();
+        showToast('Settings reset to defaults!', 'success');
+    }
+}
+
+// Fullscreen Mode
+function toggleFullscreen() {
+    document.body.classList.toggle('fullscreen');
+    const isFullscreen = document.body.classList.contains('fullscreen');
+    showToast(isFullscreen ? 'Fullscreen mode enabled' : 'Fullscreen mode disabled', 'success');
+}
+
+// Favorites Management
+function loadFavorites() {
+    try {
+        const saved = localStorage.getItem('favoriteLanguages');
+        if (saved) {
+            favoriteLanguages = JSON.parse(saved);
+        }
+        const savedTranslations = localStorage.getItem('favoriteTranslations');
+        if (savedTranslations) {
+            favoriteTranslations = JSON.parse(savedTranslations);
+        }
+    } catch (error) {
+        console.error('Failed to load favorites:', error);
+        favoriteLanguages = [];
+        favoriteTranslations = [];
+    }
+}
+
+function saveFavorites() {
+    localStorage.setItem('favoriteLanguages', JSON.stringify(favoriteLanguages));
+    localStorage.setItem('favoriteTranslations', JSON.stringify(favoriteTranslations));
+}
+
+// Favorites System
+function toggleFavorite() {
+    const sourceText = textInput.value.trim();
+    const targetText = textOutput.textContent.trim();
+
+    if (!sourceText || !targetText) {
+        showToast('No translation to favorite', 'warning');
+        return;
+    }
+
+    const existingIndex = favoriteTranslations.findIndex(
+        f => f.sourceText === sourceText && f.targetText === targetText
+    );
+
+    if (existingIndex >= 0) {
+        favoriteTranslations.splice(existingIndex, 1);
+        favoriteBtn.classList.remove('favorited');
+        showToast('Removed from favorites', 'success');
+    } else {
+        favoriteTranslations.unshift({
+            sourceText,
+            targetText,
+            sourceLang: selectedSourceLang || 'auto',
+            targetLang: selectedTargetLang,
+            timestamp: Date.now()
+        });
+        favoriteBtn.classList.add('favorited');
+        showToast('Added to favorites!', 'success');
+    }
+
+    saveFavorites();
+}
+
+function checkIfFavorited() {
+    const sourceText = textInput.value.trim();
+    const targetText = textOutput.textContent.trim();
+
+    const isFavorited = favoriteTranslations.some(
+        f => f.sourceText === sourceText && f.targetText === targetText
+    );
+
+    favoriteBtn.classList.toggle('favorited', isFavorited);
+}
+
+function switchHistoryTab(tab) {
+    historyTabs.forEach(t => t.classList.remove('active'));
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+
+    if (tab === 'history') {
+        historyList.style.display = 'flex';
+        favoritesList.style.display = 'none';
+        renderHistory();
+    } else {
+        historyList.style.display = 'none';
+        favoritesList.style.display = 'flex';
+        renderFavorites();
+    }
+}
+
+function renderFavorites() {
+    if (favoriteTranslations.length === 0) {
+        favoritesList.textContent = '';
+        const emptyMsg = document.createElement('p');
+        emptyMsg.style.cssText = 'text-align: center; color: var(--text-lighter); padding: 2rem;';
+        emptyMsg.textContent = 'No favorites yet. Click the star to save translations!';
+        favoritesList.appendChild(emptyMsg);
+        return;
+    }
+
+    favoritesList.textContent = '';
+    favoriteTranslations.forEach((item, index) => {
+        const date = new Date(item.timestamp);
+        const dateStr = date.toLocaleDateString();
+        const sourceLangName = item.sourceLang === 'auto' ? 'Auto' : languageNames[item.sourceLang];
+        const targetLangName = languageNames[item.targetLang];
+
+        const div = document.createElement('div');
+        div.className = 'history-item favorite-item';
+        div.dataset.index = index;
+
+        const header = document.createElement('div');
+        header.className = 'history-item-header';
+
+        const langs = document.createElement('span');
+        langs.className = 'history-item-langs';
+        langs.textContent = `${sourceLangName} → ${targetLangName}`;
+
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'history-item-date';
+        dateSpan.textContent = dateStr;
+
+        header.appendChild(langs);
+        header.appendChild(dateSpan);
+
+        const source = document.createElement('div');
+        source.className = 'history-item-source';
+        source.textContent = item.sourceText.substring(0, 100) + (item.sourceText.length > 100 ? '...' : '');
+
+        const target = document.createElement('div');
+        target.className = 'history-item-target';
+        target.textContent = item.targetText.substring(0, 100) + (item.targetText.length > 100 ? '...' : '');
+
+        const actions = document.createElement('div');
+        actions.className = 'history-item-actions';
+
+        const useBtn = document.createElement('button');
+        useBtn.className = 'history-item-btn use-btn';
+        useBtn.textContent = 'Use';
+        useBtn.onclick = () => useFavoriteItem(index);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'history-item-btn delete-btn';
+        removeBtn.textContent = 'Remove';
+        removeBtn.onclick = () => deleteFavoriteItem(index);
+
+        actions.appendChild(useBtn);
+        actions.appendChild(removeBtn);
+
+        div.appendChild(header);
+        div.appendChild(source);
+        div.appendChild(target);
+        div.appendChild(actions);
+
+        favoritesList.appendChild(div);
+    });
+}
+
+function useFavoriteItem(index) {
+    const item = favoriteTranslations[index];
+    if (!item) return;
+
+    textInput.value = item.sourceText;
+    textOutput.textContent = item.targetText;
+
+    if (item.sourceLang !== 'auto') {
+        sourceLangOptions.forEach(opt => {
+            if (opt.dataset.lang === item.sourceLang) {
+                selectLanguage(opt, 'source');
+            }
+        });
+    }
+
+    targetLangOptions.forEach(opt => {
+        if (opt.dataset.lang === item.targetLang) {
+            selectLanguage(opt, 'target');
+        }
+    });
+
+    updateCharCounter();
+    copyBtn.style.display = 'flex';
+    outputSpeakBtn.style.display = 'flex';
+    favoriteBtn.classList.add('favorited');
+
+    historySidebar.classList.remove('open');
+    showToast('Favorite loaded', 'success');
+}
+
+function deleteFavoriteItem(index) {
+    favoriteTranslations.splice(index, 1);
+    saveFavorites();
+    renderFavorites();
+    checkIfFavorited();
+    showToast('Favorite removed', 'success');
+}
+
+// Browser Language Detection
+function detectBrowserLanguage() {
+    const browserLang = navigator.language || navigator.userLanguage;
+    const langCode = browserLang.split('-')[0];
+    
+    // Check if the browser language is in our supported languages
+    if (languageNames[langCode]) {
+        // Set as default target language if it's different from current
+        if (!selectedTargetLang || selectedTargetLang === 'es') {
+            targetLangOptions.forEach(opt => {
+                if (opt.dataset.lang === langCode) {
+                    selectLanguage(opt, 'target');
+                }
+            });
+        }
+    }
+}
+
+// Service Worker for PWA
+function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then(() => {
+            console.log('Service Worker registered');
+        }).catch((error) => {
+            console.log('Service Worker registration failed:', error);
+        });
+    }
+}
+
+// Initialize app when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+// Hide output actions initially
+copyBtn.style.display = 'none';
+outputSpeakBtn.style.display = 'none';
+if (saveTranslationBtn) {
+    saveTranslationBtn.style.display = 'none';
+}
+if (shareBtn) {
+    shareBtn.style.display = 'none';
 }
