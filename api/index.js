@@ -74,7 +74,7 @@ function validateTranslationInput(text, targetLang) {
 }
 
 // Translation endpoint
-app.post('/api/translate', async (req, res) => {
+app.post('/translate', async (req, res) => {
     try {
         const clientIp = req.ip || req.connection.remoteAddress;
         
@@ -167,7 +167,7 @@ app.post('/api/translate', async (req, res) => {
 });
 
 // Language detection endpoint
-app.post('/api/detect', async (req, res) => {
+app.post('/detect', async (req, res) => {
     try {
         const clientIp = req.ip || req.connection.remoteAddress;
         
@@ -242,7 +242,7 @@ app.post('/api/detect', async (req, res) => {
 });
 
 // Pronunciation guide endpoint
-app.post('/api/pronunciation', async (req, res) => {
+app.post('/pronunciation', async (req, res) => {
     try {
         const clientIp = req.ip || req.connection.remoteAddress;
 
@@ -371,7 +371,7 @@ app.post('/api/alternatives', async (req, res) => {
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
