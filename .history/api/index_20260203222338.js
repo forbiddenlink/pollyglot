@@ -385,7 +385,6 @@ app.use((err, req, res, next) => {
 
 // Start server (only in development)
 if (process.env.NODE_ENV !== 'production') {
-    const port = process.env.PORT || 3000;
     app.listen(port, () => {
         console.log(`🦜 PollyGlot server running at http://localhost:${port}`);
         console.log(`📡 API Key configured: ${process.env.OPENAI_API_KEY ? 'Yes' : 'No'}`);
