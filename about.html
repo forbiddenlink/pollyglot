@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About PollyGlot</title>
+    <meta name="description" content="Learn what PollyGlot is, how it works, and who built it.">
+    <link rel="canonical" href="/about">
+    <link rel="icon" href="/assets/parrot-192.png" type="image/png">
+    <style>
+        :root {
+            --bg: #faf7f2;
+            --panel: #fffef9;
+            --text: #1a1a18;
+            --muted: #4a4a46;
+            --accent: #e85d3b;
+            --border: #d4cfc5;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+        }
+        .wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2rem 1rem 3rem;
+        }
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+        h1, h2 {
+            margin-top: 0;
+            font-family: "Playfair Display", Georgia, serif;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+        }
+        a:hover { border-bottom-color: currentColor; }
+        nav {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+        }
+        .small { color: var(--muted); font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <nav aria-label="Site links">
+            <a href="/">Home</a>
+            <a href="/contact">Contact</a>
+            <a href="/privacy-policy">Privacy Policy</a>
+        </nav>
+        <article class="card">
+            <h1>About PollyGlot</h1>
+            <p>
+                PollyGlot is an AI-assisted translation app designed for practical everyday use.
+                The goal is simple: keep translation fast, useful, and easy to trust. Instead of
+                hiding core controls behind complicated workflows, PollyGlot keeps language selection,
+                tone controls, translation history, and speech features visible in one interface.
+            </p>
+            <h2>What the app focuses on</h2>
+            <p>
+                The app supports 20 languages and prioritizes clear output with minimal noise. For short
+                phrases, PollyGlot can offer alternatives so users can choose the wording that best fits
+                context. For non-Latin scripts, pronunciation guidance is included to make output more usable
+                in real conversations. Voice input and text-to-speech are built in for faster hands-free use.
+            </p>
+            <h2>How translation works</h2>
+            <p>
+                PollyGlot sends text to an AI translation service and returns only the translated result.
+                Requests are validated and rate-limited to reduce abuse and keep response quality stable.
+                No account creation is required for basic use, and users can manage local history settings,
+                including save behavior and storage limits, directly in the app.
+            </p>
+            <p class="small">
+                PollyGlot is built and maintained by Elizabeth Stein.
+            </p>
+        </article>
+    </main>
+</body>
+</html>

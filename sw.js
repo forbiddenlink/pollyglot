@@ -1,22 +1,34 @@
 // Service Worker for PollyGlot PWA
-const CACHE_NAME = 'pollyglot-v1';
+const CACHE_NAME = 'pollyglot-v2';
 const urlsToCache = [
   '/',
   '/index.html',
   '/index.css',
-  '/index.js',
-  '/assets/parrot.png',
-  '/manifest.json'
+  '/script.js',
+  '/assets/parrot-192.png',
+  '/assets/parrot-512.png',
+  '/manifest.json',
+  '/about',
+  '/contact',
+  '/privacy-policy'
 ];
 
 // Install event - cache assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await Promise.all(
+        urlsToCache.map(async (url) => {
+          try {
+            await cache.add(url);
+          } catch (error) {
+            console.warn('SW cache add failed for:', url, error);
+          }
+        })
+      );
+      await self.skipWaiting();
+    })()
   );
 });
 
@@ -47,6 +59,6 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });

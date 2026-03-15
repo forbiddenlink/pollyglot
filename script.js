@@ -59,6 +59,8 @@ let appSettings = {
     autoSpeak: false,
     historyLimit: 50
 };
+let themeMediaQuery = null;
+let themeListenerAttached = false;
 
 // Language mapping with full names
 const languageNames = {
@@ -110,9 +112,10 @@ const speechLangs = {
 
 // Initialize
 function init() {
-    loadTheme();
-    loadHistory();
     loadSettings();
+    loadTheme();
+    syncThemeWithSettings();
+    loadHistory();
     loadFavorites();
     detectBrowserLanguage();
     updateCharCounter();
@@ -245,6 +248,16 @@ function selectLanguage(option, type) {
 
     // Save language pair to localStorage
     saveLanguagePair();
+
+    // Optional: auto-translate when language pair changes
+    if (
+        appSettings.autoTranslate &&
+        textInput.value.trim() &&
+        selectedTargetLang &&
+        selectedSourceLang !== selectedTargetLang
+    ) {
+        handleTranslation();
+    }
 }
 
 function saveLanguagePair() {
@@ -399,6 +412,7 @@ async function handleTranslation() {
         // Type out the translation with animation
         typeText(translationText, () => {
             updateOutputWordCounter();
+            checkIfFavorited();
             announceToScreenReader('Translation complete: ' + translationText);
 
             // Auto-speak if enabled (after typing finishes)
@@ -467,7 +481,7 @@ async function detectLanguage() {
             throw new Error(data.error || 'Language detection failed');
         }
 
-        const detectedLang = data.detectedLanguage.toLowerCase();
+        const detectedLang = (data.detectedLanguage || '').toLowerCase();
         let langFound = false;
         
         sourceLangOptions.forEach(option => {
@@ -625,18 +639,56 @@ function toggleVoiceInput() {
 
 // Theme Toggle
 function toggleTheme() {
+    if (appSettings.autoTheme) {
+        appSettings.autoTheme = false;
+        localStorage.setItem('appSettings', JSON.stringify(appSettings));
+        const autoThemeToggle = document.getElementById('auto-theme');
+        if (autoThemeToggle) {
+            autoThemeToggle.checked = false;
+        }
+        showToast('Auto-theme disabled for manual override', 'warning', 2500);
+    }
+
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
+    applyTheme(newTheme, true);
     
     showToast(`${newTheme === 'dark' ? 'Dark' : 'Light'} mode enabled`, 'success');
 }
 
 function loadTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
+    applyTheme(savedTheme, false);
+}
+
+function applyTheme(theme, persist = false) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (persist) {
+        localStorage.setItem('theme', theme);
+    }
+}
+
+function syncThemeWithSettings() {
+    if (!window.matchMedia) {
+        return;
+    }
+
+    if (!themeMediaQuery) {
+        themeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    }
+
+    if (!themeListenerAttached) {
+        themeMediaQuery.addEventListener('change', () => {
+            if (appSettings.autoTheme) {
+                applyTheme(themeMediaQuery.matches ? 'dark' : 'light', false);
+            }
+        });
+        themeListenerAttached = true;
+    }
+
+    if (appSettings.autoTheme) {
+        applyTheme(themeMediaQuery.matches ? 'dark' : 'light', false);
+    }
 }
 
 // Translation History
@@ -743,6 +795,7 @@ function useHistoryItem(index) {
     updateCharCounter();
     copyBtn.style.display = 'flex';
     outputSpeakBtn.style.display = 'flex';
+    checkIfFavorited();
     
     historySidebar.classList.remove('open');
     showToast('Translation loaded from history', 'success');
@@ -857,6 +910,7 @@ function clearText() {
     saveTranslationBtn.style.display = 'none';
     alternativesSection.style.display = 'none';
     pronunciationGuide.style.display = 'none';
+    favoriteBtn.classList.remove('favorited');
     showToast('Text cleared (Ctrl+Z to undo)', 'success');
 }
 
@@ -948,6 +1002,8 @@ function showLoading(show) {
 
 // Typing animation for translation output
 let typingAnimation = null;
+let typingFullText = '';
+let typingCallback = null;
 
 function typeText(text, callback) {
     // Cancel any existing animation
@@ -965,6 +1021,8 @@ function typeText(text, callback) {
 
     let index = 0;
     const speed = Math.max(5, Math.min(30, 1500 / text.length)); // Adaptive speed
+    typingFullText = text;
+    typingCallback = callback;
 
     textOutput.textContent = '';
     textOutput.classList.add('typing');
@@ -977,7 +1035,10 @@ function typeText(text, callback) {
             clearInterval(typingAnimation);
             typingAnimation = null;
             textOutput.classList.remove('typing');
-            if (callback) callback();
+            const onComplete = typingCallback;
+            typingFullText = '';
+            typingCallback = null;
+            if (onComplete) onComplete();
         }
     }, speed);
 }
@@ -987,6 +1048,13 @@ function skipTypingAnimation() {
         clearInterval(typingAnimation);
         typingAnimation = null;
         textOutput.classList.remove('typing');
+        textOutput.textContent = typingFullText;
+        const onComplete = typingCallback;
+        typingFullText = '';
+        typingCallback = null;
+        if (onComplete) {
+            onComplete();
+        }
     }
 }
 
@@ -1051,6 +1119,7 @@ function displayAlternatives(alternatives) {
         item.addEventListener('click', () => {
             textOutput.textContent = alt;
             updateOutputWordCounter();
+            checkIfFavorited();
             showToast('Alternative selected', 'success');
         });
         alternativesList.appendChild(item);
@@ -1249,6 +1318,16 @@ function saveSettings() {
     } else {
         document.body.classList.add('no-animations');
     }
+
+    syncThemeWithSettings();
+
+    if (translationHistory.length > appSettings.historyLimit) {
+        translationHistory = translationHistory.slice(0, appSettings.historyLimit);
+        saveHistory();
+        if (historySidebar.classList.contains('open') && historyList.style.display !== 'none') {
+            renderHistory();
+        }
+    }
     
     showToast('Settings saved!', 'success');
 }
@@ -1264,6 +1343,8 @@ function loadSettings() {
         if (!appSettings.animationsEnabled) {
             document.body.classList.add('no-animations');
         }
+
+        syncThemeWithSettings();
     } catch (error) {
         console.error('Failed to load settings:', error);
     }
@@ -1283,6 +1364,7 @@ function resetSettings() {
         };
         localStorage.setItem('appSettings', JSON.stringify(appSettings));
         loadSettingsUI();
+        syncThemeWithSettings();
         showToast('Settings reset to defaults!', 'success');
     }
 }

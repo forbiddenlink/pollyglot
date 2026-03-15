@@ -50,17 +50,25 @@ A modern AI-powered translation app using OpenAI's GPT-4o-mini for high-quality 
 # Clone and install
 git clone https://github.com/forbiddenlink/pollyglot.git
 cd pollyglot
-npm install
 
 # Configure environment
+cd api
+npm install
 echo "OPENAI_API_KEY=your_key_here" > .env
 echo "PORT=3000" >> .env
 
-# Start
-npm start
+# Start API
+npm run dev
 ```
 
-Open http://localhost:3000
+In a second terminal, serve the frontend from the project root:
+
+```bash
+cd pollyglot
+python3 -m http.server 4173
+```
+
+Open http://localhost:4173
 
 ## Usage
 

@@ -42,3 +42,17 @@ out/
 .github/instructions/codacy.instructions.md
 .vercel
 .env*.local
+.claude
+.playwright-mcp
+.playwright-mcp/
+.history
+.history/
+playwright-report
+playwright-report/
+__pycache__
+__pycache__/
+.codacy
+.codacy/
+coverage/
+test_run/
+supabase/.temp/

@@ -1,7 +1,7 @@
 {
   "name": "PollyGlot - AI Translation",
   "short_name": "PollyGlot",
-  "description": "AI-powered translation app with 12 languages, voice input, and translation history",
+  "description": "AI-powered translation app with 20 languages, voice input, pronunciation support, and translation history",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#667eea",
@@ -9,13 +9,13 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "/assets/parrot.png",
+      "src": "/assets/parrot-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/parrot.png",
+      "src": "/assets/parrot-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -28,7 +28,7 @@
       "short_name": "Translate",
       "description": "Start a new translation",
       "url": "/",
-      "icons": [{ "src": "/assets/parrot.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/assets/parrot-192.png", "sizes": "192x192" }]
     }
   ],
   "screenshots": [],

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pollyglot.vercel.app/sitemap.xml

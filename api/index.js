@@ -2,17 +2,75 @@ require('dotenv').config();
 const express = require('express');
 
 const app = express();
+const port = Number.parseInt(process.env.PORT, 10) || 3000;
+const OPENAI_TIMEOUT_MS = Number.parseInt(process.env.OPENAI_TIMEOUT_MS, 10) || 30000;
+
+const SUPPORTED_LANGUAGES = Object.freeze({
+    en: 'English',
+    es: 'Spanish',
+    fr: 'French',
+    de: 'German',
+    it: 'Italian',
+    pt: 'Portuguese',
+    ru: 'Russian',
+    zh: 'Chinese',
+    ja: 'Japanese',
+    ko: 'Korean',
+    ar: 'Arabic',
+    hi: 'Hindi',
+    nl: 'Dutch',
+    pl: 'Polish',
+    tr: 'Turkish',
+    vi: 'Vietnamese',
+    th: 'Thai',
+    sv: 'Swedish',
+    el: 'Greek',
+    he: 'Hebrew'
+});
+const SUPPORTED_LANGUAGE_CODES = new Set(Object.keys(SUPPORTED_LANGUAGES));
+const SUPPORTED_LANGUAGE_NAMES = new Map(
+    Object.values(SUPPORTED_LANGUAGES).map((name) => [name.toLowerCase(), name])
+);
+
+const fetchImpl = global.fetch
+    ? (...args) => global.fetch(...args)
+    : (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+
+const defaultAllowedOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:4173',
+    'http://127.0.0.1:4173'
+];
+const configuredAllowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+const allowedOrigins = new Set(
+    configuredAllowedOrigins.length > 0 ? configuredAllowedOrigins : defaultAllowedOrigins
+);
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 
 // CORS configuration
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    const requestOrigin = req.get('origin');
+
+    if (requestOrigin) {
+        if (!allowedOrigins.has(requestOrigin)) {
+            if (req.method === 'OPTIONS') {
+                return res.status(403).json({ error: 'Origin not allowed' });
+            }
+            return res.status(403).json({ error: 'Origin not allowed' });
+        }
+        res.header('Access-Control-Allow-Origin', requestOrigin);
+        res.header('Vary', 'Origin');
+    }
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
+        return res.sendStatus(204);
     }
     next();
 });
@@ -22,6 +80,14 @@ const requestCounts = new Map();
 const RATE_LIMIT = 50; // requests per minute
 const RATE_WINDOW = 60000; // 1 minute
 const CLEANUP_INTERVAL = 300000; // 5 minutes
+
+function getClientIp(req) {
+    const forwardedFor = req.headers['x-forwarded-for'];
+    if (typeof forwardedFor === 'string' && forwardedFor.trim() !== '') {
+        return forwardedFor.split(',')[0].trim();
+    }
+    return req.ip || req.connection.remoteAddress || 'unknown';
+}
 
 function checkRateLimit(ip) {
     const now = Date.now();
@@ -40,7 +106,7 @@ function checkRateLimit(ip) {
 }
 
 // Periodically clean up old rate limit entries to prevent memory leak
-setInterval(() => {
+const cleanupTimer = setInterval(() => {
     const now = Date.now();
     for (const [ip, requests] of requestCounts.entries()) {
         const recentRequests = requests.filter(time => now - time < RATE_WINDOW);
@@ -51,28 +117,134 @@ setInterval(() => {
         }
     }
 }, CLEANUP_INTERVAL);
+cleanupTimer.unref?.();
+
+function normalizeLanguage(input, { required = false } = {}) {
+    if (input === null || input === undefined || input === '') {
+        if (required) {
+            return { valid: false, error: 'Language is required' };
+        }
+        return { valid: true, code: null, name: null };
+    }
+
+    if (typeof input !== 'string') {
+        return { valid: false, error: 'Language must be a string' };
+    }
+
+    const normalized = input.trim();
+    if (!normalized) {
+        if (required) {
+            return { valid: false, error: 'Language is required' };
+        }
+        return { valid: true, code: null, name: null };
+    }
+
+    const code = normalized.toLowerCase();
+    if (SUPPORTED_LANGUAGE_CODES.has(code)) {
+        return { valid: true, code, name: SUPPORTED_LANGUAGES[code] };
+    }
+
+    const name = SUPPORTED_LANGUAGE_NAMES.get(code);
+    if (name) {
+        const matchedCode = Object.keys(SUPPORTED_LANGUAGES).find(
+            (langCode) => SUPPORTED_LANGUAGES[langCode] === name
+        );
+        return { valid: true, code: matchedCode || null, name };
+    }
+
+    return { valid: false, error: `Unsupported language: ${normalized}` };
+}
+
+function parseJsonSafe(value) {
+    try {
+        return JSON.parse(value);
+    } catch {
+        return null;
+    }
+}
+
+function extractAssistantContent(data) {
+    return data?.choices?.[0]?.message?.content?.trim() || '';
+}
+
+async function callOpenAI(messages, options = {}) {
+    const controller = new AbortController();
+    const timeoutHandle = setTimeout(() => controller.abort(), OPENAI_TIMEOUT_MS);
+
+    try {
+        const response = await fetchImpl('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages,
+                temperature: options.temperature ?? 0.3,
+                max_tokens: options.maxTokens ?? 500
+            })
+        });
+
+        let data = {};
+        try {
+            data = await response.json();
+        } catch {
+            data = {};
+        }
+
+        return { response, data };
+    } finally {
+        clearTimeout(timeoutHandle);
+    }
+}
 
 // Input validation
-function validateTranslationInput(text, targetLang) {
+function validateTranslationInput(text, sourceLang, targetLang, formality) {
     if (!text || typeof text !== 'string') {
         return { valid: false, error: 'Text is required' };
     }
-    
-    if (text.length > 5000) {
+
+    const trimmedText = text.trim();
+    if (!trimmedText) {
+        return { valid: false, error: 'Text is required' };
+    }
+
+    if (trimmedText.length > 5000) {
         return { valid: false, error: 'Text is too long (max 5000 characters)' };
     }
-    
-    if (!targetLang || typeof targetLang !== 'string') {
-        return { valid: false, error: 'Target language is required' };
+
+    const normalizedSource = normalizeLanguage(sourceLang, { required: false });
+    if (!normalizedSource.valid) {
+        return { valid: false, error: normalizedSource.error };
     }
-    
-    return { valid: true };
+
+    const normalizedTarget = normalizeLanguage(targetLang, { required: true });
+    if (!normalizedTarget.valid) {
+        return { valid: false, error: normalizedTarget.error };
+    }
+
+    if (normalizedSource.code && normalizedSource.code === normalizedTarget.code) {
+        return { valid: false, error: 'Source and target languages must be different' };
+    }
+
+    if (formality && !['neutral', 'formal', 'informal'].includes(formality)) {
+        return { valid: false, error: 'Invalid formality option' };
+    }
+
+    return {
+        valid: true,
+        text: trimmedText,
+        sourceLanguage: normalizedSource.name,
+        targetLanguage: normalizedTarget.name
+    };
 }
 
 // Translation endpoint
 app.post('/translate', async (req, res) => {
     try {
-        const clientIp = req.ip || req.connection.remoteAddress;
+        const clientIp = getClientIp(req);
         
         // Check rate limit
         if (!checkRateLimit(clientIp)) {
@@ -84,7 +256,7 @@ app.post('/translate', async (req, res) => {
         const { text, sourceLang, targetLang, formality } = req.body;
 
         // Validate input
-        const validation = validateTranslationInput(text, targetLang);
+        const validation = validateTranslationInput(text, sourceLang, targetLang, formality);
         if (!validation.valid) {
             return res.status(400).json({ error: validation.error });
         }
@@ -105,34 +277,17 @@ app.post('/translate', async (req, res) => {
             formalityInstruction = ' Use casual, friendly, and conversational language as you would with friends.';
         }
 
-        const systemPrompt = sourceLang
-            ? `You are a professional translator. Translate the following text from ${sourceLang} to ${targetLang}.${formalityInstruction} Provide ONLY the translation, with no additional explanations, quotes, or formatting.`
-            : `You are a professional translator. Translate the following text to ${targetLang}.${formalityInstruction} Provide ONLY the translation, with no additional explanations, quotes, or formatting.`;
-        
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: [
-                    {
-                        role: "system",
-                        content: systemPrompt
-                    },
-                    {
-                        role: "user",
-                        content: text
-                    }
-                ],
-                temperature: 0.3,
-                max_tokens: 2000
-            })
-        });
+        const systemPrompt = validation.sourceLanguage
+            ? `You are a professional translator. Translate the following text from ${validation.sourceLanguage} to ${validation.targetLanguage}.${formalityInstruction} Provide ONLY the translation, with no additional explanations, quotes, or formatting.`
+            : `You are a professional translator. Translate the following text to ${validation.targetLanguage}.${formalityInstruction} Provide ONLY the translation, with no additional explanations, quotes, or formatting.`;
 
-        const data = await response.json();
+        const { response, data } = await callOpenAI([
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: validation.text }
+        ], {
+            temperature: 0.3,
+            maxTokens: 2000
+        });
         
         if (!response.ok) {
             const errorMessage = data.error?.message || 'Translation failed';
@@ -151,10 +306,19 @@ app.post('/translate', async (req, res) => {
             return res.status(500).json({ error: errorMessage });
         }
 
-        const translation = data.choices[0].message.content.trim();
+        const translation = extractAssistantContent(data);
+        if (!translation) {
+            return res.status(502).json({ error: 'Translation response was empty' });
+        }
+
         res.json({ translation });
         
     } catch (error) {
+        if (error.name === 'AbortError') {
+            return res.status(504).json({
+                error: 'Translation request timed out. Please try again.'
+            });
+        }
         console.error('Translation error:', error);
         res.status(500).json({ 
             error: 'An unexpected error occurred. Please try again.' 
@@ -165,7 +329,7 @@ app.post('/translate', async (req, res) => {
 // Language detection endpoint
 app.post('/detect', async (req, res) => {
     try {
-        const clientIp = req.ip || req.connection.remoteAddress;
+        const clientIp = getClientIp(req);
         
         // Check rate limit
         if (!checkRateLimit(clientIp)) {
@@ -180,8 +344,13 @@ app.post('/detect', async (req, res) => {
         if (!text || typeof text !== 'string') {
             return res.status(400).json({ error: 'Text is required' });
         }
-        
-        if (text.length > 1000) {
+
+        const trimmedText = text.trim();
+        if (!trimmedText) {
+            return res.status(400).json({ error: 'Text is required' });
+        }
+
+        if (trimmedText.length > 1000) {
             return res.status(400).json({ 
                 error: 'Text is too long for detection (max 1000 characters)' 
             });
@@ -194,31 +363,17 @@ app.post('/detect', async (req, res) => {
                 error: 'Language detection service is not configured properly' 
             });
         }
-        
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: [
-                    {
-                        role: "system",
-                        content: "You are a language detection expert. Analyze the text and respond with ONLY the two-letter ISO 639-1 language code. Supported codes: en (English), es (Spanish), fr (French), de (German), it (Italian), pt (Portuguese), ru (Russian), zh (Chinese), ja (Japanese), ko (Korean), ar (Arabic), hi (Hindi), nl (Dutch), pl (Polish), tr (Turkish), vi (Vietnamese), th (Thai), sv (Swedish), el (Greek), he (Hebrew). Return only the code, nothing else."
-                    },
-                    {
-                        role: "user",
-                        content: text
-                    }
-                ],
-                temperature: 0.1,
-                max_tokens: 10
-            })
-        });
 
-        const data = await response.json();
+        const { response, data } = await callOpenAI([
+            {
+                role: 'system',
+                content: 'You are a language detection expert. Analyze the text and respond with ONLY the two-letter ISO 639-1 language code. Supported codes: en, es, fr, de, it, pt, ru, zh, ja, ko, ar, hi, nl, pl, tr, vi, th, sv, el, he.'
+            },
+            { role: 'user', content: trimmedText }
+        ], {
+            temperature: 0.1,
+            maxTokens: 10
+        });
         
         if (!response.ok) {
             const errorMessage = data.error?.message || 'Language detection failed';
@@ -226,10 +381,26 @@ app.post('/detect', async (req, res) => {
             return res.status(500).json({ error: errorMessage });
         }
 
-        const detectedLanguage = data.choices[0].message.content.trim().toLowerCase();
-        res.json({ detectedLanguage });
+        const detectedLanguage = extractAssistantContent(data).toLowerCase();
+        const normalizedLanguage = SUPPORTED_LANGUAGE_CODES.has(detectedLanguage)
+            ? detectedLanguage
+            : 'unknown';
+
+        if (normalizedLanguage === 'unknown') {
+            return res.json({
+                detectedLanguage: normalizedLanguage,
+                warning: 'Could not confidently detect a supported language'
+            });
+        }
+
+        res.json({ detectedLanguage: normalizedLanguage });
         
     } catch (error) {
+        if (error.name === 'AbortError') {
+            return res.status(504).json({
+                error: 'Language detection timed out. Please try again.'
+            });
+        }
         console.error('Language detection error:', error);
         res.status(500).json({ 
             error: 'An unexpected error occurred during language detection.' 
@@ -240,7 +411,7 @@ app.post('/detect', async (req, res) => {
 // Pronunciation guide endpoint
 app.post('/pronunciation', async (req, res) => {
     try {
-        const clientIp = req.ip || req.connection.remoteAddress;
+        const clientIp = getClientIp(req);
 
         if (!checkRateLimit(clientIp)) {
             return res.status(429).json({
@@ -250,9 +421,23 @@ app.post('/pronunciation', async (req, res) => {
 
         const { text, targetLang } = req.body;
 
-        if (!text || text.length > 500) {
+        if (!text || typeof text !== 'string') {
+            return res.status(400).json({
+                error: 'Text is required'
+            });
+        }
+
+        const trimmedText = text.trim();
+        if (!trimmedText || trimmedText.length > 500) {
             return res.status(400).json({
                 error: 'Text must be under 500 characters'
+            });
+        }
+
+        const normalizedTarget = normalizeLanguage(targetLang, { required: true });
+        if (!normalizedTarget.valid) {
+            return res.status(400).json({
+                error: normalizedTarget.error
             });
         }
 
@@ -262,27 +447,16 @@ app.post('/pronunciation', async (req, res) => {
             });
         }
 
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        const { response, data } = await callOpenAI([
+            {
+                role: 'system',
+                content: `Provide a phonetic pronunciation guide for the ${normalizedTarget.name} text. Use simple English phonetics that an English speaker can read aloud. Return ONLY the phonetic spelling, nothing else.`
             },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: [
-                    {
-                        role: "system",
-                        content: `Provide a phonetic pronunciation guide for the ${targetLang} text. Use simple English phonetics that an English speaker can read aloud. Return ONLY the phonetic spelling, nothing else. For example: "Bonjour" -> "bohn-ZHOOR"`
-                    },
-                    { role: "user", content: text }
-                ],
-                temperature: 0.3,
-                max_tokens: 300
-            })
+            { role: 'user', content: trimmedText }
+        ], {
+            temperature: 0.3,
+            maxTokens: 300
         });
-
-        const data = await response.json();
 
         if (!response.ok) {
             return res.status(500).json({
@@ -290,10 +464,21 @@ app.post('/pronunciation', async (req, res) => {
             });
         }
 
-        const phonetic = data.choices[0].message.content.trim();
+        const phonetic = extractAssistantContent(data);
+        if (!phonetic) {
+            return res.status(502).json({
+                error: 'Pronunciation response was empty'
+            });
+        }
+
         res.json({ phonetic });
 
     } catch (error) {
+        if (error.name === 'AbortError') {
+            return res.status(504).json({
+                error: 'Pronunciation request timed out. Please try again.'
+            });
+        }
         console.error('Pronunciation error:', error);
         res.status(500).json({ error: 'Failed to get pronunciation guide' });
     }
@@ -302,7 +487,7 @@ app.post('/pronunciation', async (req, res) => {
 // Alternative translations endpoint (for short phrases)
 app.post('/alternatives', async (req, res) => {
     try {
-        const clientIp = req.ip || req.connection.remoteAddress;
+        const clientIp = getClientIp(req);
 
         if (!checkRateLimit(clientIp)) {
             return res.status(429).json({
@@ -312,9 +497,30 @@ app.post('/alternatives', async (req, res) => {
 
         const { text, sourceLang, targetLang } = req.body;
 
-        if (!text || text.length > 200) {
+        if (!text || typeof text !== 'string') {
+            return res.status(400).json({
+                error: 'Text is required'
+            });
+        }
+
+        const trimmedText = text.trim();
+        if (!trimmedText || trimmedText.length > 200) {
             return res.status(400).json({
                 error: 'Text must be under 200 characters for alternatives'
+            });
+        }
+
+        const normalizedSource = normalizeLanguage(sourceLang, { required: false });
+        if (!normalizedSource.valid) {
+            return res.status(400).json({
+                error: normalizedSource.error
+            });
+        }
+
+        const normalizedTarget = normalizeLanguage(targetLang, { required: true });
+        if (!normalizedTarget.valid) {
+            return res.status(400).json({
+                error: normalizedTarget.error
             });
         }
 
@@ -324,27 +530,16 @@ app.post('/alternatives', async (req, res) => {
             });
         }
 
-        const sourceInfo = sourceLang ? `from ${sourceLang} ` : '';
-        const prompt = `Translate the following text ${sourceInfo}to ${targetLang}. Provide exactly 3 alternative translations that convey the same meaning but with different wording or formality levels. Return ONLY a JSON array with 3 strings, no explanation. Example format: ["translation 1", "translation 2", "translation 3"]`;
+        const sourceInfo = normalizedSource.name ? `from ${normalizedSource.name} ` : '';
+        const prompt = `Translate the following text ${sourceInfo}to ${normalizedTarget.name}. Provide exactly 3 alternative translations that convey the same meaning but with different wording or formality levels. Return ONLY a JSON array with 3 strings, no explanation. Example format: ["translation 1", "translation 2", "translation 3"]`;
 
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: [
-                    { role: "system", content: prompt },
-                    { role: "user", content: text }
-                ],
-                temperature: 0.7,
-                max_tokens: 500
-            })
+        const { response, data } = await callOpenAI([
+            { role: 'system', content: prompt },
+            { role: 'user', content: trimmedText }
+        ], {
+            temperature: 0.7,
+            maxTokens: 500
         });
-
-        const data = await response.json();
 
         if (!response.ok) {
             return res.status(500).json({
@@ -353,14 +548,30 @@ app.post('/alternatives', async (req, res) => {
         }
 
         try {
-            const content = data.choices[0].message.content.trim();
-            const alternatives = JSON.parse(content);
-            res.json({ alternatives });
+            const content = extractAssistantContent(data);
+            const alternatives = parseJsonSafe(content);
+
+            if (!Array.isArray(alternatives)) {
+                return res.json({ alternatives: [] });
+            }
+
+            const sanitized = alternatives
+                .filter((entry) => typeof entry === 'string')
+                .map((entry) => entry.trim())
+                .filter(Boolean)
+                .slice(0, 3);
+
+            return res.json({ alternatives: sanitized });
         } catch {
             res.json({ alternatives: [] });
         }
 
     } catch (error) {
+        if (error.name === 'AbortError') {
+            return res.status(504).json({
+                error: 'Alternatives request timed out. Please try again.'
+            });
+        }
         console.error('Alternatives error:', error);
         res.status(500).json({ error: 'Failed to get alternative translations' });
     }
@@ -371,7 +582,8 @@ app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         timestamp: new Date().toISOString(),
-        hasApiKey: !!process.env.OPENAI_API_KEY
+        hasApiKey: !!process.env.OPENAI_API_KEY,
+        supportedLanguages: Object.keys(SUPPORTED_LANGUAGES).length
     });
 });
 
