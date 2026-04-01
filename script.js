@@ -38,6 +38,13 @@ const alternativesSection = document.querySelector('.alternatives-section');
 const alternativesList = document.querySelector('.alternatives-list');
 const pronunciationGuide = document.querySelector('.pronunciation-guide');
 const pronunciationText = document.querySelector('.pronunciation-text');
+const practiceBtn = document.querySelector('.practice-btn');
+const ttsControls = document.getElementById('tts-controls');
+const ttsVoiceSelect = document.getElementById('tts-voice-select');
+const ttsSpeedSlider = document.getElementById('tts-speed-slider');
+const ttsSpeedValue = document.getElementById('tts-speed-value');
+const ttsCloseBtn = document.getElementById('tts-close-btn');
+const ttsUnavailableMsg = document.getElementById('tts-unavailable-msg');
 
 // State
 let selectedSourceLang = null;
@@ -49,6 +56,21 @@ let recognition = null;
 let favoriteLanguages = [];
 let favoriteTranslations = [];
 let undoStack = [];
+let practiceState = {
+    isActive: false,
+    currentPhrase: null,
+    originalText: null,
+    targetLang: null,
+    mediaRecorder: null,
+    audioChunks: [],
+    recordingStartTime: null,
+    timerInterval: null,
+    recordingBlob: null,
+    whisperReady: false,
+    whisperLoading: false,
+    wavesurferRecording: null,
+    practiceHistory: []
+};
 let appSettings = {
     autoTheme: false,
     animationsEnabled: true,
@@ -61,6 +83,11 @@ let appSettings = {
 };
 let themeMediaQuery = null;
 let themeListenerAttached = false;
+let ttsState = {
+    controlsVisible: false,
+    selectedVoice: null,
+    voicesForCurrentLang: []
+};
 
 // Language mapping with full names
 const languageNames = {
@@ -122,8 +149,10 @@ function init() {
     selectDefaultLanguages();
     initializeSpeechSynthesis();
     initializeVoiceRecognition();
+    initTTSControls();
     attachEventListeners();
     registerServiceWorker();
+    initPronunciationPractice();
 }
 
 // Event Listeners
@@ -175,7 +204,23 @@ function attachEventListeners() {
     // Actions
     copyBtn.addEventListener('click', copyTranslation);
     inputSpeakBtn.addEventListener('click', () => speakText(textInput.value, selectedSourceLang));
-    outputSpeakBtn.addEventListener('click', () => speakText(textOutput.textContent, selectedTargetLang));
+    outputSpeakBtn.addEventListener('click', handleOutputSpeakClick);
+
+    // TTS Controls
+    if (ttsCloseBtn) {
+        ttsCloseBtn.addEventListener('click', hideTTSControls);
+    }
+    if (ttsVoiceSelect) {
+        ttsVoiceSelect.addEventListener('change', handleTTSVoiceChange);
+    }
+    if (ttsSpeedSlider) {
+        ttsSpeedSlider.addEventListener('input', handleTTSSpeedChange);
+    }
+    // Right-click on speak button to show TTS options
+    outputSpeakBtn.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        toggleTTSControls();
+    });
 
     // Click on output to skip typing animation
     textOutput.addEventListener('click', skipTypingAnimation);
@@ -244,6 +289,12 @@ function selectLanguage(option, type) {
         selectedSourceLang = langCode;
     } else {
         selectedTargetLang = langCode;
+        // Reset selected voice when target language changes
+        ttsState.selectedVoice = null;
+        // Update TTS voice options if controls are visible
+        if (ttsState.controlsVisible) {
+            updateTTSVoiceOptions(langCode);
+        }
     }
 
     // Save language pair to localStorage
@@ -408,6 +459,7 @@ async function handleTranslation() {
         outputSpeakBtn.style.display = 'flex';
         saveTranslationBtn.style.display = 'flex';
         shareBtn.style.display = 'flex';
+        if (practiceBtn) practiceBtn.style.display = 'flex';
 
         // Type out the translation with animation
         typeText(translationText, () => {
@@ -586,6 +638,375 @@ function speakText(text, langCode) {
     }
 }
 
+// ================================
+// Enhanced TTS Controls
+// ================================
+
+/**
+ * Initialize TTS controls UI
+ */
+function initTTSControls() {
+    if (!window.speechSynthesis) {
+        console.warn('TTS not supported');
+        return;
+    }
+
+    // Load TTS settings from localStorage
+    const savedTTSSettings = localStorage.getItem('ttsSettings');
+    if (savedTTSSettings) {
+        try {
+            const parsed = JSON.parse(savedTTSSettings);
+            if (parsed.rate !== undefined) {
+                appSettings.speechRate = parsed.rate;
+                if (ttsSpeedSlider) ttsSpeedSlider.value = parsed.rate;
+                if (ttsSpeedValue) ttsSpeedValue.textContent = parsed.rate + 'x';
+            }
+        } catch (e) {
+            console.warn('Failed to load TTS settings:', e);
+        }
+    }
+}
+
+/**
+ * Handle output speak button click
+ */
+function handleOutputSpeakClick() {
+    const text = textOutput.textContent;
+
+    if (!text) {
+        showToast('No text to speak', 'warning');
+        return;
+    }
+
+    // If currently speaking, stop
+    if (currentSpeech) {
+        window.speechSynthesis.cancel();
+        document.querySelectorAll('.speak-btn').forEach(btn => btn.classList.remove('speaking'));
+        currentSpeech = null;
+        return;
+    }
+
+    // Use enhanced TTS with selected voice
+    speakTextEnhanced(text, selectedTargetLang);
+}
+
+/**
+ * Enhanced speak function with TTS controls support
+ */
+function speakTextEnhanced(text, langCode) {
+    if (!text) {
+        showToast('No text to speak', 'warning');
+        return;
+    }
+
+    if (!langCode) {
+        showToast('Please select a language first', 'warning');
+        return;
+    }
+
+    if (!window.speechSynthesis) {
+        showToast('Text-to-speech is not supported in your browser', 'error');
+        return;
+    }
+
+    // Stop any current speech
+    if (currentSpeech) {
+        window.speechSynthesis.cancel();
+        document.querySelectorAll('.speak-btn').forEach(btn => btn.classList.remove('speaking'));
+        currentSpeech = null;
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = speechLangs[langCode] || 'en-US';
+    utterance.rate = appSettings.speechRate;
+    utterance.pitch = 1;
+
+    // Use selected voice from TTS controls if available
+    if (ttsState.selectedVoice) {
+        utterance.voice = ttsState.selectedVoice;
+    } else {
+        // Find the best voice for the language
+        const voice = getVoiceForLanguage(langCode);
+        if (voice) {
+            utterance.voice = voice;
+        }
+    }
+
+    // Handle speaking state
+    outputSpeakBtn.classList.add('speaking');
+
+    utterance.onend = () => {
+        outputSpeakBtn.classList.remove('speaking');
+        currentSpeech = null;
+    };
+
+    utterance.onerror = (event) => {
+        console.error('Speech error:', event);
+        outputSpeakBtn.classList.remove('speaking');
+        currentSpeech = null;
+        if (event.error !== 'canceled') {
+            showToast('Text-to-speech failed. Please try again.', 'error');
+        }
+    };
+
+    try {
+        window.speechSynthesis.speak(utterance);
+        currentSpeech = utterance;
+    } catch (error) {
+        console.error('Speech synthesis error:', error);
+        outputSpeakBtn.classList.remove('speaking');
+        showToast('Failed to start text-to-speech.', 'error');
+    }
+}
+
+/**
+ * Get the best voice for a language
+ */
+function getVoiceForLanguage(langCode) {
+    const tags = [speechLangs[langCode], langCode];
+
+    // Find voices matching the language
+    const matchingVoices = availableVoices.filter(v => {
+        const voiceLang = v.lang.toLowerCase();
+        return tags.some(tag => tag && voiceLang.startsWith(tag.toLowerCase()));
+    });
+
+    if (matchingVoices.length === 0) {
+        return null;
+    }
+
+    // Prefer local voices
+    const localVoice = matchingVoices.find(v => v.localService);
+    if (localVoice) return localVoice;
+
+    // Prefer default voices
+    const defaultVoice = matchingVoices.find(v => v.default);
+    if (defaultVoice) return defaultVoice;
+
+    return matchingVoices[0];
+}
+
+/**
+ * Get all voices for a language
+ */
+function getVoicesForLanguage(langCode) {
+    const tags = [speechLangs[langCode], langCode];
+
+    return availableVoices.filter(v => {
+        const voiceLang = v.lang.toLowerCase();
+        return tags.some(tag => tag && voiceLang.startsWith(tag.toLowerCase()));
+    });
+}
+
+/**
+ * Toggle TTS controls visibility
+ */
+function toggleTTSControls() {
+    if (!ttsControls) return;
+
+    if (ttsState.controlsVisible) {
+        hideTTSControls();
+    } else {
+        showTTSControls();
+    }
+}
+
+/**
+ * Show TTS controls panel
+ */
+function showTTSControls() {
+    if (!ttsControls) return;
+
+    // Update voice options for current language
+    updateTTSVoiceOptions(selectedTargetLang);
+
+    ttsControls.style.display = 'block';
+    ttsState.controlsVisible = true;
+}
+
+/**
+ * Hide TTS controls panel
+ */
+function hideTTSControls() {
+    if (!ttsControls) return;
+
+    ttsControls.style.display = 'none';
+    ttsState.controlsVisible = false;
+}
+
+/**
+ * Update voice dropdown options for a language
+ */
+function updateTTSVoiceOptions(langCode) {
+    if (!ttsVoiceSelect || !ttsUnavailableMsg) return;
+
+    const voices = getVoicesForLanguage(langCode);
+    ttsState.voicesForCurrentLang = voices;
+
+    // Clear existing options except default
+    ttsVoiceSelect.innerHTML = '<option value="">Default</option>';
+
+    if (voices.length === 0) {
+        ttsUnavailableMsg.style.display = 'block';
+        ttsVoiceSelect.disabled = true;
+    } else {
+        ttsUnavailableMsg.style.display = 'none';
+        ttsVoiceSelect.disabled = false;
+
+        voices.forEach((voice, index) => {
+            const option = document.createElement('option');
+            option.value = index.toString();
+            option.textContent = `${voice.name} (${voice.lang})`;
+            if (voice.localService) {
+                option.textContent += ' [Local]';
+            }
+            ttsVoiceSelect.appendChild(option);
+        });
+    }
+}
+
+/**
+ * Handle voice selection change
+ */
+function handleTTSVoiceChange(event) {
+    const value = event.target.value;
+
+    if (value === '') {
+        ttsState.selectedVoice = null;
+    } else {
+        const index = parseInt(value, 10);
+        ttsState.selectedVoice = ttsState.voicesForCurrentLang[index] || null;
+    }
+
+    // Save preference
+    saveTTSSettings();
+}
+
+/**
+ * Handle speed slider change
+ */
+function handleTTSSpeedChange(event) {
+    const rate = parseFloat(event.target.value);
+    appSettings.speechRate = rate;
+
+    if (ttsSpeedValue) {
+        ttsSpeedValue.textContent = rate + 'x';
+    }
+
+    // Save preference
+    saveTTSSettings();
+
+    // Also update the settings modal if it exists
+    const settingsRateSlider = document.getElementById('speech-rate');
+    const settingsRateValue = document.querySelector('.range-value');
+    if (settingsRateSlider) settingsRateSlider.value = rate;
+    if (settingsRateValue) settingsRateValue.textContent = rate + 'x';
+}
+
+/**
+ * Save TTS settings to localStorage
+ */
+function saveTTSSettings() {
+    try {
+        localStorage.setItem('ttsSettings', JSON.stringify({
+            rate: appSettings.speechRate
+        }));
+    } catch (e) {
+        console.warn('Failed to save TTS settings:', e);
+    }
+}
+
+/**
+ * Create an inline TTS button for a phrase/word
+ * @param {string} text - Text to speak
+ * @param {string} langCode - Language code
+ * @returns {HTMLButtonElement}
+ */
+function createInlineTTSButton(text, langCode) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'tts-inline-btn';
+    button.setAttribute('aria-label', `Speak: ${text.substring(0, 20)}...`);
+    button.title = 'Click to hear pronunciation';
+    button.innerHTML = `
+        <svg class="icon" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
+        </svg>
+    `;
+
+    button.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        // Stop any current speech
+        if (currentSpeech) {
+            window.speechSynthesis.cancel();
+            document.querySelectorAll('.tts-inline-btn.speaking').forEach(btn => btn.classList.remove('speaking'));
+            currentSpeech = null;
+            return;
+        }
+
+        // Speak the text
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = speechLangs[langCode] || 'en-US';
+        utterance.rate = appSettings.speechRate;
+        utterance.pitch = 1;
+
+        const voice = getVoiceForLanguage(langCode);
+        if (voice) {
+            utterance.voice = voice;
+        }
+
+        button.classList.add('speaking');
+
+        utterance.onend = () => {
+            button.classList.remove('speaking');
+            currentSpeech = null;
+        };
+
+        utterance.onerror = () => {
+            button.classList.remove('speaking');
+            currentSpeech = null;
+        };
+
+        try {
+            window.speechSynthesis.speak(utterance);
+            currentSpeech = utterance;
+        } catch (error) {
+            button.classList.remove('speaking');
+            console.error('TTS error:', error);
+        }
+    });
+
+    return button;
+}
+
+/**
+ * Stop all TTS playback
+ */
+function stopTTS() {
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+    }
+    document.querySelectorAll('.speak-btn.speaking, .tts-inline-btn.speaking').forEach(btn => {
+        btn.classList.remove('speaking');
+    });
+    currentSpeech = null;
+}
+
+/**
+ * Check if TTS has a voice for the given language
+ */
+function hasVoiceForLanguage(langCode) {
+    return getVoicesForLanguage(langCode).length > 0;
+}
+
+// Expose TTS functions globally for use in other modules
+window.createInlineTTSButton = createInlineTTSButton;
+window.speakTextEnhanced = speakTextEnhanced;
+window.stopTTS = stopTTS;
+window.hasVoiceForLanguage = hasVoiceForLanguage;
+
 // Voice Input
 function initializeVoiceRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -742,7 +1163,7 @@ function renderHistory() {
         const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
         const sourceLangName = item.sourceLang === 'auto' ? 'Auto' : languageNames[item.sourceLang];
         const targetLangName = languageNames[item.targetLang];
-        
+
         return `
             <div class="history-item" data-index="${index}">
                 <div class="history-item-header">
@@ -750,7 +1171,14 @@ function renderHistory() {
                     <span class="history-item-date">${dateStr}</span>
                 </div>
                 <div class="history-item-source">${escapeHtml(item.sourceText.substring(0, 100))}${item.sourceText.length > 100 ? '...' : ''}</div>
-                <div class="history-item-target">${escapeHtml(item.targetText.substring(0, 100))}${item.targetText.length > 100 ? '...' : ''}</div>
+                <div class="history-item-target">
+                    ${escapeHtml(item.targetText.substring(0, 100))}${item.targetText.length > 100 ? '...' : ''}
+                    <button type="button" class="tts-inline-btn history-tts-btn" data-text="${escapeHtml(item.targetText)}" data-lang="${item.targetLang}" aria-label="Hear pronunciation" title="Hear pronunciation">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
+                        </svg>
+                    </button>
+                </div>
                 <div class="history-item-actions">
                     <button class="history-item-btn use-btn" onclick="useHistoryItem(${index})">
                         <svg class="icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
@@ -768,6 +1196,58 @@ function renderHistory() {
             </div>
         `;
     }).join('');
+
+    // Attach TTS click handlers to history items
+    attachHistoryTTSHandlers();
+}
+
+/**
+ * Attach TTS click handlers to history item speak buttons
+ */
+function attachHistoryTTSHandlers() {
+    document.querySelectorAll('.history-tts-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const text = btn.dataset.text;
+            const lang = btn.dataset.lang;
+
+            if (!text || !lang) return;
+
+            // Stop any current speech
+            if (currentSpeech) {
+                window.speechSynthesis.cancel();
+                document.querySelectorAll('.tts-inline-btn.speaking').forEach(b => b.classList.remove('speaking'));
+                currentSpeech = null;
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = speechLangs[lang] || 'en-US';
+            utterance.rate = appSettings.speechRate;
+
+            const voice = getVoiceForLanguage(lang);
+            if (voice) utterance.voice = voice;
+
+            btn.classList.add('speaking');
+
+            utterance.onend = () => {
+                btn.classList.remove('speaking');
+                currentSpeech = null;
+            };
+
+            utterance.onerror = () => {
+                btn.classList.remove('speaking');
+                currentSpeech = null;
+            };
+
+            try {
+                window.speechSynthesis.speak(utterance);
+                currentSpeech = utterance;
+            } catch (error) {
+                btn.classList.remove('speaking');
+            }
+        });
+    });
 }
 
 function useHistoryItem(index) {
@@ -795,8 +1275,9 @@ function useHistoryItem(index) {
     updateCharCounter();
     copyBtn.style.display = 'flex';
     outputSpeakBtn.style.display = 'flex';
+    if (practiceBtn) practiceBtn.style.display = 'flex';
     checkIfFavorited();
-    
+
     historySidebar.classList.remove('open');
     showToast('Translation loaded from history', 'success');
 }
@@ -910,6 +1391,7 @@ function clearText() {
     saveTranslationBtn.style.display = 'none';
     alternativesSection.style.display = 'none';
     pronunciationGuide.style.display = 'none';
+    if (practiceBtn) practiceBtn.style.display = 'none';
     favoriteBtn.classList.remove('favorited');
     showToast('Text cleared (Ctrl+Z to undo)', 'success');
 }
@@ -1499,7 +1981,29 @@ function renderFavorites() {
 
         const target = document.createElement('div');
         target.className = 'history-item-target';
-        target.textContent = item.targetText.substring(0, 100) + (item.targetText.length > 100 ? '...' : '');
+
+        // Add text content
+        const targetText = document.createTextNode(
+            item.targetText.substring(0, 100) + (item.targetText.length > 100 ? '...' : '')
+        );
+        target.appendChild(targetText);
+
+        // Add TTS button
+        const ttsBtn = document.createElement('button');
+        ttsBtn.type = 'button';
+        ttsBtn.className = 'tts-inline-btn';
+        ttsBtn.setAttribute('aria-label', 'Hear pronunciation');
+        ttsBtn.title = 'Hear pronunciation';
+        ttsBtn.innerHTML = `
+            <svg class="icon" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
+            </svg>
+        `;
+        ttsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            speakFavoriteItem(item.targetText, item.targetLang, ttsBtn);
+        });
+        target.appendChild(ttsBtn);
 
         const actions = document.createElement('div');
         actions.className = 'history-item-actions';
@@ -1526,6 +2030,45 @@ function renderFavorites() {
     });
 }
 
+/**
+ * Speak a favorite item's translation
+ */
+function speakFavoriteItem(text, lang, button) {
+    // Stop any current speech
+    if (currentSpeech) {
+        window.speechSynthesis.cancel();
+        document.querySelectorAll('.tts-inline-btn.speaking').forEach(b => b.classList.remove('speaking'));
+        currentSpeech = null;
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = speechLangs[lang] || 'en-US';
+    utterance.rate = appSettings.speechRate;
+
+    const voice = getVoiceForLanguage(lang);
+    if (voice) utterance.voice = voice;
+
+    button.classList.add('speaking');
+
+    utterance.onend = () => {
+        button.classList.remove('speaking');
+        currentSpeech = null;
+    };
+
+    utterance.onerror = () => {
+        button.classList.remove('speaking');
+        currentSpeech = null;
+    };
+
+    try {
+        window.speechSynthesis.speak(utterance);
+        currentSpeech = utterance;
+    } catch (error) {
+        button.classList.remove('speaking');
+    }
+}
+
 function useFavoriteItem(index) {
     const item = favoriteTranslations[index];
     if (!item) return;
@@ -1550,6 +2093,7 @@ function useFavoriteItem(index) {
     updateCharCounter();
     copyBtn.style.display = 'flex';
     outputSpeakBtn.style.display = 'flex';
+    if (practiceBtn) practiceBtn.style.display = 'flex';
     favoriteBtn.classList.add('favorited');
 
     historySidebar.classList.remove('open');
@@ -1600,6 +2144,504 @@ if (document.readyState === 'loading') {
     init();
 }
 
+// ================================
+// Pronunciation Practice System
+// ================================
+
+/**
+ * Initialize pronunciation practice event listeners
+ */
+function initPronunciationPractice() {
+    const closePracticeBtn = document.querySelector('.close-practice-btn');
+    const recordBtn = document.getElementById('practice-record-btn');
+    const playReferenceBtn = document.getElementById('play-reference-btn');
+    const playRecordingBtn = document.getElementById('play-recording-btn');
+    const retryBtn = document.getElementById('retry-btn');
+    const nextPhraseBtn = document.getElementById('next-phrase-btn');
+
+    // Practice button in output section
+    if (practiceBtn) {
+        practiceBtn.addEventListener('click', startPronunciationPractice);
+        // Pre-load Whisper on hover
+        practiceBtn.addEventListener('mouseenter', preloadWhisper, { once: true });
+    }
+
+    // Close practice
+    if (closePracticeBtn) {
+        closePracticeBtn.addEventListener('click', closePronunciationPractice);
+    }
+
+    // Record button - hold to record
+    if (recordBtn) {
+        recordBtn.addEventListener('mousedown', startPracticeRecording);
+        recordBtn.addEventListener('mouseup', stopPracticeRecording);
+        recordBtn.addEventListener('mouseleave', stopPracticeRecording);
+        recordBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startPracticeRecording();
+        });
+        recordBtn.addEventListener('touchend', stopPracticeRecording);
+    }
+
+    // Playback buttons
+    if (playReferenceBtn) {
+        playReferenceBtn.addEventListener('click', playReferenceAudio);
+    }
+    if (playRecordingBtn) {
+        playRecordingBtn.addEventListener('click', playRecordingAudio);
+    }
+
+    // Feedback actions
+    if (retryBtn) {
+        retryBtn.addEventListener('click', retryPracticeRecording);
+    }
+    if (nextPhraseBtn) {
+        nextPhraseBtn.addEventListener('click', () => closePronunciationPractice());
+    }
+
+    // Load practice history
+    loadPracticeHistory();
+}
+
+/**
+ * Pre-load Whisper model in background
+ */
+async function preloadWhisper() {
+    if (practiceState.whisperReady || practiceState.whisperLoading) return;
+
+    practiceState.whisperLoading = true;
+    console.log('Pre-loading Whisper model...');
+
+    try {
+        // Dynamically import Transformers.js from CDN
+        const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+
+        window.whisperPipeline = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+            progress_callback: (progress) => {
+                if (progress.status === 'progress' && progress.progress !== undefined) {
+                    console.log(`Loading Whisper: ${Math.round(progress.progress)}%`);
+                }
+            }
+        });
+
+        practiceState.whisperReady = true;
+        practiceState.whisperLoading = false;
+        console.log('Whisper model loaded!');
+    } catch (error) {
+        console.warn('Whisper loading failed:', error);
+        practiceState.whisperLoading = false;
+    }
+}
+
+/**
+ * Start pronunciation practice from current translation
+ */
+async function startPronunciationPractice() {
+    const translatedText = textOutput.textContent.trim();
+    const sourceText = textInput.value.trim();
+
+    if (!translatedText) {
+        showToast('Please translate something first', 'warning');
+        return;
+    }
+
+    practiceState.currentPhrase = translatedText;
+    practiceState.originalText = sourceText;
+    practiceState.targetLang = selectedTargetLang;
+
+    const practiceSection = document.getElementById('pronunciation-practice');
+    if (practiceSection) {
+        practiceSection.style.display = 'block';
+        practiceState.isActive = true;
+
+        // Update phrase display
+        const phraseText = document.getElementById('practice-phrase-text');
+        const originalText = document.getElementById('practice-original-text');
+        if (phraseText) phraseText.textContent = translatedText;
+        if (originalText) originalText.textContent = sourceText;
+
+        // Initialize Whisper if not ready
+        const loadingEl = document.getElementById('practice-loading');
+        const contentEl = document.querySelector('.practice-content');
+
+        if (!practiceState.whisperReady && !practiceState.whisperLoading) {
+            if (loadingEl) loadingEl.style.display = 'flex';
+            if (contentEl) contentEl.style.display = 'none';
+
+            await preloadWhisper();
+
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (contentEl) contentEl.style.display = 'block';
+        }
+
+        // Reset UI
+        resetPracticeUI();
+
+        // Scroll to practice section
+        practiceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+/**
+ * Close pronunciation practice
+ */
+function closePronunciationPractice() {
+    const practiceSection = document.getElementById('pronunciation-practice');
+    if (practiceSection) {
+        practiceSection.style.display = 'none';
+    }
+    practiceState.isActive = false;
+    resetPracticeUI();
+
+    // Clean up WaveSurfer instance
+    if (practiceState.wavesurferRecording) {
+        practiceState.wavesurferRecording.destroy();
+        practiceState.wavesurferRecording = null;
+    }
+}
+
+/**
+ * Reset practice UI state
+ */
+function resetPracticeUI() {
+    const recordingPlayback = document.getElementById('recording-playback');
+    const feedback = document.getElementById('practice-feedback');
+    const timer = document.getElementById('recording-timer');
+    const recordBtn = document.getElementById('practice-record-btn');
+
+    if (recordingPlayback) recordingPlayback.style.display = 'none';
+    if (feedback) feedback.style.display = 'none';
+    if (timer) timer.style.display = 'none';
+    if (recordBtn) recordBtn.classList.remove('recording');
+
+    stopPracticeTimer();
+    practiceState.recordingBlob = null;
+}
+
+/**
+ * Play reference audio using browser TTS with enhanced voice selection
+ */
+function playReferenceAudio() {
+    if (!practiceState.currentPhrase) return;
+
+    const synth = window.speechSynthesis;
+    const playBtn = document.getElementById('play-reference-btn');
+
+    if (synth.speaking) {
+        synth.cancel();
+        updatePracticePlayButton(playBtn, false);
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(practiceState.currentPhrase);
+    utterance.lang = speechLangs[practiceState.targetLang] || 'en-US';
+    utterance.rate = 0.85; // Slower for learning
+
+    // Use the best available voice for the language
+    const voice = getVoiceForLanguage(practiceState.targetLang);
+    if (voice) {
+        utterance.voice = voice;
+    } else {
+        // Warn if no voice available
+        const langName = languageNames[practiceState.targetLang] || practiceState.targetLang;
+        showToast(`No native voice available for ${langName}. Using default.`, 'warning');
+    }
+
+    utterance.onstart = () => updatePracticePlayButton(playBtn, true);
+    utterance.onend = () => updatePracticePlayButton(playBtn, false);
+    utterance.onerror = () => updatePracticePlayButton(playBtn, false);
+
+    synth.speak(utterance);
+}
+
+/**
+ * Start recording user's pronunciation
+ */
+async function startPracticeRecording() {
+    if (practiceState.mediaRecorder?.state === 'recording') return;
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : 'audio/mp4';
+
+        practiceState.mediaRecorder = new MediaRecorder(stream, { mimeType });
+        practiceState.audioChunks = [];
+
+        practiceState.mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) {
+                practiceState.audioChunks.push(e.data);
+            }
+        };
+
+        practiceState.mediaRecorder.onstop = async () => {
+            stream.getTracks().forEach(track => track.stop());
+            await processPracticeRecording();
+        };
+
+        practiceState.mediaRecorder.start();
+        practiceState.recordingStartTime = Date.now();
+
+        // Update UI
+        const recordBtn = document.getElementById('practice-record-btn');
+        if (recordBtn) recordBtn.classList.add('recording');
+        startPracticeTimer();
+
+    } catch (error) {
+        console.error('Failed to start recording:', error);
+        showToast('Could not access microphone', 'error');
+    }
+}
+
+/**
+ * Stop recording
+ */
+function stopPracticeRecording() {
+    if (practiceState.mediaRecorder?.state !== 'recording') return;
+
+    practiceState.mediaRecorder.stop();
+    const recordBtn = document.getElementById('practice-record-btn');
+    if (recordBtn) recordBtn.classList.remove('recording');
+    stopPracticeTimer();
+}
+
+/**
+ * Process the recorded audio
+ */
+async function processPracticeRecording() {
+    const blob = new Blob(practiceState.audioChunks, {
+        type: practiceState.mediaRecorder.mimeType
+    });
+    practiceState.recordingBlob = blob;
+
+    // Show playback section
+    const recordingPlayback = document.getElementById('recording-playback');
+    if (recordingPlayback) {
+        recordingPlayback.style.display = 'block';
+    }
+
+    // Create audio URL for playback
+    const audioUrl = URL.createObjectURL(blob);
+
+    // Initialize WaveSurfer for waveform visualization
+    const waveformEl = document.getElementById('recording-waveform');
+    if (waveformEl) {
+        // Clean up existing
+        if (practiceState.wavesurferRecording) {
+            practiceState.wavesurferRecording.destroy();
+        }
+
+        try {
+            // Dynamically load WaveSurfer
+            if (!window.WaveSurfer) {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7';
+                document.head.appendChild(script);
+                await new Promise(resolve => script.onload = resolve);
+            }
+
+            practiceState.wavesurferRecording = WaveSurfer.create({
+                container: waveformEl,
+                waveColor: 'rgba(232, 93, 59, 0.4)',
+                progressColor: '#e85d3b',
+                cursorColor: '#4299e1',
+                cursorWidth: 2,
+                barWidth: 2,
+                barGap: 1,
+                barRadius: 2,
+                height: 48,
+                url: audioUrl
+            });
+
+            const playBtn = document.getElementById('play-recording-btn');
+            practiceState.wavesurferRecording.on('play', () => updatePracticePlayButton(playBtn, true));
+            practiceState.wavesurferRecording.on('pause', () => updatePracticePlayButton(playBtn, false));
+            practiceState.wavesurferRecording.on('finish', () => updatePracticePlayButton(playBtn, false));
+        } catch (e) {
+            console.warn('WaveSurfer failed:', e);
+            // Fallback to simple audio
+            waveformEl.innerHTML = `<audio controls style="width:100%;height:48px" src="${audioUrl}"></audio>`;
+        }
+    }
+
+    // Transcribe with Whisper
+    await transcribePracticeRecording(blob);
+}
+
+/**
+ * Transcribe the recording using Whisper
+ */
+async function transcribePracticeRecording(blob) {
+    const feedback = document.getElementById('practice-feedback');
+    const transcriptionEl = document.getElementById('feedback-transcription');
+
+    if (!practiceState.whisperReady || !window.whisperPipeline) {
+        // Fallback: show feedback without transcription
+        if (feedback) feedback.style.display = 'block';
+        if (transcriptionEl) transcriptionEl.textContent = '(Speech recognition not available - try listening to your recording)';
+        return;
+    }
+
+    try {
+        showToast('Transcribing...', 'success');
+
+        // Convert blob to audio data
+        const arrayBuffer = await blob.arrayBuffer();
+        const audioContext = new AudioContext({ sampleRate: 16000 });
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+        // Mix to mono
+        const length = audioBuffer.length;
+        const numChannels = audioBuffer.numberOfChannels;
+        const mono = new Float32Array(length);
+        for (let i = 0; i < length; i++) {
+            let sum = 0;
+            for (let ch = 0; ch < numChannels; ch++) {
+                sum += audioBuffer.getChannelData(ch)[i];
+            }
+            mono[i] = sum / numChannels;
+        }
+
+        // Resample to 16kHz if needed
+        let audioData = mono;
+        if (audioBuffer.sampleRate !== 16000) {
+            const ratio = audioBuffer.sampleRate / 16000;
+            const newLength = Math.round(length / ratio);
+            audioData = new Float32Array(newLength);
+            for (let i = 0; i < newLength; i++) {
+                const srcIndex = i * ratio;
+                const floor = Math.floor(srcIndex);
+                const ceil = Math.min(floor + 1, length - 1);
+                const t = srcIndex - floor;
+                audioData[i] = mono[floor] * (1 - t) + mono[ceil] * t;
+            }
+        }
+
+        await audioContext.close();
+
+        // Transcribe
+        const result = await window.whisperPipeline(audioData, {
+            language: practiceState.targetLang,
+            task: 'transcribe'
+        });
+
+        // Show result
+        if (feedback) feedback.style.display = 'block';
+        if (transcriptionEl) transcriptionEl.textContent = result.text.trim() || '(No speech detected)';
+
+        // Save to practice history
+        savePracticeAttempt(result.text.trim());
+
+    } catch (error) {
+        console.error('Transcription failed:', error);
+        if (feedback) feedback.style.display = 'block';
+        if (transcriptionEl) transcriptionEl.textContent = '(Transcription failed - try again)';
+    }
+}
+
+/**
+ * Play recording audio
+ */
+function playRecordingAudio() {
+    if (practiceState.wavesurferRecording) {
+        practiceState.wavesurferRecording.playPause();
+    }
+}
+
+/**
+ * Retry practice recording
+ */
+function retryPracticeRecording() {
+    resetPracticeUI();
+}
+
+/**
+ * Timer functions for recording
+ */
+function startPracticeTimer() {
+    const timer = document.getElementById('recording-timer');
+    if (timer) timer.style.display = 'block';
+
+    practiceState.timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - practiceState.recordingStartTime) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        const timerValue = timer?.querySelector('.timer-value');
+        if (timerValue) {
+            timerValue.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+    }, 100);
+}
+
+function stopPracticeTimer() {
+    if (practiceState.timerInterval) {
+        clearInterval(practiceState.timerInterval);
+        practiceState.timerInterval = null;
+    }
+}
+
+/**
+ * Update play button state
+ */
+function updatePracticePlayButton(btn, isPlaying) {
+    if (!btn) return;
+    const playIcon = btn.querySelector('.play-icon');
+    const pauseIcon = btn.querySelector('.pause-icon');
+    if (playIcon) playIcon.style.display = isPlaying ? 'none' : 'block';
+    if (pauseIcon) pauseIcon.style.display = isPlaying ? 'block' : 'none';
+}
+
+/**
+ * Save practice attempt to history
+ */
+function savePracticeAttempt(transcription) {
+    const phrase = practiceState.currentPhrase;
+    let entry = practiceState.practiceHistory.find(h => h.phrase === phrase);
+
+    if (!entry) {
+        entry = {
+            phrase,
+            original: practiceState.originalText,
+            targetLang: practiceState.targetLang,
+            attempts: []
+        };
+        practiceState.practiceHistory.push(entry);
+    }
+
+    entry.attempts.push({
+        transcription,
+        timestamp: Date.now()
+    });
+
+    // Keep only last 100 entries
+    if (practiceState.practiceHistory.length > 100) {
+        practiceState.practiceHistory = practiceState.practiceHistory.slice(-100);
+    }
+
+    try {
+        localStorage.setItem('pronunciationPracticeHistory', JSON.stringify(practiceState.practiceHistory));
+    } catch (e) {
+        console.warn('Failed to save practice history:', e);
+    }
+}
+
+/**
+ * Load practice history from localStorage
+ */
+function loadPracticeHistory() {
+    try {
+        const saved = localStorage.getItem('pronunciationPracticeHistory');
+        if (saved) {
+            practiceState.practiceHistory = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.warn('Failed to load practice history:', e);
+        practiceState.practiceHistory = [];
+    }
+}
+
+// Make showToast globally accessible for practice module
+window.showToast = showToast;
+
 // Hide output actions initially
 copyBtn.style.display = 'none';
 outputSpeakBtn.style.display = 'none';
@@ -1608,4 +2650,7 @@ if (saveTranslationBtn) {
 }
 if (shareBtn) {
     shareBtn.style.display = 'none';
+}
+if (practiceBtn) {
+    practiceBtn.style.display = 'none';
 }
