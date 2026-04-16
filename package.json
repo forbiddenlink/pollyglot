@@ -3,7 +3,9 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "analyze": "ANALYZE=true next build",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.55",
@@ -20,12 +22,15 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "resend": "^6.10.0",
+    "server-only": "^0.0.1",
+    "sharp": "^0.34.5",
     "ts-fsrs": "^5.3.1",
     "typescript": "^6.0.2",
     "wavesurfer.js": "^7.12.5",
     "whisper-web-transcriber": "^0.2.5"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@trigger.dev/build": "^4.4.3",
@@ -33,6 +38,7 @@
     "concurrently": "^9.2.1",
     "jsdom": "^29.0.1",
     "msw": "^2.12.14",
+    "next-sitemap": "^4.2.3",
     "vitest": "^4.1.2"
   },
   "pnpm": {
