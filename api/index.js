@@ -688,6 +688,49 @@ app.post("/tts", async (req, res) => {
         .json({ error: "Text too long (max 1000 characters)" });
     }
 
+    // Magica TTS (preferred when configured — ElevenLabs multilingual v2 via aggregator).
+    // Inert unless MAGICA_KEY is set; falls through to MiniMax/OpenAI on any failure.
+    if (process.env.MAGICA_KEY) {
+      try {
+        const startRes = await fetchImpl(
+          "https://api.magica.com/api/v1/nodes/elevenlabs_multilingual_v2_tts/run",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.MAGICA_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              input: { text: text.trim(), voice_id: "21m00Tcm4TlvDq8ikWAM" },
+            }),
+          }
+        );
+        if (startRes.ok) {
+          const { runId } = await startRes.json();
+          for (let i = 0; i < 30 && runId; i++) {
+            const pollRes = await fetchImpl(
+              `https://api.magica.com/api/v1/nodes/runs/${runId}`,
+              { headers: { Authorization: `Bearer ${process.env.MAGICA_KEY}` } }
+            );
+            const run = await pollRes.json();
+            if (!["RUNNING", "PENDING", "QUEUED"].includes(run.status)) {
+              const url = run?.output?.result?.[0];
+              if (run.status === "COMPLETED" && url) {
+                const audioRes = await fetchImpl(url);
+                const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
+                res.set("Content-Type", "audio/mpeg");
+                return res.send(audioBuffer);
+              }
+              break; // failed — fall through to other providers
+            }
+            await new Promise((r) => setTimeout(r, 1500));
+          }
+        }
+      } catch (err) {
+        console.error("Magica TTS failed, falling back:", err.message);
+      }
+    }
+
     // MiniMax TTS (preferred — native multilingual)
     if (process.env.MINIMAX_API_KEY) {
       const minimaxRes = await fetchImpl("https://api.minimax.chat/v1/t2a_v2", {
