@@ -205,6 +205,11 @@ body.no-animations * {
     z-index: 1;
     animation: slideUp 0.6s var(--ease-out);
     border: 1px solid var(--border);
+    /* backdrop-filter above establishes a containing block for fixed-position
+       descendants (.history-sidebar's closed-state right:-400px, etc). Without
+       this clamp that off-canvas geometry bleeds past .container and inflates
+       the document's horizontal scrollable area. */
+    overflow-x: hidden;
 }
 
 @keyframes slideUp {
