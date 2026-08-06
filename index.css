@@ -1040,6 +1040,8 @@ h3 {
     top: 0;
     right: -400px;
     width: 400px;
+    min-width: 0;
+    max-width: 100vw;
     height: 100vh;
     background: var(--panel-bg);
     backdrop-filter: blur(20px);
@@ -1050,6 +1052,7 @@ h3 {
     flex-direction: column;
     padding: var(--space-5);
     overflow-y: auto;
+    overflow-x: hidden;
     border-left: 1px solid var(--border);
 }
 
@@ -2508,5 +2511,305 @@ body.fullscreen footer {
     .tts-speed-slider {
         flex: 1;
         min-width: 100px;
+    }
+}
+
+/* ==========================================================================
+   FLUENCY JOURNEY — bespoke visual layer (signature: warm, culturally-rich,
+   language-craft delight). Additive only; deepens the Tropical Expedition
+   palette. Reduced-motion gated at the bottom of this block.
+   ========================================================================== */
+
+/* --- 1. Hero: world-scripts ribbon (the signature) ----------------------- */
+.script-ribbon {
+    flex-basis: 100%;
+    order: 3;
+    overflow: hidden;
+    margin-top: 1.25rem;
+    padding: 0.35rem 0;
+    min-width: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+
+.script-ribbon-track {
+    display: flex;
+    align-items: baseline;
+    gap: 2.4rem;
+    width: max-content;
+    min-width: 0;
+    animation: scriptDrift 46s linear infinite;
+}
+
+.script-ribbon .glyph {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--jungle-light);
+    opacity: 0.42;
+    transition: opacity var(--duration-normal) var(--ease-out),
+                color var(--duration-normal) var(--ease-out),
+                transform var(--duration-normal) var(--ease-out);
+}
+
+.script-ribbon .glyph:nth-child(3n) {
+    color: var(--sunset-orange);
+    opacity: 0.6;
+}
+
+.script-ribbon .glyph:nth-child(4n) {
+    color: var(--sunset-gold);
+    opacity: 0.55;
+}
+
+/* The ribbon quietly warms up when the header is hovered */
+header:hover .script-ribbon .glyph {
+    opacity: 0.72;
+}
+
+[data-theme="dark"] .script-ribbon .glyph {
+    color: var(--sunset-peach);
+    opacity: 0.32;
+}
+
+[data-theme="dark"] .script-ribbon .glyph:nth-child(3n) {
+    color: var(--sunset-gold);
+    opacity: 0.5;
+}
+
+@keyframes scriptDrift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
+/* --- 2. Translation output: card-reveal craft ---------------------------- */
+.output-section {
+    perspective: 1400px;
+}
+
+/* When a translation lands, the whole output card warms into focus */
+.output-section:has(.text-output:not(:empty)) {
+    border-color: color-mix(in oklab, var(--sunset-gold) 55%, var(--border));
+    box-shadow: var(--shadow-lg-new),
+                0 0 0 1px color-mix(in oklab, var(--sunset-gold) 30%, transparent),
+                0 12px 40px color-mix(in oklab, var(--sunset-orange) 16%, transparent);
+}
+
+/* A thin warm banner slides across the top edge of a fresh translation */
+.output-section:has(.text-output:not(:empty))::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: linear-gradient(90deg, var(--sunset-orange), var(--sunset-gold), var(--jungle-light));
+    background-size: 200% 100%;
+    animation: revealSheen 2.4s var(--ease-out);
+    z-index: 2;
+}
+
+.output-section:has(.text-output:not(:empty)) .text-output {
+    animation: cardReveal 0.55s var(--ease-out) both;
+    transform-origin: top center;
+}
+
+@keyframes cardReveal {
+    from { opacity: 0; transform: rotateX(8deg) translateY(10px); }
+    to   { opacity: 1; transform: rotateX(0) translateY(0); }
+}
+
+@keyframes revealSheen {
+    from { background-position: 200% 0; opacity: 0; }
+    20%  { opacity: 1; }
+    to   { background-position: 0 0; opacity: 1; }
+}
+
+/* --- 3. Review session: phrase card + record craft ---------------------- */
+.practice-phrase {
+    position: relative;
+    padding: 1.4rem 1.5rem 1.25rem;
+    border-radius: var(--radius-md);
+    background:
+        radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--sunset-peach) 45%, transparent) 0%, transparent 55%),
+        var(--white);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+[data-theme="dark"] .practice-phrase {
+    background:
+        radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--sunset-gold) 22%, transparent) 0%, transparent 55%),
+        rgba(45, 90, 74, 0.28);
+}
+
+/* Warm opening-quote flourish that nods to "say it aloud" */
+.practice-phrase .phrase-target::before {
+    content: '\201C';
+    position: absolute;
+    top: 0.1rem;
+    right: 1rem;
+    font-family: var(--font-display);
+    font-size: 4.5rem;
+    line-height: 1;
+    color: var(--sunset-gold);
+    opacity: 0.22;
+    pointer-events: none;
+}
+
+.phrase-text {
+    text-wrap: balance;
+    text-shadow: 0 1px 0 color-mix(in oklab, var(--sunset-peach) 40%, transparent);
+}
+
+[data-theme="dark"] .phrase-text {
+    text-shadow: none;
+}
+
+/* Concentric ring while recording — deepens the existing pulse */
+.record-btn {
+    position: relative;
+    isolation: isolate;
+}
+
+.record-btn.recording::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid var(--sunset-gold);
+    animation: recordRing 1.5s ease-out infinite;
+    z-index: -1;
+}
+
+@keyframes recordRing {
+    0%   { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(1.35); opacity: 0; }
+}
+
+.audio-play-btn {
+    box-shadow: 0 4px 12px color-mix(in oklab, var(--sunset-orange) 30%, transparent);
+}
+
+/* --- 4. Progress: a warm "journey" track with a lit marker ------------- */
+.progress-bar {
+    height: 12px;
+    border-radius: var(--radius-full);
+    background:
+        repeating-linear-gradient(90deg, transparent 0, transparent calc(20% - 1px), color-mix(in oklab, var(--border) 70%, transparent) calc(20% - 1px), color-mix(in oklab, var(--border) 70%, transparent) 20%),
+        var(--cream-dark);
+    box-shadow: inset 0 1px 3px var(--shadow);
+    position: relative;
+}
+
+.progress-fill {
+    position: relative;
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: linear-gradient(90deg, var(--jungle-mid) 0%, var(--sunset-gold) 70%, var(--sunset-orange) 100%);
+    box-shadow: 0 0 10px color-mix(in oklab, var(--sunset-gold) 55%, transparent);
+    overflow: hidden;
+}
+
+/* A soft light sweeps the filled portion — momentum, not gamification */
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: translateX(-100%);
+    animation: progressSweep 2.6s ease-in-out infinite;
+}
+
+@keyframes progressSweep {
+    0%   { transform: translateX(-100%); }
+    60%  { transform: translateX(200%); }
+    100% { transform: translateX(200%); }
+}
+
+/* --- 5. Feedback + completion micro-delight ---------------------------- */
+.practice-feedback {
+    position: relative;
+    animation: feedbackRise 0.5s var(--ease-out) both;
+    overflow: hidden;
+}
+
+.practice-feedback::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.5) 50%, transparent 70%);
+    transform: translateX(-120%);
+    animation: feedbackSheen 0.9s var(--ease-out) 0.15s;
+    pointer-events: none;
+}
+
+@keyframes feedbackRise {
+    from { opacity: 0; transform: translateY(12px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes feedbackSheen {
+    from { transform: translateX(-120%); }
+    to   { transform: translateX(120%); }
+}
+
+.feedback-transcription {
+    transition: border-color var(--duration-normal) var(--ease-out);
+}
+
+/* "Next phrase" reads as forward motion in the journey */
+.next-btn {
+    background: linear-gradient(135deg, var(--jungle-mid) 0%, var(--jungle-deep) 100%);
+    box-shadow: 0 4px 12px color-mix(in oklab, var(--jungle-deep) 30%, transparent);
+}
+
+.next-btn:hover {
+    background: linear-gradient(135deg, var(--jungle-mid) 0%, var(--jungle-deep) 100%);
+    transform: translateY(-1px);
+}
+
+.next-btn:hover .icon {
+    transform: translateX(3px);
+    transition: transform var(--duration-fast) var(--ease-out);
+}
+
+/* --- 6. Reduced-motion gating (covers this layer + heavy legacy anims) -- */
+@media (prefers-reduced-motion: reduce) {
+    .script-ribbon-track {
+        animation: none;
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 1.4rem;
+    }
+    .script-ribbon {
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+    .output-section:has(.text-output:not(:empty))::before,
+    .output-section:has(.text-output:not(:empty)) .text-output,
+    .practice-feedback,
+    .practice-feedback::before,
+    .record-btn.recording::after,
+    .progress-fill::after {
+        animation: none;
+    }
+    .output-section:has(.text-output:not(:empty)) .text-output {
+        opacity: 1;
+        transform: none;
+    }
+    .next-btn:hover,
+    .next-btn:hover .icon {
+        transform: none;
+    }
+    /* Neutralize the pre-existing decorative loops for motion-sensitive users */
+    .container,
+    .pronunciation-practice-section,
+    .record-btn.recording {
+        animation: none;
     }
 }
