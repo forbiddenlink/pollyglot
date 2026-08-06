@@ -1040,6 +1040,8 @@ h3 {
     top: 0;
     right: -400px;
     width: 400px;
+    min-width: 0;
+    max-width: 100vw;
     height: 100vh;
     background: var(--panel-bg);
     backdrop-filter: blur(20px);
@@ -1050,6 +1052,7 @@ h3 {
     flex-direction: column;
     padding: var(--space-5);
     overflow-y: auto;
+    overflow-x: hidden;
     border-left: 1px solid var(--border);
 }
 
@@ -2524,6 +2527,9 @@ body.fullscreen footer {
     overflow: hidden;
     margin-top: 1.25rem;
     padding: 0.35rem 0;
+    min-width: 0;
+    max-width: 100vw;
+    overflow-x: hidden;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
 }
@@ -2533,6 +2539,7 @@ body.fullscreen footer {
     align-items: baseline;
     gap: 2.4rem;
     width: max-content;
+    min-width: 0;
     animation: scriptDrift 46s linear infinite;
 }
 
