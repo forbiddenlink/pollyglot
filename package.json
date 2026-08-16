@@ -40,5 +40,19 @@
     "msw": "^2.15.0",
     "next-sitemap": "^4.2.3",
     "vitest": "^4.1.10"
+  },
+  "pnpm": {
+    "overrides": {
+      "@opentelemetry/core": ">=2.8.0 <3",
+      "engine.io": ">=6.6.7 <7",
+      "mongoose": ">=6.13.10 <7",
+      "nanoid": ">=5.1.6 <6",
+      "postcss": ">=8.5.23 <9",
+      "protobufjs": ">=7.6.5 <8",
+      "sharp": ">=0.35.0 <1",
+      "undici": ">=7.29.0 <8",
+      "uuid": ">=12.0.1 <13",
+      "ws": ">=8.20.1 <9"
+    }
   }
 }
