@@ -25,7 +25,7 @@
     "server-only": "^0.0.1",
     "sharp": "^0.35.3",
     "ts-fsrs": "^5.4.1",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "wavesurfer.js": "^7.12.11",
     "whisper-web-transcriber": "^0.2.5"
   },
