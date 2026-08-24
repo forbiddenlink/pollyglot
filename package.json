@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.12",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@trigger.dev/build": "^4.5.10",
     "@vitejs/plugin-react": "^6.0.5",
