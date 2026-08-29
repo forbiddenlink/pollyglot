@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/forbiddenlink/pollyglot/compare/v1.0.0...v1.0.1) (2026-08-29)
+
+
+### Bug Fixes
+
+* **deps:** move resolution overrides to package.json and add missing patches ([#46](https://github.com/forbiddenlink/pollyglot/issues/46)) ([531f3ff](https://github.com/forbiddenlink/pollyglot/commit/531f3fffe347758b032f8353a36b2ba288ef1841))
+
 ## 1.0.0 (2026-08-16)
 
 
