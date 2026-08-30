@@ -50,6 +50,7 @@ const ttsUnavailableMsg = document.getElementById('tts-unavailable-msg');
 let selectedSourceLang = null;
 let selectedTargetLang = 'es'; // Default to Spanish
 let currentSpeech = null;
+let currentAudio = null; // Magica server-TTS audio element (for stop-toggle)
 let availableVoices = [];
 let translationHistory = [];
 let recognition = null;
@@ -574,15 +575,60 @@ async function copyTranslation() {
     }
 }
 
+// Server-side TTS via Magica (better multilingual voices). Handles its own
+// start/stop toggle. Returns true if it handled playback (started or stopped),
+// false if unavailable — in which case the caller falls back to the browser voice.
+// The API key stays server-side (see api/index.js /tts) — never in this file.
+async function speakWithMagica(text, langCode, button) {
+    // Toggle off if Magica audio is already playing.
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+        document.querySelectorAll('.speak-btn').forEach(b => b.classList.remove('speaking'));
+        return true;
+    }
+    try {
+        if (button) button.classList.add('speaking');
+        const res = await fetch('/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, language: langCode }),
+        });
+        if (!res.ok) throw new Error('tts ' + res.status);
+        const audio = new Audio(URL.createObjectURL(await res.blob()));
+        currentAudio = audio;
+        audio.onended = audio.onerror = () => {
+            if (button) button.classList.remove('speaking');
+            URL.revokeObjectURL(audio.src);
+            currentAudio = null;
+        };
+        await audio.play();
+        return true;
+    } catch (err) {
+        console.warn('Magica TTS unavailable, using browser voice:', err);
+        if (button) button.classList.remove('speaking');
+        currentAudio = null;
+        return false;
+    }
+}
+
 // Text-to-Speech
-function speakText(text, langCode) {
+async function speakText(text, langCode) {
     if (!text) {
         showToast('No text to speak', 'warning');
         return;
     }
-    
+
     if (!langCode) {
         showToast('Please select a language first', 'warning');
+        return;
+    }
+
+    const button = langCode === selectedSourceLang ? inputSpeakBtn : outputSpeakBtn;
+
+    // Prefer Magica server TTS; it manages its own start/stop. Fall back to the
+    // browser voice below if the server route is unavailable.
+    if (await speakWithMagica(text, langCode, button)) {
         return;
     }
 
@@ -612,8 +658,7 @@ function speakText(text, langCode) {
         utterance.voice = voice;
     }
 
-    // Handle speaking state
-    const button = langCode === selectedSourceLang ? inputSpeakBtn : outputSpeakBtn;
+    // Handle speaking state (button already resolved above)
     button.classList.add('speaking');
 
     utterance.onend = () => {
@@ -693,7 +738,7 @@ function handleOutputSpeakClick() {
 /**
  * Enhanced speak function with TTS controls support
  */
-function speakTextEnhanced(text, langCode) {
+async function speakTextEnhanced(text, langCode) {
     if (!text) {
         showToast('No text to speak', 'warning');
         return;
@@ -701,6 +746,11 @@ function speakTextEnhanced(text, langCode) {
 
     if (!langCode) {
         showToast('Please select a language first', 'warning');
+        return;
+    }
+
+    // Prefer Magica server TTS (handles its own start/stop); fall back below.
+    if (await speakWithMagica(text, langCode, outputSpeakBtn)) {
         return;
     }
 
