@@ -36,7 +36,7 @@
     "@trigger.dev/build": "^4.5.12",
     "@vitejs/plugin-react": "^6.0.5",
     "concurrently": "^10.0.5",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "msw": "^2.15.0",
     "next-sitemap": "^4.2.3",
     "vitest": "^4.1.11"
