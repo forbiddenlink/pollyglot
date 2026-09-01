@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/forbiddenlink/pollyglot/compare/v1.0.1...v1.1.0) (2026-09-01)
+
+
+### Features
+
+* Magica server TTS with browser-voice fallback ([6ce9c02](https://github.com/forbiddenlink/pollyglot/commit/6ce9c02361c05fa5abda382591007558aa984d2a))
+
+
+### Bug Fixes
+
+* **build:** resync lockfile with the pnpm overrides block ([6c349e5](https://github.com/forbiddenlink/pollyglot/commit/6c349e5a6dfd1f6d51c2fb7a4f380f874ba57802))
+
 ## [1.0.1](https://github.com/forbiddenlink/pollyglot/compare/v1.0.0...v1.0.1) (2026-08-29)
 
 
