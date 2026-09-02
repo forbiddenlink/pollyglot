@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/forbiddenlink/pollyglot/compare/v1.1.0...v1.1.1) (2026-09-02)
+
+
+### Bug Fixes
+
+* **ci:** let pnpm/action-setup read the version from packageManager ([14ab08f](https://github.com/forbiddenlink/pollyglot/commit/14ab08f9c7bfe52b693bb1b5970c918939cbb577))
+* **deps:** give every resolution override an upper bound ([3f9dc5f](https://github.com/forbiddenlink/pollyglot/commit/3f9dc5fca2a33d23d964368b5d2ef662841b8717))
+
 ## [1.1.0](https://github.com/forbiddenlink/pollyglot/compare/v1.0.1...v1.1.0) (2026-09-01)
 
 
