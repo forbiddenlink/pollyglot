@@ -10,14 +10,14 @@ overrides:
   engine.io: '>=6.6.7 <7'
   mongoose: '>=6.13.10 <7'
   nanoid: '>=5.1.6 <6'
-  next: '>=16.2.6'
+  next: '>=16.2.6 <17'
   postcss: '>=8.5.23 <9'
   protobufjs: '>=7.6.5 <8'
   sharp: '>=0.35.0 <1'
-  systeminformation: '>=5.31.0'
+  systeminformation: '>=5.31.0 <6'
   undici: '>=7.29.0 <8'
   uuid: '>=12.0.1 <13'
-  vite: '>=8.0.5'
+  vite: '>=8.0.5 <9'
   ws: '>=8.20.1 <9'
 
 importers:
@@ -49,7 +49,7 @@ importers:
         specifier: ^8.1.1
         version: 8.1.1
       next:
-        specifier: '>=16.2.6'
+        specifier: '>=16.2.6 <17'
         version: 16.3.3(@opentelemetry/api@1.9.1)(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       next-safe-action:
         specifier: ^8.6.1
@@ -1144,7 +1144,7 @@ packages:
       '@rolldown/plugin-babel': ^0.1.7 || ^0.2.0
       babel-plugin-react-compiler: ^1.0.0
       oxc-transform-react: ^0.145.0
-      vite: '>=8.0.5'
+      vite: '>=8.0.5 <9'
     peerDependenciesMeta:
       '@rolldown/plugin-babel':
         optional: true
@@ -1160,7 +1160,7 @@ packages:
     resolution: {integrity: sha512-2XJVD55d1o5AZous5CCGKS74g/riOj9odEt2bQpCVZeblHyHdnMeFl4jl0XjU21stf4mbjUkew2eXQZt65g5CQ==}
     peerDependencies:
       msw: ^2.4.9
-      vite: '>=8.0.5'
+      vite: '>=8.0.5 <9'
     peerDependenciesMeta:
       msw:
         optional: true
@@ -1837,7 +1837,7 @@ packages:
     resolution: {integrity: sha512-qFkpXnuZ+xEGsKlQi1079B5hy1aNlvb8kJVcEvzFXP1PMm9z5GI5VhfhZCDVLCXkT1rryaFLeUdJGHm1L7ef0Q==}
     engines: {node: '>=18.17'}
     peerDependencies:
-      next: '>=16.2.6'
+      next: '>=16.2.6 <17'
       react: '>= 18.2.0'
       react-dom: '>= 18.2.0'
 
@@ -1846,7 +1846,7 @@ packages:
     engines: {node: '>=14.18'}
     hasBin: true
     peerDependencies:
-      next: '>=16.2.6'
+      next: '>=16.2.6 <17'
 
   next@16.3.3:
     resolution: {integrity: sha512-tuRTx1nQ/yVw83cwJBo9F+njGUgMn3UHQycreWHB8XsStvvAh1AthbI8/4IpKnFaF58F+iSiHejYOlMQ/eq83g==}
@@ -2426,7 +2426,7 @@ packages:
       '@vitest/ui': 4.1.11
       happy-dom: '*'
       jsdom: '*'
-      vite: '>=8.0.5'
+      vite: '>=8.0.5 <9'
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
