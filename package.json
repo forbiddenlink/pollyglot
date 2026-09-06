@@ -30,7 +30,7 @@
     "whisper-web-transcriber": "^0.2.5"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^16.3.1",
+    "@next/bundle-analyzer": "^16.3.3",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.3",
     "@trigger.dev/build": "^4.5.13",
