@@ -33,10 +33,10 @@
     "@next/bundle-analyzer": "16.3.4",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
-    "@trigger.dev/build": "4.5.16",
+    "@trigger.dev/build": "4.6.3",
     "@vitejs/plugin-react": "6.1.1",
     "concurrently": "10.0.5",
-    "jsdom": "30.0.1",
+    "jsdom": "30.1.0",
     "msw": "2.15.0",
     "next-sitemap": "4.2.3",
     "vitest": "4.1.11"
