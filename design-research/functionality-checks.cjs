@@ -42,6 +42,16 @@ const fs = require('node:fs');
         assert.ok(await page.locator('#download-text').isDisabled());
         await page.screenshot({ path: 'design-research/screenshots/functionality/outdated-result-desktop.png', fullPage: true });
     });
+    await test('Undo after clear restores a usable completed translation', async page => {
+        await translate(page);
+        await page.locator('.clear-text-btn').click();
+        await page.locator('.swap-lang-btn').focus();
+        await page.keyboard.press('Control+z');
+        assert.equal(await page.locator('#source-text').inputValue(), 'Hello, friend.');
+        assert.equal(await page.locator('.text-output').textContent(), 'Hola, amigo.');
+        assert.equal(await page.locator('.copy-btn').isDisabled(), false);
+        assert.equal(await page.locator('.save-translation-btn').isDisabled(), false);
+    });
     await test('Late alternatives do not return after clear', async page => {
         await translate(page);
         await page.locator('.clear-text-btn').click();

@@ -1563,13 +1563,13 @@ function undo() {
 
 // Clear Text
 function clearText() {
+    if (textInput.value || textOutput.textContent) {
+        saveStateForUndo();
+    }
     if (translationController) translationController.abort();
     stopTyping();
     resultVersion++;
     completedWorkspaceKey = null;
-    if (textInput.value || textOutput.textContent) {
-        saveStateForUndo();
-    }
     textInput.value = '';
     textOutput.textContent = '';
     updateOutputWordCounter();
