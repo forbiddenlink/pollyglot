@@ -7,14 +7,14 @@ Branch: `design/upgrade`. Started from `b999453`, 18 commits behind origin/main.
 | 1 Understand | done | `profile.md`, eight Playwright Chrome baseline screenshots, `before-captures.json` |
 | 2 Research | done | `references.md`: 13 live references; `features.md`: nine usable peers; real Chrome screenshots and blocked candidates documented. |
 | 3 Decide | done | `plan.md` selects editorial paper/forest direction, ten ranked local improvements and every-page rollout. |
-| 4 Foundation + home | pending | Shared styles/components; two screenshot/score/fix rounds. |
+| 4 Foundation + home | done | Shared system, rebuilt home and local features; two screenshot/score/fix rounds plus final home capture; 25 browser checks passed. `scores.md`, `browser-results.json`. |
 | 5 Every page | pending | About / Contact / Privacy desktop + mobile + states. |
 | 6 Verify | pending | Appropriate scripts, browser journeys, Lighthouse. |
 | 7 Report | pending | Honest before/after, scores, limitations, approval list. |
 
 ## Runtime and tooling
 
-Node verified `v22.23.1` via mise's global pin; packageManager pnpm 10.18.0. Installed Playwright module is under mise's global `@playwright/mcp/node_modules/playwright`; use installed Chrome channel because bundled revision is unavailable. `capture.cjs` records real-browser evidence without reading env/secrets. Browser and loopback server require sandbox escalation. Python static preview currently at http://127.0.0.1:4173; supporting baseline pages loaded as `.html`.
+Node verified `v22.23.1` via mise's global pin; packageManager pnpm 10.18.0. Installed Playwright module is under mise's global `@playwright/mcp/node_modules/playwright`; use installed Chrome channel because bundled revision is unavailable. `capture.cjs` records real-browser evidence without reading env/secrets. Browser and loopback server require sandbox escalation. Current routed static preview: `python3 design-research/preview.py` at http://127.0.0.1:48731. It implements only the existing HTML rewrites and returns a no-key API error; Playwright tests intercept API requests for simulated states. Earlier baseline server was port 4173 and `.html` pages. Port 4174 was occupied; no unrelated service was touched.
 
 ## Findings
 

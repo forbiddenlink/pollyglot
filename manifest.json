@@ -4,8 +4,8 @@
   "description": "AI-powered translation app with 20 languages, voice input, pronunciation support, and translation history",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#4299e1",
+  "background_color": "#f7f6f0",
+  "theme_color": "#193c32",
   "orientation": "any",
   "icons": [
     {

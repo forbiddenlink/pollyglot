@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Translate text across 20 languages with PollyGlot AI. Use voice input, text-to-speech, history, favorites, pronunciation guides, and tone controls in one fast app.">
     <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#4299e1">
+    <meta name="theme-color" content="#193c32">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PollyGlot">
@@ -23,18 +23,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="site.css">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/parrot-192.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/parrot-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="workspace-page">
+    <a class="skip-link" href="#translator">Skip to translator</a>
+    <header class="site-header">
+        <a class="brand" href="/" aria-label="PollyGlot home"><img src="/assets/parrot-192.png" alt="" width="30" height="30">Polly<em>Glot</em></a>
+        <nav class="site-nav" aria-label="Main navigation"><a class="nav-home" href="/" aria-current="page">Translator</a><a href="/about">About</a><a href="/contact">Contact</a></nav>
+        <span class="nav-note">A world of words. Within reach.</span>
+    </header>
     <div class="container">
-        <header>
+        <header class="workspace-intro">
             <div class="header-content">
                 <div class="header-left">
-                    <h1>Polly<span class="accent">Glot</span></h1>
-                    <p class="subtitle">AI-Powered Translation</p>
+                    <span class="pill">AI-powered translation · 20 languages</span>
+                    <h1>A world of words.<br>A little <em>closer.</em></h1>
+                    <p class="subtitle">Find the right words. Hear them. Make them yours.</p>
                 </div>
                 <!-- Fluency-journey signature: a warm ribbon celebrating the beauty of the world's writing systems (decorative) -->
                 <div class="script-ribbon" aria-hidden="true">
@@ -72,7 +80,8 @@
             </div>
         </header>
         
-        <main class="translation-container">
+        <main class="translation-container" id="translator" tabindex="-1">
+            <div class="workspace-topline"><span class="eyebrow">Your everyday translator</span><span class="workspace-meta">No account needed · Up to 5,000 characters</span></div>
             <div class="translation-grid">
                 <div class="input-section panel">
                     <div class="panel-header">
@@ -192,7 +201,7 @@
                         <textarea
                             id="source-text"
                             class="text-input"
-                            placeholder="Enter text to translate... (Press Enter to translate)"
+                            placeholder="What would you like to say?" dir="auto"
                             maxlength="5000"
                         ></textarea>
                         <button type="button" class="speak-btn input-speak" aria-label="Speak source text">
@@ -346,7 +355,7 @@
                         </div>
                     </div>
                     <div class="text-container output-container">
-                        <div class="text-output" placeholder="Translation will appear here..."></div>
+                        <div class="text-output" dir="auto" aria-label="Translation result" role="region" tabindex="0"></div>
                         <div class="output-actions">
                             <button type="button" class="speak-btn output-speak" aria-label="Speak translated text">
                                 <svg class="icon" viewBox="0 0 24 24">
@@ -405,6 +414,11 @@
                     </div>
                 </div>
             </div>
+            <div class="translation-status" id="translation-status" role="status" aria-live="polite" hidden><span></span><button type="button" id="retry-translation" hidden>Try again</button></div>
+            <div class="workspace-tools"><button type="button" class="text-link-button" id="import-text">Import a .txt file</button><input type="file" id="text-file" accept=".txt,text/plain" hidden><button type="button" class="text-link-button" id="download-text">Download translation</button><button type="button" class="text-link-button" id="shortcut-help">Keyboard shortcuts</button><span class="draft-note" id="draft-note">Draft stays in this browser</span></div>
+            <p class="connection-status" id="connection-status" role="status" hidden>You're offline. Saved phrases are available; new translations need a connection.</p>
+            <section class="phrase-library" aria-labelledby="phrase-heading"><div><span class="eyebrow">A place to start</span><h2>Good words to have.</h2><p>For wherever the conversation takes you.</p></div><div><div class="phrase-tabs" role="group" aria-label="Phrase categories"><button class="phrase-tab" type="button" data-category="everyday" aria-pressed="true">Everyday</button><button class="phrase-tab" type="button" data-category="travel" aria-pressed="false">Travel</button><button class="phrase-tab" type="button" data-category="dining" aria-pressed="false">Dining</button><button class="phrase-tab" type="button" data-category="work" aria-pressed="false">At work</button></div><div class="phrase-list" id="phrase-list"></div></div></section>
+            <section class="feature-strip" aria-label="Make the most of PollyGlot"><article><span class="feature-number">01 / SAY IT YOUR WAY</span><h3>The right words. The right tone.</h3><p>Keep it neutral, make it formal, or go casual. Choose the tone that fits your conversation.</p></article><article><span class="feature-number">02 / HEAR THE DIFFERENCE</span><h3>Go from reading to speaking.</h3><p>Listen to your translation, explore pronunciation, and practice saying it out loud.</p></article><article><span class="feature-number">03 / KEEP WHAT MATTERS</span><h3>A phrase worth remembering.</h3><p>Save useful translations to your history or favorites. Find them again, right in this browser.</p></article></section>
         </main>
 
         <!-- Pronunciation Practice Section -->
@@ -511,7 +525,7 @@
         </section>
 
         <!-- Translation History Sidebar -->
-        <div class="history-sidebar">
+        <div class="history-sidebar" role="dialog" aria-label="Translation history and favorites" aria-modal="true" inert>
             <div class="history-header">
                 <div class="history-tabs">
                     <button type="button" class="history-tab active" data-tab="history">History</button>
@@ -531,15 +545,15 @@
                     </button>
                 </div>
             </div>
-            <div class="history-list"></div>
+            <div class="history-search-wrap"><label class="sr-only" for="history-search">Search history and favorites</label><input class="history-search" id="history-search" type="search" placeholder="Find a word or phrase…"><p class="language-empty" id="history-no-results" hidden>No matching phrases. Try another word.</p></div><div class="history-list"></div>
             <div class="favorites-list" style="display: none;"></div>
         </div>
 
         <!-- Settings Modal -->
-        <div class="settings-modal hidden">
+        <div class="settings-modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-heading">
             <div class="settings-content">
                 <div class="settings-header">
-                    <h3>Settings</h3>
+                    <h3 id="settings-heading">Settings</h3>
                     <button type="button" class="close-settings" aria-label="Close settings">
                         <svg class="icon" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -633,6 +647,8 @@
         <!-- Screen reader announcements -->
         <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
     </div>
+    <dialog class="help-dialog" id="shortcut-dialog"><h2>Less clicking. More talking.</h2><p><kbd>Enter</kbd> Translate · <kbd>Shift Enter</kbd> New line</p><p><kbd>Esc</kbd> Close an open panel, or clear text</p><p><kbd>Ctrl / ⌘ K</kbd> Swap languages</p><p><kbd>Ctrl / ⌘ H</kbd> Open history</p><p><kbd>Ctrl / ⌘ Z</kbd> Undo (outside the text field)</p><p>Voice input depends on your browser. New translations need an internet connection.</p><form method="dialog"><button>Back to translating</button></form></dialog>
     <script src="script.js"></script>
+    <script src="site.js"></script>
 </body>
 </html>

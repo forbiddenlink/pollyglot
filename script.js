@@ -408,6 +408,7 @@ function updateOutputWordCounter() {
 
 // Translation
 async function handleTranslation() {
+    if (translateBtn.disabled) return;
     const text = textInput.value.trim();
     if (!text) {
         showToast('Please enter some text to translate', 'warning');
@@ -429,7 +430,12 @@ async function handleTranslation() {
         return;
     }
 
+    const requestSource = selectedSourceLang;
+    const requestTarget = selectedTargetLang;
+    const requestTone = document.getElementById('formality').value;
     try {
+        setTranslationStatus('loading', 'Finding the right words…');
+        textOutput.setAttribute('aria-busy', 'true');
         showLoading(true);
         translateBtn.disabled = true;
         
@@ -454,6 +460,14 @@ async function handleTranslation() {
         }
 
         const translationText = data.translation;
+        if (textInput.value.trim() !== text || selectedSourceLang !== requestSource || selectedTargetLang !== requestTarget || document.getElementById('formality').value !== requestTone) {
+            setTranslationStatus('idle', 'Your text or language changed. Translate again for an up-to-date result.');
+            return;
+        }
+        if (typeof translationText !== 'string' || !translationText.trim()) {
+            throw new Error('No translation was returned. Please try again.');
+        }
+        setTranslationStatus('success', 'Translation ready. Listen, copy, or save it for later.');
 
         // Show action buttons
         copyBtn.style.display = 'flex';
@@ -504,8 +518,10 @@ async function handleTranslation() {
         
     } catch (error) {
         console.error('Translation error:', error);
+        setTranslationStatus('error', navigator.onLine ? `We couldn't translate this time. ${error.message}` : 'You are offline. Reconnect, then try again.', true);
         showToast(`Translation failed: ${error.message}`, 'error');
     } finally {
+        textOutput.setAttribute('aria-busy', 'false');
         showLoading(false);
         translateBtn.disabled = false;
     }
@@ -1435,6 +1451,7 @@ function clearText() {
     }
     textInput.value = '';
     textOutput.textContent = '';
+    setTranslationStatus('idle', '');
     updateCharCounter();
     copyBtn.style.display = 'none';
     outputSpeakBtn.style.display = 'none';
@@ -1532,6 +1549,15 @@ function showLoading(show) {
     loadingOverlay.classList.toggle('hidden', !show);
 }
 
+function setTranslationStatus(state, message, retry = false) {
+    const status = document.getElementById('translation-status');
+    if (!status) return;
+    status.hidden = !message;
+    status.dataset.state = state;
+    status.querySelector('span').textContent = message;
+    document.getElementById('retry-translation').hidden = !retry;
+}
+
 // Typing animation for translation output
 let typingAnimation = null;
 let typingFullText = '';
@@ -1545,7 +1571,7 @@ function typeText(text, callback) {
     }
 
     // If animations are disabled, show immediately
-    if (!appSettings.animationsEnabled) {
+    if (!appSettings.animationsEnabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         textOutput.textContent = text;
         if (callback) callback();
         return;
@@ -2160,19 +2186,24 @@ function deleteFavoriteItem(index) {
 
 // Browser Language Detection
 function detectBrowserLanguage() {
+    // Returning visitors keep their stored pair; detection must not overwrite it.
+    try {
+        if (localStorage.getItem('languagePair')) return;
+    } catch (error) {
+        console.warn('Language preferences are unavailable:', error);
+    }
     const browserLang = navigator.language || navigator.userLanguage;
     const langCode = browserLang.split('-')[0];
     
     // Check if the browser language is in our supported languages
     if (languageNames[langCode]) {
-        // Set as default target language if it's different from current
-        if (!selectedTargetLang || selectedTargetLang === 'es') {
-            targetLangOptions.forEach(opt => {
+        // Start with the browser language as source and a different destination.
+        if (langCode === 'es') selectedTargetLang = 'en';
+        sourceLangOptions.forEach(opt => {
                 if (opt.dataset.lang === langCode) {
-                    selectLanguage(opt, 'target');
+                    selectLanguage(opt, 'source');
                 }
             });
-        }
     }
 }
 

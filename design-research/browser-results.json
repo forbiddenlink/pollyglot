@@ -1,0 +1,31 @@
+{
+  "passed": [
+    "Default pair is English → Spanish",
+    "Unmatched language search has an empty state",
+    "Chosen destination persists across reload",
+    "Draft restores after reload",
+    "Failed translation offers persistent retry",
+    "Retry recovers to a successful result",
+    "Result exports as a text file",
+    "History search finds the full original text",
+    "History search shows a no-match state",
+    "Favorites are searchable",
+    "Escape closes history without clearing source",
+    "Settings trap keyboard focus",
+    "Shortcut reference opens an accessible dialog",
+    "Phrase library fills source text",
+    "Text import works without an upload service",
+    "Oversized import is rejected without replacing input",
+    "Loading state is visible",
+    "Changed input discards outdated response",
+    "No horizontal overflow at 320px",
+    "No horizontal overflow at 390px",
+    "No horizontal overflow at 768px",
+    "No horizontal overflow at 1440px",
+    "Offline state explains the limitation",
+    "Dark theme remains available",
+    "No unhandled browser errors"
+  ],
+  "errors": [],
+  "note": "API responses are mocked. No paid provider calls, real microphone recordings, or message delivery tested."
+}
