@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.2.0](https://github.com/forbiddenlink/pollyglot/compare/v1.1.1...v1.2.0) (2026-10-09)
+
+
+### Features
+
+* keep translation work recoverable when requests and drafts change ([42f2e69](https://github.com/forbiddenlink/pollyglot/commit/42f2e690cc063670b29c72f5984cba6960cfaa82))
+* make supporting pages useful and consistent with the translator ([aa38c2d](https://github.com/forbiddenlink/pollyglot/commit/aa38c2d30cbaa55189d96b30e91990c7d9d7093f))
+* put translation first with a responsive editorial workspace ([d3d1814](https://github.com/forbiddenlink/pollyglot/commit/d3d18148816896222a1c5d0e0d656a825b298070))
+* redesign PollyGlot and make translation work recoverable ([cafcd31](https://github.com/forbiddenlink/pollyglot/commit/cafcd319e769f355bdc33911f3b6faca14dd3107))
+
+
+### Bug Fixes
+
+* **deps:** apply override fix plan ([#72](https://github.com/forbiddenlink/pollyglot/issues/72)) ([4b27c51](https://github.com/forbiddenlink/pollyglot/commit/4b27c51743fee7347eb395817c2f356935456958))
+* keep local tooling private when deploying reviewed previews ([9e6a110](https://github.com/forbiddenlink/pollyglot/commit/9e6a1108627c3629a02a7656f9d7085d4175ede0))
+* keep provider error details out of live QA evidence ([5128fdf](https://github.com/forbiddenlink/pollyglot/commit/5128fdf9b4d87d49ecf1ab4dd5cc028f31ddb1db))
+* keep translation controls accessible and stable on mobile ([eabf960](https://github.com/forbiddenlink/pollyglot/commit/eabf96033b7b53efa7a38dfea5b9d6b9a7e7fd42))
+* let deployed pages reach translation and speech endpoints ([a6b3c7c](https://github.com/forbiddenlink/pollyglot/commit/a6b3c7c56ac24264b4519d0b8c7e1701fc2ef036))
+* make API installs repeatable against declared dependencies ([1252670](https://github.com/forbiddenlink/pollyglot/commit/125267068519aef2140b8e4cbbe6cbeedb7c27df))
+* preserve usable translations when undoing clear ([0e5c65d](https://github.com/forbiddenlink/pollyglot/commit/0e5c65d4f476212fbf27490671c61a59373b8ac6))
+* restore deployed translation and speech API access ([096b4bb](https://github.com/forbiddenlink/pollyglot/commit/096b4bb15c938212bc1e831598e7600798713ac1))
+* use the documented MiniMax speech endpoint ([84169fe](https://github.com/forbiddenlink/pollyglot/commit/84169feab4cf6fe08ce06719e9e47392f9b63012))
+* use the supported MiniMax speech endpoint ([17ad7a0](https://github.com/forbiddenlink/pollyglot/commit/17ad7a07dd53f0711c6e1b33b7312342993a960d))
+* validate preview origins exactly before authenticated test requests ([e64f251](https://github.com/forbiddenlink/pollyglot/commit/e64f251a240b1b5934e9f5210b226ed4841032ad))
+
 ## [1.1.1](https://github.com/forbiddenlink/pollyglot/compare/v1.1.0...v1.1.1) (2026-09-02)
 
 
