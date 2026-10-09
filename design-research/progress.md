@@ -5,7 +5,7 @@ Branch: `design/upgrade`. Started from `b999453`, 18 commits behind origin/main.
 | Phase | Status | Evidence / next step |
 |---|---|---|
 | 1 Understand | done | `profile.md`, eight Playwright Chrome baseline screenshots, `before-captures.json` |
-| 2 Research | in progress | Gallery discovery started; Awwwards fetch timed out; Godly redirects to Recent. Must capture live reference and competitor sites. |
+| 2 Research | done | `references.md`: 13 live references; `features.md`: nine usable peers; real Chrome screenshots and blocked candidates documented. |
 | 3 Decide | pending | Write one direction and ranked feature/page plan after research. |
 | 4 Foundation + home | pending | Shared styles/components; two screenshot/score/fix rounds. |
 | 5 Every page | pending | About / Contact / Privacy desktop + mobile + states. |

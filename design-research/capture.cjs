@@ -19,13 +19,14 @@ const path = require('node:path');
             try {
                 await page.setViewportSize({ width, height });
                 const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 25000 });
-                await page.waitForTimeout(1800);
+                await page.waitForTimeout(mode === 'before' ? 1800 : 6000);
                 await page.evaluate(() => document.fonts.ready);
                 const file = `design-research/screenshots/${mode}/${name}-${device}.png`;
                 fs.mkdirSync(path.dirname(file), { recursive: true });
                 await page.screenshot({ path: file, fullPage: mode === 'before', timeout: 15000 });
                 const content = await page.locator('body').innerText();
-                const entry = { name, device, url, finalUrl: page.url(), status: response?.status(), title: await page.title(), screenshot: file, content: content.slice(0, 22000) };
+                const links = await page.locator('a[href]').evaluateAll(nodes => nodes.map(a => ({ text: a.innerText, href: a.href })));
+                const entry = { name, device, url, finalUrl: page.url(), status: response?.status(), title: await page.title(), screenshot: file, content: content.slice(0, 22000), links };
                 log.push(entry);
                 console.log(JSON.stringify({ name, device, status: entry.status, title: entry.title, screenshot: file }));
             } catch (error) {
