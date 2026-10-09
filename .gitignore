@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 package-lock.json
+!api/package-lock.json
 
 # Environment variables
 .env
