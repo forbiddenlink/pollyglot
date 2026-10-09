@@ -7,7 +7,7 @@ const path = require('node:path');
     const context = await browser.newContext({ serviceWorkers: 'block' });
     const page = await context.newPage();
     const mode = process.argv[2] || 'before';
-    const targets = ['before', 'home-round1', 'home-round2', 'after'].includes(mode) ? [
+    const targets = ['before', 'home-round1', 'home-round2', 'after', 'rollout'].includes(mode) ? [
         ['home', 'http://127.0.0.1:48731/'],
         ['about', 'http://127.0.0.1:48731/about.html'],
         ['contact', 'http://127.0.0.1:48731/contact.html'],
@@ -15,7 +15,7 @@ const path = require('node:path');
     ] : JSON.parse(fs.readFileSync(`design-research/${mode}-targets.json`, 'utf8'));
     const log = [];
     for (const [name, url] of targets) {
-        for (const [device, width, height] of ['before', 'home-round1', 'home-round2', 'after'].includes(mode) ? [['desktop', 1440, 1000], ['mobile', 390, 844]] : [['desktop', 1440, 1000]]) {
+        for (const [device, width, height] of ['before', 'home-round1', 'home-round2', 'after', 'rollout'].includes(mode) ? [['desktop', 1440, 1000], ['mobile', 390, 844]] : [['desktop', 1440, 1000]]) {
             try {
                 await page.setViewportSize({ width, height });
                 const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 25000 });
@@ -23,7 +23,7 @@ const path = require('node:path');
                 await page.evaluate(() => document.fonts.ready);
                 const file = `design-research/screenshots/${mode}/${name}-${device}.png`;
                 fs.mkdirSync(path.dirname(file), { recursive: true });
-                await page.screenshot({ path: file, fullPage: ['before', 'home-round1', 'home-round2', 'after'].includes(mode), timeout: 15000 });
+                await page.screenshot({ path: file, fullPage: ['before', 'home-round1', 'home-round2', 'after', 'rollout'].includes(mode), timeout: 15000 });
                 const content = await page.locator('body').innerText();
                 const links = await page.locator('a[href]').evaluateAll(nodes => nodes.map(a => ({ text: a.innerText, href: a.href })));
                 const entry = { name, device, url, finalUrl: page.url(), status: response?.status(), title: await page.title(), screenshot: file, content: content.slice(0, 22000), links };

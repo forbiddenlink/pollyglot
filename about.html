@@ -54,16 +54,18 @@
         }
         .small { color: var(--muted); font-size: 0.95rem; }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/site.css">
 </head>
-<body>
-    <main class="wrap">
-        <nav aria-label="Site links">
-            <a href="/">Home</a>
-            <a href="/contact">Contact</a>
-            <a href="/privacy-policy">Privacy Policy</a>
-        </nav>
+<body class="info-page about-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header"><a class="brand" href="/" aria-label="PollyGlot home"><img src="/assets/parrot-192.png" alt="" width="30" height="30">Polly<em>Glot</em></a><nav class="site-nav" aria-label="Main navigation"><a class="nav-home" href="/">Translator</a><a href="/about" aria-current="page">About</a><a href="/contact">Contact</a></nav><span class="nav-note">A world of words. Within reach.</span></header>
+    <main class="wrap" id="main-content">
+        <section class="page-intro"><div><span class="eyebrow">Behind the words</span><h1>About PollyGlot</h1></div><p class="intro-note">An everyday companion for the conversations that cross languages.</p></section>
+        <div class="reading-grid"><aside class="reading-aside"><span class="eyebrow">Made for real conversations</span><p>20 languages. Your choice of tone. A place to keep the words that matter.</p><a class="button" href="/#translator">Translate something</a></aside>
         <article class="card">
-            <h1>About PollyGlot</h1>
             <p>
                 PollyGlot is an AI-assisted translation app designed for practical everyday use.
                 The goal is simple: keep translation fast, useful, and easy to trust. Instead of
@@ -87,7 +89,11 @@
             <p class="small">
                 PollyGlot is built and maintained by Elizabeth Stein.
             </p>
-        </article>
+            <section class="editorial-callout"><h2>From a phrase to a conversation.</h2><p>Start with your text, choose a language and tone, then translate. Listen to the result or save a useful phrase for another day.</p><a class="button" href="/#translator">Find your words</a></section>
+            <section class="faq" aria-label="Common questions"><h2>A few useful answers.</h2><details><summary>Do I need an account?</summary><p>No. You can translate and keep a local history without signing up.</p></details><details><summary>Can I translate without a connection?</summary><p>New translations require an internet connection. Your saved history and favorites live in this browser.</p></details><details><summary>Where are my saved translations?</summary><p>Open History in the translator. Switch to Favorites for starred phrases, or export your history as a CSV file.</p></details></section>
+        </article></div>
     </main>
+    <footer class="site-footer"><span>PollyGlot · Built by Elizabeth Stein</span><nav aria-label="Site links"><a href="/">Home</a><a href="/contact">Contact</a><a href="/privacy-policy">Privacy Policy</a></nav></footer>
+    <script src="/site.js"></script>
 </body>
 </html>

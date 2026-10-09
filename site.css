@@ -201,11 +201,54 @@ kbd { background: var(--surface); color: var(--muted); border: 1px solid var(--l
 .help-dialog button, .button { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border: 1px solid var(--forest); background: var(--forest); color: var(--paper); border-radius: 7px; text-decoration: none; font-size: 13px; }
 .help-dialog button { margin-top: 16px; }
 .connection-status { color: var(--coral); font-size: 12px; margin-top: 12px; }
+.info-page .wrap { max-width: 1200px; margin: 0 auto; padding: 0; width: calc(100% - 48px); }
+.page-intro { padding: 64px 0 48px; display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 40px; align-items: end; border-bottom: 1px solid var(--line); }
+.page-intro h1 { display: block; margin: 16px 0 0; color: var(--forest); font: 500 clamp(42px,5vw,70px)/1.12 var(--font-heading); letter-spacing: -2.8px; }
+.page-intro .intro-note { max-width: 280px; margin: 0; color: var(--muted); font-size: 14px; }
+.reading-grid { display: grid; grid-template-columns: 270px minmax(0,1fr); gap: 64px; padding: 48px 0 0; }
+.reading-aside { align-self: start; position: sticky; top: 28px; }
+.reading-aside p { margin: 12px 0; color: var(--muted); font-size: 13px; }
+.reading-aside .button { margin-top: 12px; color: var(--paper); }
+.reading-aside nav { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin: 16px 0; }
+.reading-aside nav a { font-size: 13px; font-weight: 400; color: var(--muted); }
+.info-page .card { padding: 0; border: 0; background: transparent; box-shadow: none; border-radius: 0; color: var(--forest); }
+.info-page .card > p { max-width: 66ch; margin: 0 0 28px; font-size: 16px; line-height: 1.9; }
+.info-page .card > p:first-child { font-size: 20px; line-height: 1.8; }
+.info-page .card h2 { margin: 36px 0 16px; padding-top: 24px; border-top: 1px solid var(--line); font: 500 30px/1.3 var(--font-heading); color: var(--forest); letter-spacing: -.8px; }
+.info-page a { color: var(--forest); text-decoration: none; border-bottom: 0; }
+.info-page a.button { color: var(--paper); }
+.info-page .card p a { text-decoration: underline; text-decoration-color: var(--coral); }
+.info-page .small { color: var(--muted); font-size: 13px !important; }
+.editorial-callout { padding: 24px 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--sage); margin: 32px 0; }
+.editorial-callout h2 { padding: 0 !important; margin: 0 0 16px !important; border: 0 !important; }
+.editorial-callout p { font-size: 14px; color: var(--muted); }
+.faq { margin-top: 36px; }
+.faq details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+.faq summary { cursor: pointer; font-size: 15px; font-weight: 500; }
+.faq details p { margin: 12px 0 0; font-size: 14px; color: var(--muted); line-height: 1.8; }
+.contact-channel { padding: 20px 24px; margin: 0 0 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); font-size: 13px; }
+.contact-channel a { display: block; margin-top: 6px; font-size: 20px; font-weight: 500; overflow-wrap: anywhere; }
+.contact-composer { margin-top: 40px; border: 1px solid var(--line); border-radius: 12px; padding: 28px; background: var(--surface); }
+.contact-composer h2 { margin: 0 0 12px !important; padding: 0 !important; border: 0 !important; }
+.contact-composer p { font-size: 13px; color: var(--muted); margin: 0 0 20px; }
+.contact-composer label { display: block; margin: 20px 0 7px; font-size: 12px; font-weight: 600; }
+.contact-composer input, .contact-composer select, .contact-composer textarea { display: block; width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: var(--paper); color: var(--forest); font-size: 14px; }
+.contact-composer textarea { min-height: 140px; resize: vertical; }
+.contact-composer button { margin-top: 20px; }
+.contact-composer .form-status { margin: 16px 0 0; color: var(--coral); font-size: 13px; }
+.contact-composer .email-ready { display: block; margin-top: 16px; font-size: 14px; text-decoration: underline; color: var(--forest); }
+.info-page .site-footer { margin-top: 64px; }
 body.fullscreen .container { width: calc(100% - 48px); padding: 0; max-width: 1440px; }
 body.fullscreen .site-header, body.fullscreen .workspace-intro, body.fullscreen .feature-strip, body.fullscreen .phrase-library { display: none; }
 body.fullscreen .workspace-topline { padding-top: 24px; }
 @media (max-width: 1248px) { .site-header, .site-footer { margin-left: 24px; margin-right: 24px; } }
 @media (max-width: 760px) {
+    .page-intro { grid-template-columns: minmax(0,1fr); gap: 24px; padding: 40px 0 32px; }
+    .page-intro h1 { font-size: 48px; letter-spacing: -1.8px; }
+    .page-intro .intro-note { max-width: 440px; }
+    .reading-grid { grid-template-columns: minmax(0,1fr); gap: 32px; padding-top: 32px; }
+    .reading-aside { position: static; }
+    .reading-aside nav { flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
     .site-header { padding: 20px 0; gap: 20px; }
     .site-nav { gap: 18px; }
     .nav-note { display: none; }
@@ -221,6 +264,13 @@ body.fullscreen .workspace-topline { padding-top: 24px; }
     .feature-strip { gap: 24px; }
 }
 @media (max-width: 560px) {
+    .info-page .wrap { width: calc(100% - 32px); }
+    .page-intro h1 { font-size: 42px; letter-spacing: -1.4px; }
+    .info-page .card > p { font-size: 15px; }
+    .info-page .card > p:first-child { font-size: 18px; }
+    .info-page .card h2 { font-size: 27px; }
+    .editorial-callout, .contact-composer { padding: 22px 20px; }
+    .contact-channel { padding: 18px 20px; }
     .container { width: calc(100% - 32px); }
     .site-header, .site-footer { margin-left: 16px; margin-right: 16px; }
     .brand { font-size: 24px; }

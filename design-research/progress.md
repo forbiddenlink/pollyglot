@@ -8,8 +8,8 @@ Branch: `design/upgrade`. Started from `b999453`, 18 commits behind origin/main.
 | 2 Research | done | `references.md`: 13 live references; `features.md`: nine usable peers; real Chrome screenshots and blocked candidates documented. |
 | 3 Decide | done | `plan.md` selects editorial paper/forest direction, ten ranked local improvements and every-page rollout. |
 | 4 Foundation + home | done | Shared system, rebuilt home and local features; two screenshot/score/fix rounds plus final home capture; 25 browser checks passed. `scores.md`, `browser-results.json`. |
-| 5 Every page | pending | About / Contact / Privacy desktop + mobile + states. |
-| 6 Verify | pending | Appropriate scripts, browser journeys, Lighthouse. |
+| 5 Every page | done | About, Contact, Privacy: desktop/mobile reviewed; FAQ, contact empty/invalid/prepared/edited states and policy anchors checked. 54 browser checks passed. |
+| 6 Verify | in progress | Browser journeys passed; Lighthouse running. Root tests passed 2/2. |
 | 7 Report | pending | Honest before/after, scores, limitations, approval list. |
 
 ## Runtime and tooling

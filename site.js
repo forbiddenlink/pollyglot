@@ -7,7 +7,40 @@
         set(key, value) { try { localStorage.setItem(key, value); return true; } catch { return false; } }
     };
 
-    if (!document.querySelector('.translation-grid')) return;
+    if (!document.querySelector('.translation-grid')) {
+        const theme = storage.get('theme');
+        if (theme === 'dark') document.documentElement.dataset.theme = 'dark';
+        const composer = document.getElementById('contact-composer');
+        if (composer) {
+            const status = document.getElementById('contact-status');
+            const prepared = document.getElementById('prepared-email');
+            composer.addEventListener('invalid', () => {
+                status.textContent = 'Add a summary and at least 10 characters describing what happened.';
+                prepared.hidden = true;
+            }, true);
+            composer.addEventListener('input', () => {
+                prepared.hidden = true;
+                status.textContent = '';
+            });
+            composer.addEventListener('submit', event => {
+                event.preventDefault();
+                const subject = document.getElementById('contact-subject').value.trim();
+                const message = document.getElementById('contact-message').value.trim();
+                if (!subject || message.length < 10) {
+                    status.textContent = 'Add a summary and at least 10 characters describing what happened.';
+                    prepared.hidden = true;
+                    return;
+                }
+                const recipients = { support: 'support@pollyglot.app', feedback: 'feedback@pollyglot.app', security: 'security@pollyglot.app' };
+                const recipient = recipients[document.getElementById('contact-topic').value];
+                const browser = document.getElementById('contact-browser').value.trim();
+                prepared.href = `mailto:${recipient}?subject=${encodeURIComponent(`PollyGlot: ${subject}`)}&body=${encodeURIComponent(message + (browser ? `\n\nBrowser and device: ${browser}` : ''))}`;
+                prepared.hidden = false;
+                status.textContent = 'Your email is ready to open. Review it in your email app before sending.';
+            });
+        }
+        return;
+    }
 
     const input = document.getElementById('source-text');
     const pickerButtons = [];

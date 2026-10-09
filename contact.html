@@ -54,37 +54,55 @@
         }
         .small { color: var(--muted); font-size: 0.95rem; }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/site.css">
 </head>
-<body>
-    <main class="wrap">
-        <nav aria-label="Site links">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-            <a href="/privacy-policy">Privacy Policy</a>
-        </nav>
+<body class="info-page contact-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header"><a class="brand" href="/" aria-label="PollyGlot home"><img src="/assets/parrot-192.png" alt="" width="30" height="30">Polly<em>Glot</em></a><nav class="site-nav" aria-label="Main navigation"><a class="nav-home" href="/">Translator</a><a href="/about">About</a><a href="/contact" aria-current="page">Contact</a></nav><span class="nav-note">A world of words. Within reach.</span></header>
+    <main class="wrap" id="main-content">
+<section class="page-intro"><div><span class="eyebrow">A conversation starts here</span><h1>Contact</h1></div><p class="intro-note">Questions, feedback, or something that did not work? Start here.</p></section>
+        <div class="reading-grid"><aside class="reading-aside"><span class="eyebrow">Here to help</span><p>Choose the right channel so your question reaches the right place.</p><a class="button" href="/#translator">Back to translating</a></aside>
         <article class="card">
-            <h1>Contact</h1>
             <p>
                 For support, bug reports, or feedback about PollyGlot, use the contact channels below.
                 Include your browser version and a short description of what happened so issues can be
                 reproduced quickly.
             </p>
-            <p>
+            <div class="contact-channel">
                 Support email:
                 <a href="mailto:support@pollyglot.app">support@pollyglot.app</a>
-            </p>
-            <p>
+            </div>
+            <div class="contact-channel">
                 Product feedback:
                 <a href="mailto:feedback@pollyglot.app">feedback@pollyglot.app</a>
-            </p>
-            <p>
+            </div>
+            <div class="contact-channel">
                 Security reports:
                 <a href="mailto:security@pollyglot.app">security@pollyglot.app</a>
-            </p>
+            </div>
             <p class="small">
                 Business hours: Monday to Friday, 9:00 AM to 5:00 PM (US Pacific Time).
             </p>
-        </article>
+
+            <form class="contact-composer" id="contact-composer">
+                <span class="eyebrow">Make your report useful</span><h2>Put it into words.</h2>
+                <p>Prepare an email with the details below. Your email app handles sending; this form does not submit or store your message.</p>
+                <label for="contact-topic">What is it about?</label><select id="contact-topic"><option value="support">Help or a bug report</option><option value="feedback">An idea or product feedback</option><option value="security">A security report</option></select>
+                <label for="contact-subject">A short summary</label><input id="contact-subject" required maxlength="120" placeholder="e.g. Voice input will not start">
+                <label for="contact-message">What happened?</label><textarea id="contact-message" required minlength="10" maxlength="3000" placeholder="What did you try, what did you expect, and what happened instead?"></textarea>
+                <label for="contact-browser">Browser and device (optional)</label><input id="contact-browser" maxlength="200" placeholder="e.g. Chrome on an Android phone">
+                <button class="button" type="submit">Prepare email</button><p class="form-status" id="contact-status" role="status" aria-live="polite"></p><a class="email-ready" id="prepared-email" hidden>Open your email app</a>
+            </form>
+        </article></div>
     </main>
+    <footer class="site-footer"><span>PollyGlot · Built by Elizabeth Stein</span><nav aria-label="Site links">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/privacy-policy">Privacy Policy</a>
+        </nav></footer>
+    <script src="/site.js"></script>
 </body>
 </html>

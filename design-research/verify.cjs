@@ -94,6 +94,44 @@ const fs = require('node:fs');
         await page.locator('.theme-toggle').click();
         check('Dark theme remains available', await page.locator('html').getAttribute('data-theme') === 'dark');
         await page.screenshot({ path: 'design-research/screenshots/after/home-dark-mobile.png', fullPage: true });
+        await page.locator('.theme-toggle').click();
+        for (const route of ['/about', '/contact', '/privacy-policy']) {
+            await page.goto(base + route);
+            check(`${route} loads with the shared navigation`, await page.locator('.site-header .brand').count() === 1);
+            for (const width of [390, 1440]) {
+                await page.setViewportSize({ width, height: 1000 });
+                check(`${route} has no overflow at ${width}px`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+            }
+            const links = await page.locator('a[href^="/"]').evaluateAll(nodes => nodes.map(a => a.getAttribute('href')));
+            for (const href of new Set(links)) {
+                const response = await page.request.get(base + href.split('#')[0]);
+                check(`${route} link ${href} resolves`, response.status() === 200);
+            }
+            if (route === '/about') {
+                await page.locator('summary').first().click();
+                check('About FAQ expands', await page.locator('details').first().evaluate(el => el.open));
+                await page.getByRole('link', { name: 'Translate something' }).click();
+                check('About call to action returns to translator', await page.locator('#translator').count() === 1);
+            }
+            if (route === '/contact') {
+                await page.getByRole('button', { name: 'Prepare email' }).click();
+                check('Empty contact form explains missing fields', (await page.locator('#contact-status').textContent()).includes('Add a summary'));
+                await page.locator('#contact-subject').fill('Test issue');
+                await page.locator('#contact-message').fill('Test report with enough detail.');
+                await page.locator('#contact-browser').fill('Chrome test browser');
+                await page.locator('#contact-topic').selectOption('feedback');
+                await page.getByRole('button', { name: 'Prepare email' }).click();
+                check('Contact prepares a correctly addressed email without sending', (await page.locator('#prepared-email').getAttribute('href')).startsWith('mailto:feedback@pollyglot.app?subject='));
+                await page.screenshot({ path: 'design-research/screenshots/after/contact-success.png', fullPage: true });
+                await page.locator('#contact-subject').fill('Edited issue');
+                check('Editing contact details invalidates the prepared email', !(await page.locator('#prepared-email').isVisible()));
+            }
+            if (route === '/privacy-policy') {
+                await page.getByRole('link', { name: 'Local storage and settings', exact: true }).click();
+                check('Privacy contents navigate to the right section', page.url().endsWith('#local-storage'));
+                check('Original privacy policy date is retained', (await page.locator('article').textContent()).includes('February 10, 2026'));
+            }
+        }
         check('No unhandled browser errors', errors.length === 0);
         fs.writeFileSync('design-research/browser-results.json', JSON.stringify({ passed: results, errors, note: 'API responses are mocked. No paid provider calls, real microphone recordings, or message delivery tested.' }, null, 2));
     } finally { await browser.close(); }

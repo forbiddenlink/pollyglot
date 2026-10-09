@@ -11,3 +11,13 @@ Scale 1–5; internal assessment, not an independent award or user study. Order:
 | Final home review | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | `screenshots/after/home-{desktop,mobile}.png`: clean 1440px/390px captures, source accessible without scrolling through 20 language tiles. 25 Playwright checks in `browser-results.json`, including 320/390/768/1440px overflow, persisted pair/draft, error/retry, simulated loading/success, local files, search and keyboard dialogs. Reduced motion tested. |
 
 Motion is intentionally restrained for a utility; a high score means appropriate and accessible, not elaborate animation. Real translation accuracy, voice capture and delivery are excluded from craft verification until real-provider/device testing.
+
+## Supporting templates
+
+| Template | Final scores (same order as above) | Review and correction |
+|---|---|---|
+| About | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | Desktop/mobile rollout review found invisible CTA text (craft 3). Corrected link color and recaptured final; FAQ and return-to-translator journey passed. |
+| Contact | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | Desktop/mobile readable contact channels and composer. Empty/invalid, prepared email and edit-reset states passed. No message sent. |
+| Privacy | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | Desktop contents column becomes wrapping links on mobile. Original policy and date retained; section navigation verified. No asynchronous loading/error/success state applies to static policy content. |
+
+All four templates have final desktop/mobile captures in `screenshots/after/`; intermediate rollout captures are retained as evidence. Scores reflect a coherent utility design with restrained motion; they do not claim independent user validation.
