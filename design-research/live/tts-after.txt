@@ -1,0 +1,2 @@
+PASS official MiniMax endpoint, existing model/voice and binary audio passthrough
+PASS provider rejection reaches existing missing-fallback configuration state
