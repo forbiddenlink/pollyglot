@@ -747,7 +747,7 @@ app.post("/tts", async (req, res) => {
 
     // MiniMax TTS (preferred — native multilingual)
     if (process.env.MINIMAX_API_KEY) {
-      const minimaxRes = await fetchImpl("https://api.minimax.chat/v1/t2a_v2", {
+      const minimaxRes = await fetchImpl("https://api.minimax.io/v1/t2a_v2", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.MINIMAX_API_KEY}`,

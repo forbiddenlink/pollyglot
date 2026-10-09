@@ -1,0 +1,28 @@
+TTS error: AssertionError [ERR_ASSERTION]: Use the documented MiniMax endpoint
++ actual - expected
+
++ 'https://api.minimax.chat/v1/t2a_v2'
+- 'https://api.minimax.io/v1/t2a_v2'
+                       ^
+
+    at global.fetch (/Volumes/LizsDisk/pollyglot/design-research/api-tts-checks.cjs:18:16)
+    at global.fetch.args.then.default (/Volumes/LizsDisk/pollyglot/api/index.js:40:25)
+    at /Volumes/LizsDisk/pollyglot/api/index.js:750:32
+    at Layer.handleRequest (/Volumes/LizsDisk/pollyglot/api/node_modules/router/lib/layer.js:152:17)
+    at next (/Volumes/LizsDisk/pollyglot/api/node_modules/router/lib/route.js:157:13)
+    at Route.dispatch (/Volumes/LizsDisk/pollyglot/api/node_modules/router/lib/route.js:117:3)
+    at handle (/Volumes/LizsDisk/pollyglot/api/node_modules/router/index.js:435:11)
+    at Layer.handleRequest (/Volumes/LizsDisk/pollyglot/api/node_modules/router/lib/layer.js:152:17)
+    at /Volumes/LizsDisk/pollyglot/api/node_modules/router/index.js:295:15
+    at processParams (/Volumes/LizsDisk/pollyglot/api/node_modules/router/index.js:582:12) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'https://api.minimax.chat/v1/t2a_v2',
+  expected: 'https://api.minimax.io/v1/t2a_v2',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+Expected values to be strictly equal:
+
+500 !== 200
+
