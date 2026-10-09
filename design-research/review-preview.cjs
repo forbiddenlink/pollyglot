@@ -35,8 +35,9 @@ chromium.launch = async (...args) => {
         });
         const get = context.request.get.bind(context.request);
         context.request.get = async (url, ...options) => {
-            if (!url.startsWith(base)) return get(url, ...options);
-            const response = await fetchPreview(new URL(url).pathname);
+            const parsed = new URL(url);
+            if (parsed.origin !== base) return get(url, ...options);
+            const response = await fetchPreview(parsed.pathname);
             return { status: () => response.status };
         };
         return context;

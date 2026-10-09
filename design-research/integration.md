@@ -28,3 +28,5 @@ PR: https://github.com/forbiddenlink/pollyglot/pull/75. User subsequently author
 - No live paid-provider requests performed. Translation quality, provider TTS, microphone and OS sharing/email remain untested; these are existing integrations whose server code is unchanged.
 
 Final GitHub checks are rerun after pushing the review fixes; merge proceeds only after they pass. GitHub PR state records the final merge result.
+
+Final CI follow-up: CodeQL identified prefix-based URL validation in the non-deployed preview test helper. Replaced it with parsed URL origin equality; reran the 59 preview browser checks. The production application is unaffected. Fresh remote security analysis is required before merge.

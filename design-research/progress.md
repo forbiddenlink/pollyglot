@@ -31,3 +31,5 @@ User authorized integration, pushing a PR and reviewing its preview; main merge/
 ## Authorized merge review — October 9
 
 User explicitly requested fixing and merging ready work, superseding the earlier stop-before-merge instruction. Reviewed PR #75, corrected deployment exclusions and reproduced/fixed Clear → Undo disabling completed-result actions. Local 15 functionality checks pass; deployed preview passes 59 general checks, 15 functionality checks and 11 axe states. All four templates loaded and captured at desktop/mobile sizes. No live paid-provider requests; backend unchanged. See `integration.md`, `preview/`, and `functionality-premerge-before.json` / `functionality-premerge-after.json`. Push the review fixes, wait for the new GitHub CI/security checks, then merge PR #75 without deleting the design branch. Final merge status is recorded on the PR.
+
+Final CI follow-up: CodeQL identified prefix-based URL validation in the non-deployed preview test helper. Replaced it with parsed URL origin equality; reran the 59 preview browser checks. The production application is unaffected. Fresh remote security analysis is required before merge.
