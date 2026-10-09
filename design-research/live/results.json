@@ -1,0 +1,37 @@
+{
+  "base": "https://pollyglot-topaz.vercel.app",
+  "requests": [
+    {
+      "path": "/api/translate",
+      "status": 403,
+      "contentType": "application/json; charset=utf-8",
+      "bytes": 30,
+      "elapsedMs": 5539,
+      "response": {
+        "error": "Origin not allowed"
+      }
+    },
+    {
+      "path": "/api/tts",
+      "status": 403,
+      "contentType": "application/json; charset=utf-8",
+      "bytes": 30,
+      "elapsedMs": 2781,
+      "response": {
+        "error": "Origin not allowed"
+      }
+    }
+  ],
+  "auxiliaryRequests": "Blocked to limit paid usage",
+  "providerIdentity": "Not exposed by the existing API",
+  "translation": {
+    "text": "",
+    "state": "error"
+  },
+  "playback": {
+    "started": false,
+    "ended": false,
+    "error": null
+  },
+  "passed": false
+}

@@ -51,13 +51,27 @@ const configuredAllowedOrigins = (process.env.ALLOWED_ORIGINS || "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
-const allowedOrigins = new Set(
-  configuredAllowedOrigins.length > 0
+const allowedOrigins = new Set([
+  ...(configuredAllowedOrigins.length > 0
     ? configuredAllowedOrigins
-    : defaultAllowedOrigins,
-);
+    : defaultAllowedOrigins),
+  // The app's own deployed pages must reach its API, even with a custom allowlist.
+  "https://pollyglot-topaz.vercel.app",
+  "https://pollyglot-elizabeth-emersons-projects.vercel.app",
+  "https://pollyglot-git-main-elizabeth-emersons-projects.vercel.app",
+  ...[
+    process.env.VERCEL_URL,
+    process.env.VERCEL_BRANCH_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  ].filter(Boolean).map((hostname) => `https://${hostname}`),
+]);
 
 // Middleware
+app.use((req, res, next) => {
+  // Vercel preserves the function prefix; local development uses bare API paths.
+  if (req.url.startsWith("/api/")) req.url = req.url.slice(4);
+  next();
+});
 app.use(express.json({ limit: "10mb" }));
 
 // CORS configuration

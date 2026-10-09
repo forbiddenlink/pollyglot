@@ -1,0 +1,5 @@
+PASS deployed site can access its own API
+PASS exact application, deployment and configured partner origins
+PASS unrelated origins and configured localhost restriction
+PASS public API prefix reaches validation
+PASS local API compatibility, TTS validation, unknown prefix and denied POST
