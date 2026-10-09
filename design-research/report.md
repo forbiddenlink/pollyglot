@@ -148,3 +148,7 @@ Work stops here. Branch remains unmerged and undeployed.
 ## Functionality continuation
 
 After the seven-phase upgrade, the user authorized additional feature/functionality work. Added cancellation and timeout recovery; corrected outdated-result actions, late responses, typing after Clear, draft/language persistence, swap/undo and saved-entry restoration. **14 new functionality tests and the original 59 browser checks pass**, plus 2/2 repository tests. New state screenshots and remaining priorities are in [functionality.md](functionality.md). No live paid providers, production changes or deployment were used.
+
+## Final merge review — October 9
+
+User authorized fixing and merging ready work after the original seven-phase stop. PR #75: https://github.com/forbiddenlink/pollyglot/pull/75. Upstream security/tooling commits retained. Final review corrected Clear → Undo result validity and excluded local environment/tooling files from deployments. Real preview Chrome checks: 59 general, 15 functionality, 11 clean axe states; screenshots for all four templates at both sizes are in `preview/screenshots/`. Preview: https://pollyglot-bep3q6pgt-elizabeth-emersons-projects.vercel.app. See `integration.md` for authentication method, inherited workflow warnings and verification limits. No live provider/microphone/mail QA claimed. The revised `needs-approval.md` remains the authority for deferred work. Merge is gated on fresh GitHub checks after the final push; GitHub records the resulting merge status.

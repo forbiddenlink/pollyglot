@@ -14,4 +14,17 @@ Local untracked CLAUDE.md was byte-identical to upstream's newly tracked file. P
 - `pnpm test:run`: exits 1 with **No test files found**, as upstream intentionally removed the sample tests. No Vitest pass is claimed for this integrated tree. Existing browser suites provide application coverage; current GitHub CI only checks HTML existence, with separate security scanning.
 - Build/typecheck/lint scripts remain unconfigured for the static frontend.
 
-PR creation, remote checks and preview review pending. No live paid-provider requests authorized or performed.
+## PR and final review
+
+PR: https://github.com/forbiddenlink/pollyglot/pull/75. User subsequently authorized fixing and merging ready work.
+
+- GitHub CI, CodeQL and both Socket checks passed on d5b312f. Dependabot-only jobs correctly skipped.
+- Automatic Vercel previews are deliberately ignored by an existing project command. The API preview retry was rejected by automatic approval review for ambiguous targeting. An explicit CLI `--target preview` deployment succeeded; shared project and production settings were not changed. A temporary local config overrides only the preview ignore command.
+- Preview: https://pollyglot-bep3q6pgt-elizabeth-emersons-projects.vercel.app (READY, target null = Preview). Authenticated GETs through `vercel curl` feed real Chrome rendering; API calls are mocked or blocked.
+- Preview verification: 59 general browser checks + 15 functionality checks passed; 11 axe states clean, plus pending/Cancel accessibility. Every template loaded at desktop and mobile sizes. Evidence: `preview/`.
+- Found and reproduced a clear/undo bug before merge: Clear invalidated the result before saving its undo state. Save the undo state first so Copy and Save work after undo. New regression fails before the fix and passes afterward; all 15 functionality checks pass locally too.
+- Corrected `.vercelignore` because it replaces Git ignore rules: environment files, local tooling, history and logs are now excluded alongside research. Dry-run retains all required app/API files. Preview confirms research/environment/local-tooling paths return 404.
+- Manual review covered the app JS diff and shared enhancements; no API/backend changes relative to origin/main. No remaining merge-blocking issue identified in that review. Global commit hooks reported inherited CI workflow warnings, unchanged relative to main; these are separate hardening work, not new PR changes.
+- No live paid-provider requests performed. Translation quality, provider TTS, microphone and OS sharing/email remain untested; these are existing integrations whose server code is unchanged.
+
+Final GitHub checks are rerun after pushing the review fixes; merge proceeds only after they pass. GitHub PR state records the final merge result.

@@ -27,3 +27,7 @@ User authorized continuing with features/functionality on the existing branch. S
 ## Upstream integration / PR review
 
 User authorized integration, pushing a PR and reviewing its preview; main merge/deployment remain deferred. Integrated origin/main `7d35974` without conflicts. 73 browser checks / 11 axe states / frozen-lockfile install / dependency-override check passed. Vitest has no files after upstream's intentional sample-test removal. See `integration.md`. PR/preview checks in progress.
+
+## Authorized merge review — October 9
+
+User explicitly requested fixing and merging ready work, superseding the earlier stop-before-merge instruction. Reviewed PR #75, corrected deployment exclusions and reproduced/fixed Clear → Undo disabling completed-result actions. Local 15 functionality checks pass; deployed preview passes 59 general checks, 15 functionality checks and 11 axe states. All four templates loaded and captured at desktop/mobile sizes. No live paid-provider requests; backend unchanged. See `integration.md`, `preview/`, and `functionality-premerge-before.json` / `functionality-premerge-after.json`. Push the review fixes, wait for the new GitHub CI/security checks, then merge PR #75 without deleting the design branch. Final merge status is recorded on the PR.

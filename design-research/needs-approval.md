@@ -1,8 +1,8 @@
 # Needs approval
 
-No risky actions performed. These items are deferred:
+Upstream integration, branch push, PR creation, preview review and merging ready work were explicitly authorized in later user messages. These items remain deferred:
 
-- Pulling/merging the 18 newer commits on origin/main, merging this branch, deployment or production changes.
+- Manual production deployments or project-wide deployment/protection settings changes beyond the existing Git integration. Preview deployments were authorized and created with an explicit preview target.
 - Deleting files/content/features, removing unused dependencies, changing public URLs or Vercel rewrites.
 - Accounts, cloud-synced phrasebooks, CMS/database work or migrations.
 - Image/document translation requiring a new OCR/file-processing service, additional paid services or API keys; any new live paid API requests during QA.

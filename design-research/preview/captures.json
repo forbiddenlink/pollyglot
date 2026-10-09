@@ -1,0 +1,64 @@
+{
+  "base": "https://pollyglot-bep3q6pgt-elizabeth-emersons-projects.vercel.app",
+  "results": [
+    {
+      "name": "home",
+      "device": "desktop",
+      "status": 200,
+      "title": "PollyGlot AI Translation App - 20 Languages",
+      "screenshot": "design-research/preview/screenshots/home-desktop.png"
+    },
+    {
+      "name": "home",
+      "device": "mobile",
+      "status": 200,
+      "title": "PollyGlot AI Translation App - 20 Languages",
+      "screenshot": "design-research/preview/screenshots/home-mobile.png"
+    },
+    {
+      "name": "about",
+      "device": "desktop",
+      "status": 200,
+      "title": "About PollyGlot",
+      "screenshot": "design-research/preview/screenshots/about-desktop.png"
+    },
+    {
+      "name": "about",
+      "device": "mobile",
+      "status": 200,
+      "title": "About PollyGlot",
+      "screenshot": "design-research/preview/screenshots/about-mobile.png"
+    },
+    {
+      "name": "contact",
+      "device": "desktop",
+      "status": 200,
+      "title": "Contact PollyGlot",
+      "screenshot": "design-research/preview/screenshots/contact-desktop.png"
+    },
+    {
+      "name": "contact",
+      "device": "mobile",
+      "status": 200,
+      "title": "Contact PollyGlot",
+      "screenshot": "design-research/preview/screenshots/contact-mobile.png"
+    },
+    {
+      "name": "privacy-policy",
+      "device": "desktop",
+      "status": 200,
+      "title": "PollyGlot Privacy Policy",
+      "screenshot": "design-research/preview/screenshots/privacy-policy-desktop.png"
+    },
+    {
+      "name": "privacy-policy",
+      "device": "mobile",
+      "status": 200,
+      "title": "PollyGlot Privacy Policy",
+      "screenshot": "design-research/preview/screenshots/privacy-policy-mobile.png"
+    }
+  ],
+  "errors": [],
+  "excludedPaths": "research, environment and local tooling paths return 404",
+  "access": "Authenticated GET proxy via vercel curl; real Chrome rendering. API calls blocked."
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "name": "home",
+    "violations": []
+  },
+  {
+    "name": "language menu",
+    "violations": []
+  },
+  {
+    "name": "settings",
+    "violations": []
+  },
+  {
+    "name": "empty history",
+    "violations": []
+  },
+  {
+    "name": "home dark",
+    "violations": []
+  },
+  {
+    "name": "about dark",
+    "violations": []
+  },
+  {
+    "name": "about light",
+    "violations": []
+  },
+  {
+    "name": "contact dark",
+    "violations": []
+  },
+  {
+    "name": "contact light",
+    "violations": []
+  },
+  {
+    "name": "privacy-policy dark",
+    "violations": []
+  },
+  {
+    "name": "privacy-policy light",
+    "violations": []
+  }
+]
