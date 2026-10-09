@@ -23,3 +23,7 @@ Mobile overflow and overlapping examples confirmed in screenshots. Supporting pa
 ## Functionality continuation — October 9
 
 User authorized continuing with features/functionality on the existing branch. Scope: result validity, late async responses, typing cancellation, programmatic draft/pair persistence and request cancellation/timeout; no service or API contract changes. Done: initial six Chrome regressions reproduced, followed by error/clear, swap/undo and saved-entry restoration cases. Final 14 functionality tests + 59 existing browser checks + 2 Vitest tests pass; automated accessibility checks pass, including new pending/Cancel state. See `functionality.md` and `functionality-after.json`. Commit this continuation; no merge/deploy.
+
+## Upstream integration / PR review
+
+User authorized integration, pushing a PR and reviewing its preview; main merge/deployment remain deferred. Integrated origin/main `7d35974` without conflicts. 73 browser checks / 11 axe states / frozen-lockfile install / dependency-override check passed. Vitest has no files after upstream's intentional sample-test removal. See `integration.md`. PR/preview checks in progress.
