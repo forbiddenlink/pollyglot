@@ -79,6 +79,7 @@ async function request(path, method = 'GET', body) {
         await page.locator('.translate-btn').click();
         await page.waitForFunction(() => !document.querySelector('.translate-btn').disabled, null, { timeout: 55000 });
         results.translation = { text: await page.locator('.text-output').textContent(), state: await page.locator('#translation-status').getAttribute('data-state') };
+        await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({ path: `${output}/translation-desktop.png`, fullPage: true });
         if (results.translation.state === 'success') await page.locator('.output-speak').click();
         else await page.locator('.input-speak').click();
@@ -100,6 +101,7 @@ async function request(path, method = 'GET', body) {
             }, encoded);
         }
         await page.setViewportSize({ width: 390, height: 844 });
+        await page.evaluate(() => window.scrollTo(0, 0));
         await page.screenshot({ path: `${output}/translation-mobile.png`, fullPage: true });
         results.passed = results.translation.state === 'success' && /hola/i.test(results.translation.text) && results.playback.started && results.audio?.durationSeconds > 0 && results.audio.rms > 0;
         console.log(JSON.stringify({ translation: results.translation, playback: results.playback, audio: results.audio, passed: results.passed }));
