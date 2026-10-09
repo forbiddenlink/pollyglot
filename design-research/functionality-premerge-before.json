@@ -1,0 +1,63 @@
+[
+  {
+    "name": "Edited source cannot be saved against a previous result",
+    "passed": true
+  },
+  {
+    "name": "Undo after clear restores a usable completed translation",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\ntrue !== false\n"
+  },
+  {
+    "name": "Late alternatives do not return after clear",
+    "passed": true
+  },
+  {
+    "name": "Late detection does not replace the language of edited text",
+    "passed": true
+  },
+  {
+    "name": "Clear stops an in-progress typing animation",
+    "passed": true
+  },
+  {
+    "name": "Swap and undo persist the actual workspace draft and pair",
+    "passed": true
+  },
+  {
+    "name": "Slow translation can be cancelled and retried",
+    "passed": true
+  },
+  {
+    "name": "Failed replacement translation keeps retry available",
+    "passed": true
+  },
+  {
+    "name": "Clearing during a slow request immediately releases the translator",
+    "passed": true
+  },
+  {
+    "name": "Translation timeout restores controls and offers retry",
+    "passed": true
+  },
+  {
+    "name": "Swap before translation preserves source text",
+    "passed": true
+  },
+  {
+    "name": "Undo does not turn an outdated result into a valid saved pair",
+    "passed": true
+  },
+  {
+    "name": "Reusing history with auto-translate enabled does not request another translation",
+    "passed": true
+  },
+  {
+    "name": "History with an automatic source restores its language correctly",
+    "passed": true
+  },
+  {
+    "name": "Spanish browser starts with a different destination language",
+    "passed": true
+  }
+]

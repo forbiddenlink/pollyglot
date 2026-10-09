@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Edited source cannot be saved against a previous result",
+    "passed": false,
+    "error": "The expression evaluated to a falsy value:\n\n  assert.ok(await page.locator('.save-translation-btn').isDisabled())\n"
+  },
+  {
+    "name": "Late alternatives do not return after clear",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\ntrue !== false\n"
+  },
+  {
+    "name": "Late detection does not replace the language of edited text",
+    "passed": false,
+    "error": "The expression evaluated to a falsy value:\n\n  assert.ok((await page.locator('.language-trigger').first().textContent()).includes('English'))\n"
+  },
+  {
+    "name": "Clear stops an in-progress typing animation",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\n'a, amigo.' !== ''\n"
+  },
+  {
+    "name": "Swap and undo persist the actual workspace draft and pair",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Hello, friend.'\n- 'Hola, amigo.'\n"
+  },
+  {
+    "name": "Slow translation can be cancelled and retried",
+    "passed": false,
+    "error": "The expression evaluated to a falsy value:\n\n  assert.ok(await page.locator('#cancel-translation').isVisible())\n"
+  }
+]

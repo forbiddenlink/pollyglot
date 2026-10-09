@@ -54,49 +54,57 @@
         }
         .small { color: var(--muted); font-size: 0.95rem; }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/site.css">
 </head>
-<body>
-    <main class="wrap">
-        <nav aria-label="Site links">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-            <a href="/contact">Contact</a>
-        </nav>
+<body class="info-page privacy-policy-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header"><a class="brand" href="/" aria-label="PollyGlot home"><img src="/assets/parrot-192.png" alt="" width="30" height="30">Polly<em>Glot</em></a><nav class="site-nav" aria-label="Main navigation"><a class="nav-home" href="/">Translator</a><a href="/about">About</a><a href="/contact">Contact</a></nav><span class="nav-note">A world of words. Within reach.</span></header>
+    <main class="wrap" id="main-content">
+<section class="page-intro"><div><span class="eyebrow">Your words, your choices</span><h1>Privacy Policy</h1></div><p class="intro-note">How text, preferences, and saved translations are handled.</p></section>
+        <div class="reading-grid"><aside class="reading-aside"><span class="eyebrow">On this page</span><p>Jump to the details you need.</p><nav aria-label="Privacy policy contents"><a href="#overview">Overview</a><a href="#translation-data">Data processed for translation</a><a href="#local-storage">Local storage and settings</a><a href="#security-retention">Security and retention</a><a href="#privacy-contact">Contact</a></nav></aside>
         <article class="card">
-            <h1>Privacy Policy</h1>
             <p class="small">Last updated: February 10, 2026</p>
-            <h2>Overview</h2>
+            <h2 id="overview">Overview</h2>
             <p>
                 PollyGlot is built to provide translation features with minimal data collection.
                 This page explains what data may be processed, why it is used, and how long it is
                 retained.
             </p>
-            <h2>Data processed for translation</h2>
+            <h2 id="translation-data">Data processed for translation</h2>
             <p>
                 When you request a translation, the text you submit and selected language settings are sent
                 to the translation API provider in order to generate results. This processing is required to
                 provide core functionality. Translation requests may include temporary metadata such as request
                 time and IP-derived rate-limit counters for abuse protection.
             </p>
-            <h2>Local storage and settings</h2>
+            <h2 id="local-storage">Local storage and settings</h2>
             <p>
                 PollyGlot stores settings, translation history, and favorites in your browser local storage
                 so your preferences persist between sessions. You can clear this data at any time from your
                 browser or by using in-app controls. Local storage data is not shared with third parties by
                 default.
             </p>
-            <h2>Security and retention</h2>
+            <h2 id="security-retention">Security and retention</h2>
             <p>
                 The service applies input validation and request throttling to reduce abuse risk. Server logs
                 may contain operational error information for debugging and reliability. We aim to keep retained
                 operational data limited to what is necessary for security and uptime.
             </p>
-            <h2>Contact</h2>
+            <h2 id="privacy-contact">Contact</h2>
             <p>
                 For privacy requests, contact
                 <a href="mailto:privacy@pollyglot.app">privacy@pollyglot.app</a>.
             </p>
-        </article>
+        </article></div>
     </main>
+    <footer class="site-footer"><span>PollyGlot · Built by Elizabeth Stein</span><nav aria-label="Site links">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+        </nav></footer>
+    <script src="/site.js"></script>
 </body>
 </html>

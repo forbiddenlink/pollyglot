@@ -1,0 +1,27 @@
+# Screenshot review and scores
+
+Scale 1–5; internal assessment, not an independent award or user study. Order: point of view / typography / layout and rhythm / color and imagery / motion / audience fit / memorability / craft.
+
+## Home
+
+| Review | Scores | Evidence and action |
+|---|---|---|
+| Round 1 | 4 / 4 / 2 / 4 / 4 / 4 / 4 / 2 | `screenshots/home-round1/home-{desktop,mobile}.png`: inherited body flex layout placed the shared nav beside the page, constraining mobile. Fixed body layout, then captured round 2. |
+| Round 2 | 4 / 3 / 3 / 4 / 4 / 4 / 4 / 3 | `screenshots/home-round2/home-{desktop,mobile}.png`: inline headline put the badge beside it; closed sidebar expanded screenshot bounds; inherited blur established a fixed-position containing block. Fixed headline flow, removed blur/entrance transform, hid closed sidebar, restored mobile heading/tool order. |
+| Final home review | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | `screenshots/after/home-{desktop,mobile}.png`: clean 1440px/390px captures, source accessible without scrolling through 20 language tiles. 25 Playwright checks in `browser-results.json`, including 320/390/768/1440px overflow, persisted pair/draft, error/retry, simulated loading/success, local files, search and keyboard dialogs. Reduced motion tested. |
+
+Motion is intentionally restrained for a utility; a high score means appropriate and accessible, not elaborate animation. Real translation accuracy, voice capture and delivery are excluded from craft verification until real-provider/device testing.
+
+## Supporting templates
+
+| Template | Final scores (same order as above) | Review and correction |
+|---|---|---|
+| About | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | Desktop/mobile rollout review found invisible CTA text (craft 3). Corrected link color and recaptured final; FAQ and return-to-translator journey passed. |
+| Contact | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | Desktop/mobile readable contact channels and composer. Empty/invalid, prepared email and edit-reset states passed. No message sent. |
+| Privacy | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | Desktop contents column becomes wrapping links on mobile. Original policy and date retained; section navigation verified. No asynchronous loading/error/success state applies to static policy content. |
+
+All four templates have final desktop/mobile captures in `screenshots/after/`; intermediate rollout captures are retained as evidence. Scores reflect a coherent utility design with restrained motion; they do not claim independent user validation.
+
+## Final verification refinement
+
+Final mobile review moved Translate/tone/swap immediately after source input, before the result, and shortened the input area. Lighthouse-triggered contrast/name fixes and keyboard alternative buttons preserve all scores at 4. All 59 browser checks pass; 11 axe states have zero WCAG A/AA violations. These automated checks complement the screenshot review and do not substitute for assistive-technology/user studies.

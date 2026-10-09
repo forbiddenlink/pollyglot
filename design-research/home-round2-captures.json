@@ -1,0 +1,266 @@
+[
+  {
+    "name": "home",
+    "device": "desktop",
+    "url": "http://127.0.0.1:4173/",
+    "finalUrl": "http://127.0.0.1:4173/",
+    "status": 200,
+    "title": "PollyGlot AI Translation App - 20 Languages",
+    "screenshot": "design-research/screenshots/home-round2/home-desktop.png",
+    "content": "Skip to translator\nPolly\nGlot\nTranslator\nAbout\nContact\nA world of words. Within reach.\nAI-powered translation · 20 languages A world of words.\nA little closer.\n\nFind the right words. Hear them. Make them yours.\n\nAa\nあ\n你\nñ\nع\nΩ\nक\nЖ\n한\nก\nא\nß\nAa\nあ\n你\nñ\nع\nΩ\nक\nЖ\n한\nก\nא\nß\nYOUR EVERYDAY TRANSLATOR\nNo account needed · Up to 5,000 characters\nSOURCE LANGUAGE\nEnglish\n⌄\nAuto-Detect\n\nTry an example:\n\nHello, how are you?\nWhere is the restaurant?\nThank you for your help!\nBook a room\nText to translate\n0 words\n~0 min read\n0 / 5000 characters\nTone:\nNeutral\nFormal\nCasual\nTranslate\nTARGET LANGUAGE\nSpanish\n⌄\n0 words\nImport a .txt file\nDownload translation\nKeyboard shortcuts\nDraft stays in this browser\nA PLACE TO START\nGood words to have.\n\nFor wherever the conversation takes you.\n\nEveryday\nTravel\nDining\nAt work\nHello, how are you today?\nThank you very much for your help!\nCould you say that a little more slowly?\nIt is lovely to meet you.\n01 / SAY IT YOUR WAY\nThe right words. The right tone.\n\nKeep it neutral, make it formal, or go casual. Choose the tone that fits your conversation.\n\n02 / HEAR THE DIFFERENCE\nGo from reading to speaking.\n\nListen to your translation, explore pronunciation, and practice saying it out loud.\n\n03 / KEEP WHAT MATTERS\nA phrase worth remembering.\n\nSave useful translations to your history or favorites. Find them again, right in this browser.\n\nPowered by OpenAI GPT-4o-mini • Built by Elizabeth Stein\n\nEnter\ntranslate\nEsc\nclear\n⌘K\nswap\n⌘Z\nundo\nAbout\nContact\nPrivacy Policy\n\nTranslation copied to clipboard!",
+    "links": [
+      {
+        "text": "Skip to translator",
+        "href": "http://127.0.0.1:4173/#translator"
+      },
+      {
+        "text": "Polly\nGlot",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "Translator",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "http://127.0.0.1:4173/privacy-policy"
+      }
+    ]
+  },
+  {
+    "name": "home",
+    "device": "mobile",
+    "url": "http://127.0.0.1:4173/",
+    "finalUrl": "http://127.0.0.1:4173/",
+    "status": 200,
+    "title": "PollyGlot AI Translation App - 20 Languages",
+    "screenshot": "design-research/screenshots/home-round2/home-mobile.png",
+    "content": "Skip to translator\nPolly\nGlot\nAbout\nContact\nAI-powered translation · 20 languages A world of words.\nA little closer.\n\nFind the right words. Hear them. Make them yours.\n\nYOUR EVERYDAY TRANSLATOR\nNo account needed · Up to 5,000 characters\nSOURCE LANGUAGE\nEnglish\n⌄\nAuto-Detect\n\nTry an example:\n\nHello, how are you?\nWhere is the restaurant?\nThank you for your help!\nBook a room\nText to translate\n0 words\n~0 min read\n0 / 5000 characters\nTone:\nNeutral\nFormal\nCasual\nTranslate\nTARGET LANGUAGE\nSpanish\n⌄\n0 words\nImport a .txt file\nDownload translation\nKeyboard shortcuts\nDraft stays in this browser\nA PLACE TO START\nGood words to have.\n\nFor wherever the conversation takes you.\n\nEveryday\nTravel\nDining\nAt work\nHello, how are you today?\nThank you very much for your help!\nCould you say that a little more slowly?\nIt is lovely to meet you.\n01 / SAY IT YOUR WAY\nThe right words. The right tone.\n\nKeep it neutral, make it formal, or go casual. Choose the tone that fits your conversation.\n\n02 / HEAR THE DIFFERENCE\nGo from reading to speaking.\n\nListen to your translation, explore pronunciation, and practice saying it out loud.\n\n03 / KEEP WHAT MATTERS\nA phrase worth remembering.\n\nSave useful translations to your history or favorites. Find them again, right in this browser.\n\nPowered by OpenAI GPT-4o-mini • Built by Elizabeth Stein\n\nAbout\nContact\nPrivacy Policy\n\nTranslation copied to clipboard!",
+    "links": [
+      {
+        "text": "Skip to translator",
+        "href": "http://127.0.0.1:4173/#translator"
+      },
+      {
+        "text": "Polly\nGlot",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "Translator",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "http://127.0.0.1:4173/privacy-policy"
+      }
+    ]
+  },
+  {
+    "name": "about",
+    "device": "desktop",
+    "url": "http://127.0.0.1:4173/about.html",
+    "finalUrl": "http://127.0.0.1:4173/about.html",
+    "status": 200,
+    "title": "About PollyGlot",
+    "screenshot": "design-research/screenshots/home-round2/about-desktop.png",
+    "content": "Home\nContact\nPrivacy Policy\nAbout PollyGlot\n\nPollyGlot is an AI-assisted translation app designed for practical everyday use. The goal is simple: keep translation fast, useful, and easy to trust. Instead of hiding core controls behind complicated workflows, PollyGlot keeps language selection, tone controls, translation history, and speech features visible in one interface.\n\nWhat the app focuses on\n\nThe app supports 20 languages and prioritizes clear output with minimal noise. For short phrases, PollyGlot can offer alternatives so users can choose the wording that best fits context. For non-Latin scripts, pronunciation guidance is included to make output more usable in real conversations. Voice input and text-to-speech are built in for faster hands-free use.\n\nHow translation works\n\nPollyGlot sends text to an AI translation service and returns only the translated result. Requests are validated and rate-limited to reduce abuse and keep response quality stable. No account creation is required for basic use, and users can manage local history settings, including save behavior and storage limits, directly in the app.\n\nPollyGlot is built and maintained by Elizabeth Stein.",
+    "links": [
+      {
+        "text": "Home",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "http://127.0.0.1:4173/privacy-policy"
+      }
+    ]
+  },
+  {
+    "name": "about",
+    "device": "mobile",
+    "url": "http://127.0.0.1:4173/about.html",
+    "finalUrl": "http://127.0.0.1:4173/about.html",
+    "status": 200,
+    "title": "About PollyGlot",
+    "screenshot": "design-research/screenshots/home-round2/about-mobile.png",
+    "content": "Home\nContact\nPrivacy Policy\nAbout PollyGlot\n\nPollyGlot is an AI-assisted translation app designed for practical everyday use. The goal is simple: keep translation fast, useful, and easy to trust. Instead of hiding core controls behind complicated workflows, PollyGlot keeps language selection, tone controls, translation history, and speech features visible in one interface.\n\nWhat the app focuses on\n\nThe app supports 20 languages and prioritizes clear output with minimal noise. For short phrases, PollyGlot can offer alternatives so users can choose the wording that best fits context. For non-Latin scripts, pronunciation guidance is included to make output more usable in real conversations. Voice input and text-to-speech are built in for faster hands-free use.\n\nHow translation works\n\nPollyGlot sends text to an AI translation service and returns only the translated result. Requests are validated and rate-limited to reduce abuse and keep response quality stable. No account creation is required for basic use, and users can manage local history settings, including save behavior and storage limits, directly in the app.\n\nPollyGlot is built and maintained by Elizabeth Stein.",
+    "links": [
+      {
+        "text": "Home",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "http://127.0.0.1:4173/privacy-policy"
+      }
+    ]
+  },
+  {
+    "name": "contact",
+    "device": "desktop",
+    "url": "http://127.0.0.1:4173/contact.html",
+    "finalUrl": "http://127.0.0.1:4173/contact.html",
+    "status": 200,
+    "title": "Contact PollyGlot",
+    "screenshot": "design-research/screenshots/home-round2/contact-desktop.png",
+    "content": "Home\nAbout\nPrivacy Policy\nContact\n\nFor support, bug reports, or feedback about PollyGlot, use the contact channels below. Include your browser version and a short description of what happened so issues can be reproduced quickly.\n\nSupport email: support@pollyglot.app\n\nProduct feedback: feedback@pollyglot.app\n\nSecurity reports: security@pollyglot.app\n\nBusiness hours: Monday to Friday, 9:00 AM to 5:00 PM (US Pacific Time).",
+    "links": [
+      {
+        "text": "Home",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "http://127.0.0.1:4173/privacy-policy"
+      },
+      {
+        "text": "support@pollyglot.app",
+        "href": "mailto:support@pollyglot.app"
+      },
+      {
+        "text": "feedback@pollyglot.app",
+        "href": "mailto:feedback@pollyglot.app"
+      },
+      {
+        "text": "security@pollyglot.app",
+        "href": "mailto:security@pollyglot.app"
+      }
+    ]
+  },
+  {
+    "name": "contact",
+    "device": "mobile",
+    "url": "http://127.0.0.1:4173/contact.html",
+    "finalUrl": "http://127.0.0.1:4173/contact.html",
+    "status": 200,
+    "title": "Contact PollyGlot",
+    "screenshot": "design-research/screenshots/home-round2/contact-mobile.png",
+    "content": "Home\nAbout\nPrivacy Policy\nContact\n\nFor support, bug reports, or feedback about PollyGlot, use the contact channels below. Include your browser version and a short description of what happened so issues can be reproduced quickly.\n\nSupport email: support@pollyglot.app\n\nProduct feedback: feedback@pollyglot.app\n\nSecurity reports: security@pollyglot.app\n\nBusiness hours: Monday to Friday, 9:00 AM to 5:00 PM (US Pacific Time).",
+    "links": [
+      {
+        "text": "Home",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "http://127.0.0.1:4173/privacy-policy"
+      },
+      {
+        "text": "support@pollyglot.app",
+        "href": "mailto:support@pollyglot.app"
+      },
+      {
+        "text": "feedback@pollyglot.app",
+        "href": "mailto:feedback@pollyglot.app"
+      },
+      {
+        "text": "security@pollyglot.app",
+        "href": "mailto:security@pollyglot.app"
+      }
+    ]
+  },
+  {
+    "name": "privacy-policy",
+    "device": "desktop",
+    "url": "http://127.0.0.1:4173/privacy-policy.html",
+    "finalUrl": "http://127.0.0.1:4173/privacy-policy.html",
+    "status": 200,
+    "title": "PollyGlot Privacy Policy",
+    "screenshot": "design-research/screenshots/home-round2/privacy-policy-desktop.png",
+    "content": "Home\nAbout\nContact\nPrivacy Policy\n\nLast updated: February 10, 2026\n\nOverview\n\nPollyGlot is built to provide translation features with minimal data collection. This page explains what data may be processed, why it is used, and how long it is retained.\n\nData processed for translation\n\nWhen you request a translation, the text you submit and selected language settings are sent to the translation API provider in order to generate results. This processing is required to provide core functionality. Translation requests may include temporary metadata such as request time and IP-derived rate-limit counters for abuse protection.\n\nLocal storage and settings\n\nPollyGlot stores settings, translation history, and favorites in your browser local storage so your preferences persist between sessions. You can clear this data at any time from your browser or by using in-app controls. Local storage data is not shared with third parties by default.\n\nSecurity and retention\n\nThe service applies input validation and request throttling to reduce abuse risk. Server logs may contain operational error information for debugging and reliability. We aim to keep retained operational data limited to what is necessary for security and uptime.\n\nContact\n\nFor privacy requests, contact privacy@pollyglot.app.",
+    "links": [
+      {
+        "text": "Home",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "privacy@pollyglot.app",
+        "href": "mailto:privacy@pollyglot.app"
+      }
+    ]
+  },
+  {
+    "name": "privacy-policy",
+    "device": "mobile",
+    "url": "http://127.0.0.1:4173/privacy-policy.html",
+    "finalUrl": "http://127.0.0.1:4173/privacy-policy.html",
+    "status": 200,
+    "title": "PollyGlot Privacy Policy",
+    "screenshot": "design-research/screenshots/home-round2/privacy-policy-mobile.png",
+    "content": "Home\nAbout\nContact\nPrivacy Policy\n\nLast updated: February 10, 2026\n\nOverview\n\nPollyGlot is built to provide translation features with minimal data collection. This page explains what data may be processed, why it is used, and how long it is retained.\n\nData processed for translation\n\nWhen you request a translation, the text you submit and selected language settings are sent to the translation API provider in order to generate results. This processing is required to provide core functionality. Translation requests may include temporary metadata such as request time and IP-derived rate-limit counters for abuse protection.\n\nLocal storage and settings\n\nPollyGlot stores settings, translation history, and favorites in your browser local storage so your preferences persist between sessions. You can clear this data at any time from your browser or by using in-app controls. Local storage data is not shared with third parties by default.\n\nSecurity and retention\n\nThe service applies input validation and request throttling to reduce abuse risk. Server logs may contain operational error information for debugging and reliability. We aim to keep retained operational data limited to what is necessary for security and uptime.\n\nContact\n\nFor privacy requests, contact privacy@pollyglot.app.",
+    "links": [
+      {
+        "text": "Home",
+        "href": "http://127.0.0.1:4173/"
+      },
+      {
+        "text": "About",
+        "href": "http://127.0.0.1:4173/about"
+      },
+      {
+        "text": "Contact",
+        "href": "http://127.0.0.1:4173/contact"
+      },
+      {
+        "text": "privacy@pollyglot.app",
+        "href": "mailto:privacy@pollyglot.app"
+      }
+    ]
+  }
+]

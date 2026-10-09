@@ -1,0 +1,1841 @@
+[
+  {
+    "name": "google-translate",
+    "device": "desktop",
+    "url": "https://translate.google.com/",
+    "finalUrl": "https://translate.google.com/?sl=auto&tl=en&op=translate",
+    "status": 200,
+    "title": "Google Translate",
+    "screenshot": "design-research/screenshots/competitors/google-translate-desktop.png",
+    "content": "Translate\n\t\nSign in\nTranslation types\nText\nImages\nDocuments\nWebsites\nText translation\nDetect language\nEnglish\nSpanish\nFrench\nEnglish\nSpanish\nArabic\nSource text\n0 / 5,000\nTranslation results\nTranslation\nSend feedback\nSide panels\nHistory\nSaved",
+    "links": [
+      {
+        "text": "",
+        "href": "https://translate.google.com/?hl=en&tab=TT"
+      },
+      {
+        "text": "Translate",
+        "href": "https://translate.google.com/?hl=en&tab=TT"
+      },
+      {
+        "text": "",
+        "href": "https://www.google.com/intl/en/about/products?tab=Th"
+      },
+      {
+        "text": "Sign in",
+        "href": "https://accounts.google.com/ServiceLogin?passive=1209600&continue=https://translate.google.com/&followup=https://translate.google.com/&ec=GAZAMw"
+      },
+      {
+        "text": "Translate",
+        "href": "https://translate.google.com/"
+      },
+      {
+        "text": "About Google Translate",
+        "href": "https://translate.google.com/about/?hl=en-US"
+      },
+      {
+        "text": "Privacy & Terms",
+        "href": "https://policies.google.com/?hl=en-US"
+      },
+      {
+        "text": "Help",
+        "href": "https://support.google.com/translate/?hl=en-US"
+      },
+      {
+        "text": "About Google",
+        "href": "https://www.google.com/about?hl=en-US"
+      },
+      {
+        "text": "Learn more",
+        "href": "https://support.google.com/translate?p=gendered_translations&hl=en_US"
+      },
+      {
+        "text": "Learn more",
+        "href": "https://support.google.com/translate?p=gendered_translations&hl=en_US"
+      },
+      {
+        "text": "Learn more",
+        "href": "https://support.google.com/translate/answer/2534559?ref_topic=7011659&hl=en_US"
+      },
+      {
+        "text": "Google Cloud Translation",
+        "href": "https://cloud.google.com/translation-hub?hl=en_US"
+      },
+      {
+        "text": "Learn more",
+        "href": "https://support.google.com/translate/answer/6142483?ref_topic=7011659&hl=en_US"
+      },
+      {
+        "text": "History",
+        "href": "https://translate.google.com/history"
+      },
+      {
+        "text": "Saved",
+        "href": "https://translate.google.com/saved"
+      }
+    ]
+  },
+  {
+    "name": "deepl",
+    "device": "desktop",
+    "url": "https://www.deepl.com/en/translator",
+    "finalUrl": "https://www.deepl.com/en/translator",
+    "status": 200,
+    "title": "DeepL Translator | World's Most Accurate Translator",
+    "screenshot": "design-research/screenshots/competitors/deepl-desktop.png",
+    "content": "DeepL uses cookies, including marketing cookies to personalize advertisements displayed to you. For more details, please read our Privacy Policy.\n\nClose\nDeepL for AI agents\nDeepL Translation Flow: New AI-powered workflows for key use cases and integrations\nThe ROI of AI-native translation\nBuilding for Europe’s sovereignty needs\nWhat MCP changes about enterprise software\nDeepL is now available in Microsoft Copilot, ChatGPT and Claude via MCP\nThe real-time audio layer ready to transform voice translation\nHow we’re building Translation Quality Evaluation for DeepL\nFrom high-quality text translation to a real-time voice platform\nProducts\nSolutions\nDevelopers\nPricing\nApps\nNew\nResources\nLog in\nStart free trial\nMillions translate with DeepL every day. Popular: Spanish to English, French to English, and Japanese to English.\nTranslation modes\nTranslate text\nTranslate files\nTranslate speech\nUse API\nUse in AI apps\nTranslate text\nSelect source language. Currently selected:\nDetect language\nSelect target language. Currently selected:\nEnglish (American)\nSource text\n\n\n\n\nType to translate.\nDrag and drop to translate PDF, Word (.docx), and PowerPoint (.pptx) files with our document translator.\nTranslation results\n\n\n\n\nEditing tools\nFormality\nPro\nCustomizations\nStyle profiles\nPro\nGlossaries\nStyle rules\nPro\nDictionary\nThe dictionary is unavailable for this language pair.\nTrusted by over 200,000 businesses globally\nReal-time voice translation that still sounds like you\nTry now\nVoice translation\nDE\n\nWie kann ich Ihnen helfen?\n\nIT\n\nCome posso aiutarti?\n\nDeepL is transforming how 200,000+ businesses communicate globally\n\nSee why leading enterprises trust DeepL to power their multilingual communication.\n\nStart free trial\nSee all Customer Stories\nSumitomo Corporation\n\nDiscover how Sumitomo Corporation cut translation time by more than half with DeepL, lowering outsourcing costs and accelerating global decision-making.\n\nMerck KGaA\n\nHow Merck used the DeepL API to scale a highly technical website globally in record time, while keeping translation quality intact.\n\nCybozu\n\nSee how Cybozu uses Language AI to break language barriers, streamline global collaboration, and scale their groupware solutions internationally.\n\nDaiwa Securities\n\nLearn how Daiwa Securities uses DeepL’s AI translation to accelerate digital transformation, reduce outsourcing costs, and speed up global IR reporting.\n\nHitachi Industrial Equipment Systems\n\nDiscover how Hitachi Industrial Equipment Systems (Hitachi IES) leverages DeepL to slash translation time by 60% and foster a global, inclusive culture\n\nA full suite of language tools, built to power your global voice\n\nTrained on proprietary data by thousands of language experts, our specialized LLM delivers unparalleled accuracy and personalized experiences exactly where you need them.\n\nStart your free trial\nContact Sales\nThe DeepL Language AI platform\nTranslator\n\nDeliver accurate, enterprise-grade translations with pro features like Glossaries, Rules, Clarify and more.\n\nVoice\n\nCollaborate instantly with real-time voice translation in virtual meetings or in-person conversations.\n\nWrite\n\nPerfect your business writing, with style and tone adaptations to fit your brand and target audience.\n\nDocuments\n\nDrag and drop different documents for easy translation, while preserving original formatting and layout.\n\nAPI\n\nIntegrate DeepL Language AI into your systems to scale workflows and expand your global reach.\n\nDeepL AI labs\n\nSee what the DeepL R&D teams are building next!\n\nLearn more\nIntegrate better communication wherever you work\nApps\nIntegrations\nDownload DeepL for Mac for free\nDiscover more Apps and Integrations\nWe speak the language of your industry\n\nAccelerate collaboration and drive efficiency with custom glossaries, tone control and enterprise-grade security designed to reflect your world.\n\nStart free trial\nContact Sales\nLife sciences\nManufacturing\nLegal\nFinance\nGovernment\nRetail\nBuild in world-class translations effortlessly with our API\nSign up for free\nRead our quick‒start guide and get started in minutes\nConnect with our community for pro tips and support\nGive it a go yourself with a free trial\nReady to transform your business communication with DeepL?\nStart free trial\nContact Sales\nExplore our 100+ languages\nMost popular\nEnglish to Chinese\nEnglish to French\nChinese to English\nOther languages\nArabic\nBulgarian\nChinese\nCzech\nDanish\nDutch\nEstonian\nFinnish\nFrench\nGerman\nGreek\nHebrew\nHungarian\nIndonesian\nItalian\nJapanese\nKorean\nLatvian\nLithuanian\nNorwegian (bokmål)\nPolish\nPortuguese\nPortuguese (Brazilian)\nRomanian\nRussian\nSlovak\nSlovenian\nSpanish\nSwedish\nTurkish\nUkrainian\nVietnamese\nEnglish\nProducts\nPlatform overview\nFree translator\nDeepL API\nDeepL Write\nDeepL Voice\nDeepL Voice for Meetings\nDeepL Voice for Conversations\nApps & Integrations\nDeepL Pro\nWhy DeepL\nData Security\nQuality\nCustomization Hub\nAccessibility\nFeatures\nDocument Translation\nTranslate PDF documents\nTranslate Word documents\nTranslate PPT documents\nTranslate Excel files\nTranslate images\nTranslation glossary\nSSO\nAlternatives\nSee all our features\nSolutions\nDeepL for Enterprise\nLegal & Professional Services\nRetail & eCommerce\nManufacturing\nGovernment\nFinancial Services\nPharma & Life science\nHealthcare\nISV & technology\nDownload\nDeepL for Android\nDeepL for iPhone\nDeepL for Windows\nDeepL Chrome extension\nDeepL for Microsoft Outlook\nDeepL for Microsoft Word\nDeepL for Microsoft Powerpoint\nDeepL for Google Workspace\nDeepL for Mac\nDeepL Firefox extension\nDeepL Edge extension\nDeepL for iPad\nDeepL Integrations\nResources\nHelp Center\nBlog\nCustomer Research Panel\nAPI documentation\nCommunity\nCustomer Stories\nEvents & Webinars\nTrust Center\nDeepL Academy\nReports & guides\nBorderless business report\nDeepL Spring Event Hub\nPrivacy Policy\nTerms & Conditions\nStatus\nDeepL AI Labs\nCompany\nAbout Us\nSustainability\nContact Sales\nBecome a Partner\nCareers\nPress\nPublisher\nSitemap\nThere are 1 new updates to our product. Press g, n on your keyboard to view them.",
+    "links": [
+      {
+        "text": "Privacy Policy",
+        "href": "https://www.deepl.com/privacy"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "DeepL Translator",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "DeepL Write",
+        "href": "https://www.deepl.com/en/write"
+      },
+      {
+        "text": "DeepL for AI agents",
+        "href": "https://www.deepl.com/en/ai-agents"
+      },
+      {
+        "text": "DeepL Translation Flow: New AI-powered workflows for key use cases and integrations",
+        "href": "https://www.deepl.com/en/translation-flow"
+      },
+      {
+        "text": "The ROI of AI-native translation",
+        "href": "https://www.deepl.com/en/reports/nucleus-roi-study"
+      },
+      {
+        "text": "Building for Europe’s sovereignty needs",
+        "href": "https://www.deepl.com/en/blog/building-for-europes-sovereignty-needs"
+      },
+      {
+        "text": "What MCP changes about enterprise software",
+        "href": "https://www.deepl.com/en/blog/what-mcp-changes-about-enterprise-software"
+      },
+      {
+        "text": "DeepL is now available in Microsoft Copilot, ChatGPT and Claude via MCP",
+        "href": "https://www.deepl.com/en/blog/deepl-available-in-microsoft-copilot-chatgpt-claude-mcp"
+      },
+      {
+        "text": "The real-time audio layer ready to transform voice translation",
+        "href": "https://www.deepl.com/en/ai-labs/real-time-audio-layer-transforming-voice-translation"
+      },
+      {
+        "text": "How we’re building Translation Quality Evaluation for DeepL",
+        "href": "https://www.deepl.com/en/ai-labs/building-translation-quality-evaluation"
+      },
+      {
+        "text": "From high-quality text translation to a real-time voice platform",
+        "href": "https://www.deepl.com/en/ai-labs/high-quality-text-to-real-time-voice"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en"
+      },
+      {
+        "text": "DeepL TranslatorTranslate securely, efficiently, and accurately",
+        "href": "https://www.deepl.com/en/products/translator"
+      },
+      {
+        "text": "DeepL WriteEnhance your writing and adapt to your audience",
+        "href": "https://www.deepl.com/en/products/write"
+      },
+      {
+        "text": "DeepL VoiceConverse across languages in real time",
+        "href": "https://www.deepl.com/en/products/voice"
+      },
+      {
+        "text": "DeepL IntegrationsCombine Language AI with essential productivity tools",
+        "href": "https://www.deepl.com/en/products/integrations"
+      },
+      {
+        "text": "Overview",
+        "href": "https://www.deepl.com/en/whydeepl"
+      },
+      {
+        "text": "Enterprise overview",
+        "href": "https://www.deepl.com/en/enterprise"
+      },
+      {
+        "text": "Enterprise security & trust",
+        "href": "https://www.deepl.com/en/pro-data-security"
+      },
+      {
+        "text": "Market-leading Quality",
+        "href": "https://www.deepl.com/en/quality"
+      },
+      {
+        "text": "Customization Hub",
+        "href": "https://www.deepl.com/en/customization-hub"
+      },
+      {
+        "text": "DeepL on AWS MarketplaceNew",
+        "href": "https://www.deepl.com/en/deepl-aws"
+      },
+      {
+        "text": "Document translation",
+        "href": "https://www.deepl.com/en/features/document-translation"
+      },
+      {
+        "text": "Customer support",
+        "href": "https://www.deepl.com/en/use-cases/customer-support"
+      },
+      {
+        "text": "Internal communication",
+        "href": "https://www.deepl.com/en/use-cases/internal-communication"
+      },
+      {
+        "text": "Marketing",
+        "href": "https://www.deepl.com/en/use-cases/marketing"
+      },
+      {
+        "text": "Global expansion",
+        "href": "https://www.deepl.com/en/use-cases/global-expansion"
+      },
+      {
+        "text": "Localization",
+        "href": "https://www.deepl.com/en/teams/localization"
+      },
+      {
+        "text": "Legal",
+        "href": "https://www.deepl.com/en/teams/legal"
+      },
+      {
+        "text": "Marketing & Communications",
+        "href": "https://www.deepl.com/en/teams/marketing-and-communication"
+      },
+      {
+        "text": "Customer Service",
+        "href": "https://www.deepl.com/en/teams/customer-service"
+      },
+      {
+        "text": "Sales",
+        "href": "https://www.deepl.com/en/teams/sales"
+      },
+      {
+        "text": "Business Operations",
+        "href": "https://www.deepl.com/en/teams/business-operations"
+      },
+      {
+        "text": "Legal & professional services",
+        "href": "https://www.deepl.com/en/industries/legal-and-professional"
+      },
+      {
+        "text": "Retail & e-commerce",
+        "href": "https://www.deepl.com/en/industries/retail-and-ecommerce"
+      },
+      {
+        "text": "Manufacturing",
+        "href": "https://www.deepl.com/en/industries/manufacturing"
+      },
+      {
+        "text": "Government",
+        "href": "https://www.deepl.com/en/industries/government"
+      },
+      {
+        "text": "Financial services",
+        "href": "https://www.deepl.com/en/industries/financial-services"
+      },
+      {
+        "text": "Pharma & life sciences",
+        "href": "https://www.deepl.com/en/industries/pharma-life-sciences"
+      },
+      {
+        "text": "Healthcare",
+        "href": "https://www.deepl.com/en/industries/healthcare"
+      },
+      {
+        "text": "ISV & technology",
+        "href": "https://www.deepl.com/en/industries/isv-and-technology"
+      },
+      {
+        "text": "Contact Sales",
+        "href": "https://www.deepl.com/en/contact-us"
+      },
+      {
+        "text": "DeepL for Developers",
+        "href": "https://www.deepl.com/en/developers"
+      },
+      {
+        "text": "Documentation",
+        "href": "https://developers.deepl.com/"
+      },
+      {
+        "text": "API reference",
+        "href": "https://developers.deepl.com/api-reference/translate/request-translation"
+      },
+      {
+        "text": "Community",
+        "href": "https://discord.gg/deepl"
+      },
+      {
+        "text": "Free API Key",
+        "href": "https://www.deepl.com/en/signup?cta=checkout&is_api=true&productId=api-developer"
+      },
+      {
+        "text": "Pricing",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "Desktop app",
+        "href": "https://www.deepl.com/en/macos-app"
+      },
+      {
+        "text": "Browser extension",
+        "href": "https://www.deepl.com/en/chrome-extension"
+      },
+      {
+        "text": "Mobile apps",
+        "href": "https://www.deepl.com/en/mobile-apps"
+      },
+      {
+        "text": "Voice Desktop AppNew",
+        "href": "https://www.deepl.com/en/voice-app"
+      },
+      {
+        "text": "Explore all apps",
+        "href": "https://marketplace.deepl-partners.com/"
+      },
+      {
+        "text": "AI agents",
+        "href": "https://www.deepl.com/en/ai-agents"
+      },
+      {
+        "text": "Microsoft Word",
+        "href": "https://www.deepl.com/en/word-addin"
+      },
+      {
+        "text": "Google Workspace",
+        "href": "https://www.deepl.com/en/google-workspace"
+      },
+      {
+        "text": "Microsoft 365",
+        "href": "https://www.deepl.com/en/microsoft-365"
+      },
+      {
+        "text": "Blog",
+        "href": "https://www.deepl.com/en/blog"
+      },
+      {
+        "text": "Customer stories",
+        "href": "https://www.deepl.com/en/customer-stories"
+      },
+      {
+        "text": "Events & Webinars",
+        "href": "https://www.deepl.com/en/events-webinars"
+      },
+      {
+        "text": "DeepL Academy",
+        "href": "https://www.deepl.com/en/academy"
+      },
+      {
+        "text": "Reports & guides",
+        "href": "https://www.deepl.com/en/reports"
+      },
+      {
+        "text": "The Case for Specialist AI",
+        "href": "https://www.deepl.com/en/specialist-ai"
+      },
+      {
+        "text": "DeepL Spring Event Hub",
+        "href": "https://www.deepl.com/en/springlaunch"
+      },
+      {
+        "text": "DeepL AI Labs",
+        "href": "https://www.deepl.com/en/ai-labs"
+      },
+      {
+        "text": "Help Center",
+        "href": "https://support.deepl.com/hc/en-us/"
+      },
+      {
+        "text": "Apps and integrations",
+        "href": "https://marketplace.deepl-partners.com/"
+      },
+      {
+        "text": "Become a Partner",
+        "href": "https://www.deepl.com/en/partners/contact-us"
+      },
+      {
+        "text": "Log in",
+        "href": "https://w.deepl.com/signin/oidc_login?redirect_uri=https%3A%2F%2Fwww.deepl.com%2Fen%2Ftranslator&prompt=select_account"
+      },
+      {
+        "text": "Start free trial",
+        "href": "https://www.deepl.com/pro"
+      },
+      {
+        "text": "DeepL Translator",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "DeepL Voice",
+        "href": "https://www.deepl.com/en/products/voice"
+      },
+      {
+        "text": "Pricing",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "Log in",
+        "href": "https://w.deepl.com/signin/oidc_login?redirect_uri=https%3A%2F%2Fwww.deepl.com%2Fen%2Ftranslator&prompt=select_account"
+      },
+      {
+        "text": "Start free trial",
+        "href": "https://www.deepl.com/pro"
+      },
+      {
+        "text": "Translator",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "Translate files",
+        "href": "https://www.deepl.com/en/translator/files"
+      },
+      {
+        "text": "Write",
+        "href": "https://www.deepl.com/en/write"
+      },
+      {
+        "text": "DeepL Voice",
+        "href": "https://www.deepl.com/en/voice/meetings"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/translator/files"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/products/voice"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/products/api"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/ai-agents"
+      },
+      {
+        "text": "Translate text",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "Translate files",
+        "href": "https://www.deepl.com/en/translator/files"
+      },
+      {
+        "text": "Translate speech",
+        "href": "https://www.deepl.com/en/products/voice"
+      },
+      {
+        "text": "Use API",
+        "href": "https://www.deepl.com/en/products/api"
+      },
+      {
+        "text": "Use in AI apps",
+        "href": "https://www.deepl.com/en/ai-agents"
+      },
+      {
+        "text": "Try now",
+        "href": "https://www.deepl.com/en/products/voice"
+      },
+      {
+        "text": "Start free trial",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "See all Customer Stories",
+        "href": "https://www.deepl.com/en/customer-stories"
+      },
+      {
+        "text": "Sumitomo Corporation\n\nDiscover how Sumitomo Corporation cut translation time by more than half with DeepL, lowering outsourcing costs and accelerating global decision-making.",
+        "href": "https://www.deepl.com/en/customer-stories/sumitomo-corporation"
+      },
+      {
+        "text": "Merck KGaA\n\nHow Merck used the DeepL API to scale a highly technical website globally in record time, while keeping translation quality intact.",
+        "href": "https://www.deepl.com/en/customer-stories/merck"
+      },
+      {
+        "text": "Cybozu\n\nSee how Cybozu uses Language AI to break language barriers, streamline global collaboration, and scale their groupware solutions internationally.",
+        "href": "https://www.deepl.com/en/customer-stories/cybozu"
+      },
+      {
+        "text": "Daiwa Securities\n\nLearn how Daiwa Securities uses DeepL’s AI translation to accelerate digital transformation, reduce outsourcing costs, and speed up global IR reporting.",
+        "href": "https://www.deepl.com/en/customer-stories/daiwa-securities"
+      },
+      {
+        "text": "Hitachi Industrial Equipment Systems\n\nDiscover how Hitachi Industrial Equipment Systems (Hitachi IES) leverages DeepL to slash translation time by 60% and foster a global, inclusive culture",
+        "href": "https://www.deepl.com/en/customer-stories/hitachi-ies"
+      },
+      {
+        "text": "Start your free trial",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "Contact Sales",
+        "href": "https://www.deepl.com/en/contact-us"
+      },
+      {
+        "text": "Translator\n\nDeliver accurate, enterprise-grade translations with pro features like Glossaries, Rules, Clarify and more.",
+        "href": "https://www.deepl.com/en/products/translator"
+      },
+      {
+        "text": "Voice\n\nCollaborate instantly with real-time voice translation in virtual meetings or in-person conversations.",
+        "href": "https://www.deepl.com/en/products/voice"
+      },
+      {
+        "text": "Write\n\nPerfect your business writing, with style and tone adaptations to fit your brand and target audience.",
+        "href": "https://www.deepl.com/en/products/write"
+      },
+      {
+        "text": "Documents\n\nDrag and drop different documents for easy translation, while preserving original formatting and layout.",
+        "href": "https://www.deepl.com/en/features/document-translation"
+      },
+      {
+        "text": "API\n\nIntegrate DeepL Language AI into your systems to scale workflows and expand your global reach.",
+        "href": "https://www.deepl.com/en/products/api"
+      },
+      {
+        "text": "Learn more",
+        "href": "https://www.deepl.com/en/ai-labs"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/windows-app"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/macos-app"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/android-app"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/chrome-extension"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/firefox-extension"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/google-workspace"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/word-addin"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/integrations/powerpoint-addin"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/integrations/outlook-addin"
+      },
+      {
+        "text": "Download DeepL for Mac for free",
+        "href": "https://www.deepl.com/en/macos-app"
+      },
+      {
+        "text": "Discover more Apps and Integrations",
+        "href": "https://marketplace.deepl-partners.com/"
+      },
+      {
+        "text": "Start free trial",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "Contact Sales",
+        "href": "https://www.deepl.com/en/contact-us"
+      },
+      {
+        "text": "Life sciences",
+        "href": "https://www.deepl.com/en/industries/pharma-life-sciences"
+      },
+      {
+        "text": "Manufacturing",
+        "href": "https://www.deepl.com/en/industries/manufacturing"
+      },
+      {
+        "text": "Legal",
+        "href": "https://www.deepl.com/en/industries/legal-and-professional"
+      },
+      {
+        "text": "Finance",
+        "href": "https://www.deepl.com/en/industries/financial-services"
+      },
+      {
+        "text": "Government",
+        "href": "https://www.deepl.com/en/industries/government"
+      },
+      {
+        "text": "Retail",
+        "href": "https://www.deepl.com/en/industries/retail-and-ecommerce"
+      },
+      {
+        "text": "Sign up for free",
+        "href": "https://www.deepl.com/en/pro#api"
+      },
+      {
+        "text": "Read our quick‒start guide and get started in minutes",
+        "href": "https://developers.deepl.com/docs"
+      },
+      {
+        "text": "Connect with our community for pro tips and support",
+        "href": "https://www.deepl.com/en/developers"
+      },
+      {
+        "text": "Give it a go yourself with a free trial",
+        "href": "https://www.deepl.com/en/pro#api"
+      },
+      {
+        "text": "Start free trial",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "Contact Sales",
+        "href": "https://www.deepl.com/en/contact-us"
+      },
+      {
+        "text": "English to Chinese",
+        "href": "https://www.deepl.com/en/translator/l/en/zh"
+      },
+      {
+        "text": "English to French",
+        "href": "https://www.deepl.com/en/translator/l/en/fr"
+      },
+      {
+        "text": "Chinese to English",
+        "href": "https://www.deepl.com/en/translator/l/zh/en"
+      },
+      {
+        "text": "Arabic",
+        "href": "https://www.deepl.com/en/translator/l/en/ar"
+      },
+      {
+        "text": "Bulgarian",
+        "href": "https://www.deepl.com/en/translator/l/en/bg"
+      },
+      {
+        "text": "Chinese",
+        "href": "https://www.deepl.com/en/translator/l/en/zh"
+      },
+      {
+        "text": "Czech",
+        "href": "https://www.deepl.com/en/translator/l/en/cs"
+      },
+      {
+        "text": "Danish",
+        "href": "https://www.deepl.com/en/translator/l/en/da"
+      },
+      {
+        "text": "Dutch",
+        "href": "https://www.deepl.com/en/translator/l/en/nl"
+      },
+      {
+        "text": "Estonian",
+        "href": "https://www.deepl.com/en/translator/l/en/et"
+      },
+      {
+        "text": "Finnish",
+        "href": "https://www.deepl.com/en/translator/l/en/fi"
+      },
+      {
+        "text": "French",
+        "href": "https://www.deepl.com/en/translator/l/en/fr"
+      },
+      {
+        "text": "German",
+        "href": "https://www.deepl.com/en/translator/l/en/de"
+      },
+      {
+        "text": "Greek",
+        "href": "https://www.deepl.com/en/translator/l/en/el"
+      },
+      {
+        "text": "Hebrew",
+        "href": "https://www.deepl.com/en/translator/l/en/he"
+      },
+      {
+        "text": "Hungarian",
+        "href": "https://www.deepl.com/en/translator/l/en/hu"
+      },
+      {
+        "text": "Indonesian",
+        "href": "https://www.deepl.com/en/translator/l/en/id"
+      },
+      {
+        "text": "Italian",
+        "href": "https://www.deepl.com/en/translator/l/en/it"
+      },
+      {
+        "text": "Japanese",
+        "href": "https://www.deepl.com/en/translator/l/en/ja"
+      },
+      {
+        "text": "Korean",
+        "href": "https://www.deepl.com/en/translator/l/en/ko"
+      },
+      {
+        "text": "Latvian",
+        "href": "https://www.deepl.com/en/translator/l/en/lv"
+      },
+      {
+        "text": "Lithuanian",
+        "href": "https://www.deepl.com/en/translator/l/en/lt"
+      },
+      {
+        "text": "Norwegian (bokmål)",
+        "href": "https://www.deepl.com/en/translator/l/en/nb"
+      },
+      {
+        "text": "Polish",
+        "href": "https://www.deepl.com/en/translator/l/en/pl"
+      },
+      {
+        "text": "Portuguese",
+        "href": "https://www.deepl.com/en/translator/l/en/pt-PT"
+      },
+      {
+        "text": "Portuguese (Brazilian)",
+        "href": "https://www.deepl.com/en/translator/l/en/pt-BR"
+      },
+      {
+        "text": "Romanian",
+        "href": "https://www.deepl.com/en/translator/l/en/ro"
+      },
+      {
+        "text": "Russian",
+        "href": "https://www.deepl.com/en/translator/l/en/ru"
+      },
+      {
+        "text": "Slovak",
+        "href": "https://www.deepl.com/en/translator/l/en/sk"
+      },
+      {
+        "text": "Slovenian",
+        "href": "https://www.deepl.com/en/translator/l/en/sl"
+      },
+      {
+        "text": "Spanish",
+        "href": "https://www.deepl.com/en/translator/l/en/es"
+      },
+      {
+        "text": "Swedish",
+        "href": "https://www.deepl.com/en/translator/l/en/sv"
+      },
+      {
+        "text": "Turkish",
+        "href": "https://www.deepl.com/en/translator/l/en/tr"
+      },
+      {
+        "text": "Ukrainian",
+        "href": "https://www.deepl.com/en/translator/l/en/uk"
+      },
+      {
+        "text": "Vietnamese",
+        "href": "https://www.deepl.com/en/translator/l/en/vi"
+      },
+      {
+        "text": "Deutsch",
+        "href": "https://www.deepl.com/de/translator"
+      },
+      {
+        "text": "English",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "Español",
+        "href": "https://www.deepl.com/es/translator"
+      },
+      {
+        "text": "日本語",
+        "href": "https://www.deepl.com/ja/translator"
+      },
+      {
+        "text": "Français",
+        "href": "https://www.deepl.com/fr/translator"
+      },
+      {
+        "text": "Italiano",
+        "href": "https://www.deepl.com/it/translator"
+      },
+      {
+        "text": "Bahasa Indonesia",
+        "href": "https://www.deepl.com/id/translator"
+      },
+      {
+        "text": "한국어",
+        "href": "https://www.deepl.com/ko/translator"
+      },
+      {
+        "text": "Nederlands",
+        "href": "https://www.deepl.com/nl/translator"
+      },
+      {
+        "text": "Čeština",
+        "href": "https://www.deepl.com/cs/translator"
+      },
+      {
+        "text": "Svenska",
+        "href": "https://www.deepl.com/sv/translator"
+      },
+      {
+        "text": "Polski",
+        "href": "https://www.deepl.com/pl/translator"
+      },
+      {
+        "text": "Português (Brasil)",
+        "href": "https://www.deepl.com/pt-BR/translator"
+      },
+      {
+        "text": "Português",
+        "href": "https://www.deepl.com/pt-PT/translator"
+      },
+      {
+        "text": "Türkçe",
+        "href": "https://www.deepl.com/tr/translator"
+      },
+      {
+        "text": "Русский",
+        "href": "https://www.deepl.com/ru/translator"
+      },
+      {
+        "text": "简体中文",
+        "href": "https://www.deepl.com/zh/translator"
+      },
+      {
+        "text": "Українська",
+        "href": "https://www.deepl.com/uk/translator"
+      },
+      {
+        "text": "العربية",
+        "href": "https://www.deepl.com/ar/translator"
+      },
+      {
+        "text": "Platform overview",
+        "href": "https://www.deepl.com/en/whydeepl"
+      },
+      {
+        "text": "Free translator",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "DeepL API",
+        "href": "https://www.deepl.com/en/pro#api"
+      },
+      {
+        "text": "DeepL Write",
+        "href": "https://www.deepl.com/en/write"
+      },
+      {
+        "text": "DeepL Voice",
+        "href": "https://www.deepl.com/en/products/voice"
+      },
+      {
+        "text": "DeepL Voice for Meetings",
+        "href": "https://www.deepl.com/en/products/voice/deepl-voice-for-meetings"
+      },
+      {
+        "text": "DeepL Voice for Conversations",
+        "href": "https://www.deepl.com/en/products/voice/deepl-voice-for-conversations"
+      },
+      {
+        "text": "Apps & Integrations",
+        "href": "https://marketplace.deepl-partners.com/"
+      },
+      {
+        "text": "DeepL Pro",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "Data Security",
+        "href": "https://www.deepl.com/en/pro-data-security"
+      },
+      {
+        "text": "Quality",
+        "href": "https://www.deepl.com/en/quality"
+      },
+      {
+        "text": "Customization Hub",
+        "href": "https://www.deepl.com/en/customization-hub"
+      },
+      {
+        "text": "Accessibility",
+        "href": "https://www.deepl.com/en/accessibility"
+      },
+      {
+        "text": "Document Translation",
+        "href": "https://www.deepl.com/en/features/document-translation"
+      },
+      {
+        "text": "Translate PDF documents",
+        "href": "https://www.deepl.com/en/features/document-translation/pdf"
+      },
+      {
+        "text": "Translate Word documents",
+        "href": "https://www.deepl.com/en/features/document-translation/word"
+      },
+      {
+        "text": "Translate PPT documents",
+        "href": "https://www.deepl.com/en/features/document-translation/ppt"
+      },
+      {
+        "text": "Translate Excel files",
+        "href": "https://www.deepl.com/en/features/document-translation/excel"
+      },
+      {
+        "text": "Translate images",
+        "href": "https://www.deepl.com/en/features/translate-image"
+      },
+      {
+        "text": "Translation glossary",
+        "href": "https://www.deepl.com/en/features/glossary"
+      },
+      {
+        "text": "SSO",
+        "href": "https://www.deepl.com/en/features/sso"
+      },
+      {
+        "text": "Alternatives",
+        "href": "https://www.deepl.com/en/features/alternatives"
+      },
+      {
+        "text": "See all our features",
+        "href": "https://www.deepl.com/en/features"
+      },
+      {
+        "text": "DeepL for Enterprise",
+        "href": "https://www.deepl.com/en/enterprise"
+      },
+      {
+        "text": "Legal & Professional Services",
+        "href": "https://www.deepl.com/en/industries/legal-and-professional"
+      },
+      {
+        "text": "Retail & eCommerce",
+        "href": "https://www.deepl.com/en/industries/retail-and-ecommerce"
+      },
+      {
+        "text": "Manufacturing",
+        "href": "https://www.deepl.com/en/industries/manufacturing"
+      },
+      {
+        "text": "Government",
+        "href": "https://www.deepl.com/en/industries/government"
+      },
+      {
+        "text": "Financial Services",
+        "href": "https://www.deepl.com/en/industries/financial-services"
+      },
+      {
+        "text": "Pharma & Life science",
+        "href": "https://www.deepl.com/en/industries/pharma-life-sciences"
+      },
+      {
+        "text": "Healthcare",
+        "href": "https://www.deepl.com/en/industries/healthcare"
+      },
+      {
+        "text": "ISV & technology",
+        "href": "https://www.deepl.com/en/industries/isv-and-technology"
+      },
+      {
+        "text": "DeepL for Android",
+        "href": "https://www.deepl.com/en/android-app"
+      },
+      {
+        "text": "DeepL for iPhone",
+        "href": "https://www.deepl.com/en/ios-app"
+      },
+      {
+        "text": "DeepL for Windows",
+        "href": "https://www.deepl.com/en/windows-app"
+      },
+      {
+        "text": "DeepL Chrome extension",
+        "href": "https://www.deepl.com/en/chrome-extension"
+      },
+      {
+        "text": "DeepL for Microsoft Outlook",
+        "href": "https://www.deepl.com/en/integrations/outlook-addin"
+      },
+      {
+        "text": "DeepL for Microsoft Word",
+        "href": "https://www.deepl.com/en/word-addin"
+      },
+      {
+        "text": "DeepL for Microsoft Powerpoint",
+        "href": "https://www.deepl.com/en/integrations/powerpoint-addin"
+      },
+      {
+        "text": "DeepL for Google Workspace",
+        "href": "https://www.deepl.com/en/google-workspace"
+      },
+      {
+        "text": "DeepL for Mac",
+        "href": "https://www.deepl.com/en/macos-app"
+      },
+      {
+        "text": "DeepL Firefox extension",
+        "href": "https://www.deepl.com/en/firefox-extension"
+      },
+      {
+        "text": "DeepL Edge extension",
+        "href": "https://www.deepl.com/en/edge-extension"
+      },
+      {
+        "text": "DeepL for iPad",
+        "href": "https://www.deepl.com/en/ios-app"
+      },
+      {
+        "text": "DeepL Integrations",
+        "href": "https://www.deepl.com/en/products/integrations"
+      },
+      {
+        "text": "Help Center",
+        "href": "https://support.deepl.com/hc/en-us"
+      },
+      {
+        "text": "Blog",
+        "href": "https://www.deepl.com/en/blog"
+      },
+      {
+        "text": "Customer Research Panel",
+        "href": "https://www.deepl.com/en/collab"
+      },
+      {
+        "text": "API documentation",
+        "href": "https://developers.deepl.com/docs"
+      },
+      {
+        "text": "Community",
+        "href": "https://discord.gg/deepl"
+      },
+      {
+        "text": "Customer Stories",
+        "href": "https://www.deepl.com/en/customer-stories"
+      },
+      {
+        "text": "Events & Webinars",
+        "href": "https://www.deepl.com/en/events-webinars"
+      },
+      {
+        "text": "Trust Center",
+        "href": "https://trust.deepl.com/"
+      },
+      {
+        "text": "DeepL Academy",
+        "href": "https://www.deepl.com/en/academy"
+      },
+      {
+        "text": "Reports & guides",
+        "href": "https://www.deepl.com/en/reports"
+      },
+      {
+        "text": "Borderless business report",
+        "href": "https://www.deepl.com/en/borderlessbusiness"
+      },
+      {
+        "text": "DeepL Spring Event Hub",
+        "href": "https://www.deepl.com/en/springlaunch"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "https://www.deepl.com/en/privacy"
+      },
+      {
+        "text": "Terms & Conditions",
+        "href": "https://www.deepl.com/en/pro-license"
+      },
+      {
+        "text": "Status",
+        "href": "https://status.deepl.com/"
+      },
+      {
+        "text": "DeepL AI Labs",
+        "href": "https://www.deepl.com/en/ai-labs"
+      },
+      {
+        "text": "About Us",
+        "href": "https://www.deepl.com/en/about-us"
+      },
+      {
+        "text": "Sustainability",
+        "href": "https://www.deepl.com/en/sustainability"
+      },
+      {
+        "text": "Contact Sales",
+        "href": "https://www.deepl.com/en/contact-us"
+      },
+      {
+        "text": "Become a Partner",
+        "href": "https://www.deepl.com/en/partners/contact-us"
+      },
+      {
+        "text": "Careers",
+        "href": "https://www.deepl.com/careers?source=DeepLFooter"
+      },
+      {
+        "text": "Press",
+        "href": "https://www.deepl.com/en/press"
+      },
+      {
+        "text": "Publisher",
+        "href": "https://www.deepl.com/en/publisher"
+      },
+      {
+        "text": "Sitemap",
+        "href": "https://www.deepl.com/sitemap.xml"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "",
+        "href": "https://twitter.com/DeepLcom"
+      },
+      {
+        "text": "",
+        "href": "https://www.facebook.com/DeepLcom/"
+      },
+      {
+        "text": "",
+        "href": "https://www.linkedin.com/company/deepl/"
+      },
+      {
+        "text": "",
+        "href": "https://github.com/DeepL"
+      },
+      {
+        "text": "",
+        "href": "https://www.instagram.com/deeplhq/"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/en/rss-hub"
+      },
+      {
+        "text": "Deutsch",
+        "href": "https://www.deepl.com/de/translator"
+      },
+      {
+        "text": "English",
+        "href": "https://www.deepl.com/en/translator"
+      },
+      {
+        "text": "Español",
+        "href": "https://www.deepl.com/es/translator"
+      },
+      {
+        "text": "日本語",
+        "href": "https://www.deepl.com/ja/translator"
+      },
+      {
+        "text": "Français",
+        "href": "https://www.deepl.com/fr/translator"
+      },
+      {
+        "text": "Italiano",
+        "href": "https://www.deepl.com/it/translator"
+      },
+      {
+        "text": "Bahasa Indonesia",
+        "href": "https://www.deepl.com/id/translator"
+      },
+      {
+        "text": "한국어",
+        "href": "https://www.deepl.com/ko/translator"
+      },
+      {
+        "text": "Nederlands",
+        "href": "https://www.deepl.com/nl/translator"
+      },
+      {
+        "text": "Čeština",
+        "href": "https://www.deepl.com/cs/translator"
+      },
+      {
+        "text": "Svenska",
+        "href": "https://www.deepl.com/sv/translator"
+      },
+      {
+        "text": "Polski",
+        "href": "https://www.deepl.com/pl/translator"
+      },
+      {
+        "text": "Português (Brasil)",
+        "href": "https://www.deepl.com/pt-BR/translator"
+      },
+      {
+        "text": "Português",
+        "href": "https://www.deepl.com/pt-PT/translator"
+      },
+      {
+        "text": "Türkçe",
+        "href": "https://www.deepl.com/tr/translator"
+      },
+      {
+        "text": "Русский",
+        "href": "https://www.deepl.com/ru/translator"
+      },
+      {
+        "text": "简体中文",
+        "href": "https://www.deepl.com/zh/translator"
+      },
+      {
+        "text": "Українська",
+        "href": "https://www.deepl.com/uk/translator"
+      },
+      {
+        "text": "العربية",
+        "href": "https://www.deepl.com/ar/translator"
+      },
+      {
+        "text": "About Us",
+        "href": "https://www.deepl.com/en/about-us"
+      },
+      {
+        "text": "Privacy policy",
+        "href": "https://www.deepl.com/en/privacy"
+      },
+      {
+        "text": "Publisher",
+        "href": "https://www.deepl.com/en/publisher"
+      },
+      {
+        "text": "Terms & Conditions",
+        "href": "https://www.deepl.com/en/pro-license"
+      },
+      {
+        "text": "Plans",
+        "href": "https://www.deepl.com/en/pro"
+      },
+      {
+        "text": "Contact Sales",
+        "href": "https://www.deepl.com/en/contact-us"
+      }
+    ]
+  },
+  {
+    "name": "reverso",
+    "device": "desktop",
+    "url": "https://www.reverso.net/text-translation",
+    "finalUrl": "https://www.reverso.net/text-translation",
+    "status": 403,
+    "title": "Just a moment...",
+    "screenshot": "design-research/screenshots/competitors/reverso-desktop.png",
+    "content": "www.reverso.net\nPerforming security verification\n\nThis website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot.\n\nRay ID: a47d3fa35acd576d\nPerformance and Security by Cloudflare\nPrivacy",
+    "links": [
+      {
+        "text": "Cloudflare",
+        "href": "https://www.cloudflare.com/?utm_source=challenge&utm_campaign=m"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://www.cloudflare.com/privacypolicy/"
+      }
+    ]
+  },
+  {
+    "name": "papago",
+    "device": "desktop",
+    "url": "https://papago.naver.com/",
+    "finalUrl": "https://papago.naver.com/",
+    "status": 200,
+    "title": "",
+    "screenshot": "design-research/screenshots/competitors/papago-desktop.png",
+    "content": "This page couldn’t load\n\nReload to try again, or go back.\n\nReload\nBack",
+    "links": []
+  },
+  {
+    "name": "yandex",
+    "device": "desktop",
+    "url": "https://translate.yandex.com/",
+    "finalUrl": "https://translate.yandex.com/",
+    "status": 200,
+    "title": "Yandex Translate - Dictionary and online translation",
+    "screenshot": "design-research/screenshots/competitors/yandex-desktop.png",
+    "content": "ENGLISH\nRUSSIAN\nStart typing or insert a link\nTranslate AI\nTranslating photo\nDrag file here or select\n⌘ cmd + v\nAsk Translate AI\nExplain the Present Perfect\nWhen do I use \"the\" before nouns?\nTranslator for 100+ languages\nYandex Translate — translate between 121 languages instantly, get smart typing suggestions, look up words with pronunciation and real examples, and much more.\nThe most popular languages for translation\nEnglish \n Russian\nRussian \n English\nEnglish \n French\nFrench \n English\nEnglish \n Spanish\nSpanish \n English\nEnglish \n Turkish\nTurkish \n English\nEnglish \n German\nGerman \n English\nEnglish \n Chinese\nChinese \n English\nEnglish \n Kazakh\nKazakh \n English\nEnglish \n Uzbek\nUzbek \n English\nEnglish \n Italian\nItalian \n English\nEnglish \n Portuguese\nPortuguese \n English\nSupport\n© 2011–2026 «Yandex»\nMobile version\nHelp\nPopular translations\nDevelopers\nUser agreement\nEnglish\nFor business\nYandex uses cookies\nThey ensure the smooth operation of all Yandex sites and services. For more information, please read our Cookie Policy\nAllow all\nAllow essential cookies\nSettings",
+    "links": [
+      {
+        "text": "Text",
+        "href": "https://translate.yandex.com/"
+      },
+      {
+        "text": "Examples",
+        "href": "https://translate.yandex.com/examples"
+      },
+      {
+        "text": "Sites",
+        "href": "https://translate.yandex.com/translate"
+      },
+      {
+        "text": "Documents",
+        "href": "https://translate.yandex.com/doc"
+      },
+      {
+        "text": "Images",
+        "href": "https://translate.yandex.com/ocr"
+      },
+      {
+        "text": "Collections",
+        "href": "https://translate.yandex.com/collections"
+      },
+      {
+        "text": "",
+        "href": "https://yandex.com/"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/"
+      },
+      {
+        "text": "Log in",
+        "href": "https://passport.yandex.com/auth?mode=add-user&retpath=https%3A%2F%2Ftranslate.yandex.com%2F"
+      },
+      {
+        "text": "",
+        "href": "https://yandex.com/"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/examples"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/translate"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/doc"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/ocr"
+      },
+      {
+        "text": "",
+        "href": "https://translate.yandex.com/collections"
+      },
+      {
+        "text": "",
+        "href": "https://passport.yandex.com/auth?mode=add-user&retpath=https%3A%2F%2Ftranslate.yandex.com%2F"
+      },
+      {
+        "text": "English \n Russian",
+        "href": "https://translate.yandex.com/translator/English-Russian"
+      },
+      {
+        "text": "Russian \n English",
+        "href": "https://translate.yandex.com/translator/Russian-English"
+      },
+      {
+        "text": "English \n French",
+        "href": "https://translate.yandex.com/translator/English-French"
+      },
+      {
+        "text": "French \n English",
+        "href": "https://translate.yandex.com/translator/French-English"
+      },
+      {
+        "text": "English \n Spanish",
+        "href": "https://translate.yandex.com/translator/English-Spanish"
+      },
+      {
+        "text": "Spanish \n English",
+        "href": "https://translate.yandex.com/translator/Spanish-English"
+      },
+      {
+        "text": "English \n Turkish",
+        "href": "https://translate.yandex.com/translator/English-Turkish"
+      },
+      {
+        "text": "Turkish \n English",
+        "href": "https://translate.yandex.com/translator/Turkish-English"
+      },
+      {
+        "text": "English \n German",
+        "href": "https://translate.yandex.com/translator/English-German"
+      },
+      {
+        "text": "German \n English",
+        "href": "https://translate.yandex.com/translator/German-English"
+      },
+      {
+        "text": "English \n Chinese",
+        "href": "https://translate.yandex.com/translator/English-Chinese"
+      },
+      {
+        "text": "Chinese \n English",
+        "href": "https://translate.yandex.com/translator/Chinese-English"
+      },
+      {
+        "text": "English \n Kazakh",
+        "href": "https://translate.yandex.com/translator/English-Kazakh"
+      },
+      {
+        "text": "Kazakh \n English",
+        "href": "https://translate.yandex.com/translator/Kazakh-English"
+      },
+      {
+        "text": "English \n Uzbek",
+        "href": "https://translate.yandex.com/translator/English-Uzbek"
+      },
+      {
+        "text": "Uzbek \n English",
+        "href": "https://translate.yandex.com/translator/Uzbek-English"
+      },
+      {
+        "text": "English \n Italian",
+        "href": "https://translate.yandex.com/translator/English-Italian"
+      },
+      {
+        "text": "Italian \n English",
+        "href": "https://translate.yandex.com/translator/Italian-English"
+      },
+      {
+        "text": "English \n Portuguese",
+        "href": "https://translate.yandex.com/translator/English-Portuguese"
+      },
+      {
+        "text": "Portuguese \n English",
+        "href": "https://translate.yandex.com/translator/Portuguese-English"
+      },
+      {
+        "text": "Support",
+        "href": "https://yandex.ru/chat#/user/d132b700-9b83-90ca-7307-d0a29f765586"
+      },
+      {
+        "text": "Yandex",
+        "href": "https://yandex.com/"
+      },
+      {
+        "text": "Mobile version",
+        "href": "https://www.yandex.com/portal/set/my/?param=0&block=44&retpath=https%3A%2F%2Ftranslate.yandex.com%2F&sk=yeef0da527f172cfdb887d1fa6f13ae1c"
+      },
+      {
+        "text": "Help",
+        "href": "https://yandex.com/support/translate/index.html"
+      },
+      {
+        "text": "Popular translations",
+        "href": "https://translate.yandex.com/catalog"
+      },
+      {
+        "text": "Developers",
+        "href": "https://cloud.yandex.com/en/services/translate/"
+      },
+      {
+        "text": "User agreement",
+        "href": "https://legal.yandex.com/translate_termsofuse/"
+      },
+      {
+        "text": "For business",
+        "href": "https://cloud.yandex.com/en/services/translate/?utm_source=yatranslate&utm_campaign=translatemainmenu"
+      },
+      {
+        "text": "Cookie Policy",
+        "href": "https://yandex.com/legal/cookies_policy_eng/"
+      },
+      {
+        "text": "Cookie Policy",
+        "href": "https://yandex.com/legal/cookies_policy_eng/"
+      }
+    ]
+  },
+  {
+    "name": "itranslate",
+    "device": "desktop",
+    "url": "https://itranslate.com/",
+    "finalUrl": "https://itranslate.com/",
+    "status": 200,
+    "title": "iTranslate - Translate Text, Voice and Photos",
+    "screenshot": "design-research/screenshots/competitors/itranslate-desktop.png",
+    "content": "Features\nTranslate\nLearning\nCompany\nInstantly\nspeak 100+ languages\nBeen using this for years!\nMaría O.\nAs seen in:\nWe enable everyone to communicate in any language\n\niTranslate enables travelers, students, business professionals, employers and medical staff to read, write and speak in over 100 languages, anywhere in the world.\n\nText\nTranslation\n\nWith autocomplete and alternative translations our text mode delivers a state-of-the-art experience in more than 100 languages.\n\nVoice\nTranslation\n\nJust start speaking and iTranslate recognizes your voice and translates to your desired language.\n\nNow available offline in 4 languages!\n\nCamera\nTranslation\n\nWith your phone’s camera you can instantly translate menus, cards, signs or most anything else you come across.\n\nOffline\nTranslation\n\nTranslate offline in many popular languages – without an internet connection! Let us help you avoid roaming costs!\n\nKeyboard\nTranslation\n\nGet instant translations right in your favorite messaging app. With iTranslate’s keyboard extension you can stay in touch with friends all over the world.\n\nPrivacy is at the core of everything we do\n\nFor us here at iTranslate privacy is one of our most important core values. Every product we develop and ship to you, our customer, is designed to keep your data safe. In a world of increasing complexity we firmly believe your data is yours and yours alone. We take our responsibility and your faith to protect this very seriously.\n\nPrivacy Policy\n\nMore features you will love\n100+\nLanguages\nSpeak more than 100 languages instantly\nVoice\nOutput\nListen to translations in different voices & dialects\nUniversal\nApp\nOne universal App for iPhone and iPad\nApple Watch\nApp\nYour standalone translation app – right on your wrist\nTranslation\nHistory\nEasy and quick access to previous translations\nList of\nFavorites\nSave frequently used translations to use them again later\nView in\nFullscreen\nSwitch to fullscreen mode to view translations\nSlide-Over,\nMulti-Window\nMake use of your iPad's multitasking features\nVerb\nConjugations\nLook up verb conjugations in different tenses\nSiri\nShortcuts\nAsk Siri to access your favorite features\nTransliteration\nRead non-latin characters: Turns „你好“ into „Nǐ hǎo“\nLight and\nDark Mode\nUse iTranslate the way you want: In light or dark mode\nShare\nExtension\nEasily translate any selected text in any app\nPhrasebook\nCommon phrases for your next vacation or business trip\nToday\nWidget\nGet the translation you need, right on your home screen\nAlternative\nTranslations\nAdd context with a variety of translation options\nTranslate to more than 100 languages\n\niTranslate allows you to translate text, websites and start voice conversations. You can also lookup words, their meanings and conjugate verbs.\n\nIt's all that and more — in over 100 languages.\nSee a full list\n\nAvailable\neverywhere\n\nNo matter what device you’re on – we’ve got you covered! iTranslate is your perfect travel companion and is available on a large variety of platforms and devices.\n\niTranslate for iOS\niTranslate for macOS\niTranslate for Android\niTranslate Webapp\nLet's break language\nbarriers. Together.\nCompany\nAbout\nContact us\nTerms & Policies\nTerms of Service\nPrivacy Policy\nLaw Enforcement\nCookie Policy\nCookie Settings\nSupport\nFAQs\nSupported Languages\nContact our Support\nProducts\niTranslate\niTranslate Converse\niTranslate Lingo\niTranslate Voice\nTyperight\niTranslate Android\niTranslate Webapp\n\nAll rights reserved. All trademarks, products and service names are the property of their respective owners. Apple, App Store, the App Store logo, and iPhone are trademarks of Apple, Inc. App Store is a service mark of Apple Inc. Chrome Web Store, the Chrome Web Store logo, Google Play and the Google Play logo are a trademarks of Google LLC. iOS is a trademark of Cisco and is used under license.\n\n© Bending Spoons Operations S.p.A.",
+    "links": [
+      {
+        "text": "",
+        "href": "https://itranslate.com/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/features/text-translations/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/features/voice-translations/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/features/camera-translations/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/features/offline-translations/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/features/keyboard-translations/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/translate/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/supported-languages/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/dictionary/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/language-learning/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/blog/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.zendesk.com/hc/en-us"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/converse/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/lingo/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/voice/"
+      },
+      {
+        "text": "",
+        "href": "https://typeright.com/"
+      },
+      {
+        "text": "",
+        "href": "https://apps.apple.com/app/id288113403"
+      },
+      {
+        "text": "",
+        "href": "https://play.google.com/store/apps/details?id=at.nk.tools.iTranslate"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/translate/"
+      },
+      {
+        "text": "",
+        "href": "https://apps.apple.com/app/id288113403"
+      },
+      {
+        "text": "",
+        "href": "https://play.google.com/store/apps/details?id=at.nk.tools.iTranslate"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/translate/"
+      },
+      {
+        "text": "",
+        "href": "https://itranslate.com/converse/#ada-winner"
+      },
+      {
+        "text": "",
+        "href": "https://techcrunch.com/2018/06/04/apple-announces-a-very-international-group-of-apple-design-award-winners/"
+      },
+      {
+        "text": "",
+        "href": "https://www.bloomberg.com/news/articles/2018-07-23/the-best-translation-apps-for-every-travel-situation"
+      },
+      {
+        "text": "",
+        "href": "https://www.youtube.com/watch?v=QVlegEhZtxs"
+      },
+      {
+        "text": "",
+        "href": "https://www.macworld.com/article/232759/the-10-best-complications-for-apple-watch.html"
+      },
+      {
+        "text": "",
+        "href": "https://www.forbes.com/sites/entrepreneursorganization/2019/10/15/how-to-prepare-for-your-next-international-business-trip/"
+      },
+      {
+        "text": "",
+        "href": "https://www.theverge.com/2017/8/3/16076084/itranslate-app-real-time-translation"
+      },
+      {
+        "text": "keyboard extension",
+        "href": "https://itranslate.com/keyboard-extension/"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "https://itranslate.com/privacy-policy/"
+      },
+      {
+        "text": "See a full list",
+        "href": "https://itranslate.com/supported-languages/"
+      },
+      {
+        "text": "iTranslate for iOS",
+        "href": "https://apps.apple.com/app/id288113403"
+      },
+      {
+        "text": "iTranslate for macOS",
+        "href": "https://apps.apple.com/us/app/itranslate-translator/id288113403?platform=mac"
+      },
+      {
+        "text": "iTranslate for Android",
+        "href": "https://play.google.com/store/apps/details?id=at.nk.tools.iTranslate"
+      },
+      {
+        "text": "iTranslate Webapp",
+        "href": "https://itranslate.com/translate/"
+      },
+      {
+        "text": "About",
+        "href": "https://itranslate.com/about/"
+      },
+      {
+        "text": "Contact us",
+        "href": "https://itranslate.zendesk.com/hc/en-us"
+      },
+      {
+        "text": "Terms of Service",
+        "href": "https://itranslate.com/terms-of-service/"
+      },
+      {
+        "text": "Privacy Policy",
+        "href": "https://itranslate.com/privacy-policy/"
+      },
+      {
+        "text": "Law Enforcement",
+        "href": "https://bendingspoons.com/documents/Information%20for%20Law%20Enforcement%20Authorities.pdf"
+      },
+      {
+        "text": "Cookie Policy",
+        "href": "https://itranslate.com/cookie-policy/"
+      },
+      {
+        "text": "Cookie Settings",
+        "href": "https://itranslate.com/cookie-policy/"
+      },
+      {
+        "text": "FAQs",
+        "href": "https://itranslate.zendesk.com/hc/en-us"
+      },
+      {
+        "text": "Supported Languages",
+        "href": "https://itranslate.com/supported-languages/"
+      },
+      {
+        "text": "Contact our Support",
+        "href": "https://itranslate.zendesk.com/hc/en-us"
+      },
+      {
+        "text": "iTranslate",
+        "href": "https://itranslate.com/"
+      },
+      {
+        "text": "iTranslate Converse",
+        "href": "https://itranslate.com/converse/"
+      },
+      {
+        "text": "iTranslate Lingo",
+        "href": "https://itranslate.com/lingo/"
+      },
+      {
+        "text": "iTranslate Voice",
+        "href": "https://itranslate.com/voice/"
+      },
+      {
+        "text": "Typeright",
+        "href": "https://typeright.com/"
+      },
+      {
+        "text": "iTranslate Android",
+        "href": "https://play.google.com/store/apps/details?id=at.nk.tools.iTranslate"
+      },
+      {
+        "text": "iTranslate Webapp",
+        "href": "https://itranslate.com/translate/"
+      },
+      {
+        "text": "",
+        "href": "https://www.facebook.com/iTranslate-97454508050/?fref=ts"
+      },
+      {
+        "text": "",
+        "href": "https://www.instagram.com/itranslate/"
+      },
+      {
+        "text": "",
+        "href": "https://twitter.com/iTranslateApp"
+      },
+      {
+        "text": "",
+        "href": "https://www.youtube.com/channel/UCpiPGICedQNiMV3Pux-CREg"
+      }
+    ]
+  },
+  {
+    "name": "linguee",
+    "device": "desktop",
+    "url": "https://www.linguee.com/",
+    "finalUrl": "https://www.linguee.com/",
+    "status": 200,
+    "title": "Linguee | Dictionary for German, French, Spanish, and more",
+    "screenshot": "design-research/screenshots/competitors/linguee-desktop.png",
+    "content": " Translator Write Dictionary\n Open menu\n \n\nEnglish-German Dictionary.\nSearch 1,000,000,000 translations.\n\n English   German\näßüö\nTranslate textTranslate filesImprove your writing\nTranslate faster with DeepL for Mac\n\nWorks wherever you're reading or writing, with additional time-saving features.\n\nDownload it-it's free\nLinguee auf Deutsch\nPublisher\nTerms and Conditions\nPrivacy\nDo Not Sell My Personal Information",
+    "links": [
+      {
+        "text": "Look up in Linguee",
+        "href": "javascript:lingueeSearch()"
+      },
+      {
+        "text": "Suggest as a translation of \"\"",
+        "href": "javascript:proposeTranslation()"
+      },
+      {
+        "text": "Copy",
+        "href": "javascript:clipboardCopy()"
+      },
+      {
+        "text": "",
+        "href": "https://www.deepl.com/translator?utm_source=lingueecom&utm_medium=linguee&utm_content=header_logo"
+      },
+      {
+        "text": "Translator",
+        "href": "https://www.deepl.com/translator?utm_source=lingueecom&utm_medium=linguee&utm_content=header_translator"
+      },
+      {
+        "text": "Write",
+        "href": "https://www.deepl.com/write?utm_source=lingueecom&utm_medium=linguee&utm_content=header_write"
+      },
+      {
+        "text": "Dictionary",
+        "href": "https://www.linguee.com/"
+      },
+      {
+        "text": "Linguee",
+        "href": "https://www.linguee.com/"
+      },
+      {
+        "text": "ä",
+        "href": "javascript:addLetter('%C3%A4');"
+      },
+      {
+        "text": "ß",
+        "href": "javascript:addLetter('%C3%9F');"
+      },
+      {
+        "text": "ü",
+        "href": "javascript:addLetter('%C3%BC');"
+      },
+      {
+        "text": "ö",
+        "href": "javascript:addLetter('%C3%B6');"
+      },
+      {
+        "text": "Translate text",
+        "href": "https://www.deepl.com/translator?utm_source=lingueecom&utm_medium=linguee&utm_content=homepage_text"
+      },
+      {
+        "text": "Translate files",
+        "href": "https://www.deepl.com/translator/files?utm_source=lingueecom&utm_medium=linguee&utm_content=homepage_file"
+      },
+      {
+        "text": "Improve your writing",
+        "href": "https://www.deepl.com/write?utm_source=lingueecom&utm_medium=linguee&utm_content=homepage_write"
+      },
+      {
+        "text": "Download it-it's free",
+        "href": "https://www.deepl.com/macos-app?utm_source=wwwlingueecom&utm_medium=linguee&utm_content=macos-app-lp"
+      },
+      {
+        "text": "Linguee auf Deutsch",
+        "href": "https://www.linguee.de/?chooseDomain=1"
+      },
+      {
+        "text": "Publisher",
+        "href": "https://www.linguee.com/pages/imprint.html"
+      },
+      {
+        "text": "Terms and Conditions",
+        "href": "https://www.linguee.com/pages/termsAndConditions.html"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://www.linguee.com/pages/privacy.html"
+      },
+      {
+        "text": "Do Not Sell My Personal Information",
+        "href": "https://www.linguee.com/#"
+      },
+      {
+        "text": "",
+        "href": "https://twitter.com/DeepLcom"
+      },
+      {
+        "text": "",
+        "href": "https://www.facebook.com/DeepLcom/"
+      },
+      {
+        "text": "",
+        "href": "https://www.linkedin.com/company/linkedin-com-company-deepl/"
+      }
+    ]
+  },
+  {
+    "name": "spanishdictionary",
+    "device": "desktop",
+    "url": "https://www.spanishdict.com/translation",
+    "blocked": "page.screenshot: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n"
+  },
+  {
+    "name": "systran",
+    "device": "desktop",
+    "url": "https://www.systransoft.com/translate/",
+    "blocked": "page.goto: Timeout 25000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"https://www.systransoft.com/translate/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  }
+]

@@ -1,0 +1,48 @@
+[
+  {
+    "name": "Edited source cannot be saved against a previous result",
+    "passed": true
+  },
+  {
+    "name": "Late alternatives do not return after clear",
+    "passed": true
+  },
+  {
+    "name": "Late detection does not replace the language of edited text",
+    "passed": true
+  },
+  {
+    "name": "Clear stops an in-progress typing animation",
+    "passed": true
+  },
+  {
+    "name": "Swap and undo persist the actual workspace draft and pair",
+    "passed": true
+  },
+  {
+    "name": "Slow translation can be cancelled and retried",
+    "passed": true
+  },
+  {
+    "name": "Failed replacement translation keeps retry available",
+    "passed": true
+  },
+  {
+    "name": "Clearing during a slow request immediately releases the translator",
+    "passed": true
+  },
+  {
+    "name": "Translation timeout restores controls and offers retry",
+    "passed": true
+  },
+  {
+    "name": "Swap before translation preserves source text",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ ''\n- 'Keep this unfinished draft.'\n"
+  },
+  {
+    "name": "Undo does not turn an outdated result into a valid saved pair",
+    "passed": false,
+    "error": "The expression evaluated to a falsy value:\n\n  assert.ok(await page.locator('.save-translation-btn').isDisabled())\n"
+  }
+]

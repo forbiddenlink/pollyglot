@@ -1,0 +1,46 @@
+{
+  "home-final": {
+    "fetched": "2026-10-09T12:32:53.454Z",
+    "categories": {
+      "performance": 96,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 92
+    },
+    "lcp": "2.6 s",
+    "cls": 0.0010183411194373468
+  },
+  "about": {
+    "fetched": "2026-10-09T12:27:09.418Z",
+    "categories": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 92
+    },
+    "lcp": "1.5 s",
+    "cls": 0.0005537796542263446
+  },
+  "contact": {
+    "fetched": "2026-10-09T12:27:46.374Z",
+    "categories": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 92
+    },
+    "lcp": "1.5 s",
+    "cls": 0.0005524358550168654
+  },
+  "privacy-policy": {
+    "fetched": "2026-10-09T12:28:12.145Z",
+    "categories": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 92
+    },
+    "lcp": "1.5 s",
+    "cls": 0.0008843542597582075
+  }
+}
