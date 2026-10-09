@@ -53,8 +53,16 @@ async function request(path, method = 'GET', body) {
             if (counts.get(path) > 1) return route.abort();
             const response = await request(path, 'POST', req.postData());
             const entry = { path, status: response.status, contentType: response.contentType, bytes: response.body.length, elapsedMs: response.elapsedMs };
-            if (response.contentType.includes('json')) entry.response = JSON.parse(response.body.toString());
-            else if (!response.contentType.startsWith('audio/')) entry.response = response.body.toString().slice(0, 250);
+            if (response.contentType.includes('json')) {
+                const data = JSON.parse(response.body.toString());
+                if (response.status < 400) entry.response = { translation: data.translation };
+                else {
+                    const publicErrors = ['Origin not allowed', 'Translation service is not configured properly', 'TTS service not configured'];
+                    const error = publicErrors.includes(data.error) ? data.error : `Service returned HTTP ${response.status}; provider details omitted`;
+                    entry.response = { error };
+                    response.body = Buffer.from(JSON.stringify({ error }));
+                }
+            } else if (!response.contentType.startsWith('audio/')) entry.response = 'Unexpected non-audio response; body omitted';
             if (path === '/api/tts' && response.contentType.startsWith('audio/')) fs.writeFileSync(`${output}/speech.mp3`, response.body);
             results.requests.push(entry);
             console.log(JSON.stringify(entry));
