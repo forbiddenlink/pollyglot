@@ -57,6 +57,66 @@ let recognition = null;
 let favoriteLanguages = [];
 let favoriteTranslations = [];
 let undoStack = [];
+let completedWorkspaceKey = null;
+let observedWorkspaceKey = null;
+let resultVersion = 0;
+let translationController = null;
+
+function workspaceKey() {
+    return JSON.stringify([textInput.value.trim(), selectedSourceLang, selectedTargetLang, document.getElementById('formality').value]);
+}
+
+function stopTyping() {
+    if (typingAnimation) clearInterval(typingAnimation);
+    typingAnimation = null;
+    typingFullText = '';
+    typingCallback = null;
+    textOutput.classList.remove('typing');
+}
+
+function refreshTranslationActions() {
+    const ready = Boolean(textOutput.textContent.trim()) && completedWorkspaceKey === workspaceKey() && !typingAnimation;
+    [copyBtn, outputSpeakBtn, saveTranslationBtn, shareBtn, favoriteBtn, practiceBtn, document.getElementById('download-text')].forEach(button => {
+        if (button) button.disabled = !ready;
+    });
+    if (!ready && textOutput.textContent && !translateBtn.disabled && !typingAnimation && document.getElementById('translation-status').dataset.state !== 'error') {
+        setTranslationStatus('idle', 'This result is from your previous text or settings. Translate again to use the updated version.');
+    }
+    return ready;
+}
+
+function workspaceChanged() {
+    const key = workspaceKey();
+    if (key !== observedWorkspaceKey) {
+        observedWorkspaceKey = key;
+        resultVersion++;
+        if (typingAnimation) {
+            textOutput.textContent = typingFullText;
+            stopTyping();
+            updateOutputWordCounter();
+        }
+        alternativesSection.style.display = 'none';
+        pronunciationGuide.style.display = 'none';
+    }
+    refreshTranslationActions();
+    document.dispatchEvent(new Event('pollyglot:workspace-change'));
+}
+
+function rememberTranslation(clearGuides = true) {
+    completedWorkspaceKey = workspaceKey();
+    if (clearGuides) {
+        alternativesSection.style.display = 'none';
+        pronunciationGuide.style.display = 'none';
+    }
+    if (textOutput.textContent.trim()) setTranslationStatus('success', 'Translation ready. Listen, copy, or save it for later.');
+    refreshTranslationActions();
+}
+
+function cancelTranslation() {
+    if (!translationController) return;
+    translationController.abort();
+    setTranslationStatus('idle', 'Translation cancelled. Your text is still here.');
+}
 let practiceState = {
     isActive: false,
     currentPhrase: null,
@@ -186,6 +246,8 @@ function attachEventListeners() {
     // Translation
     translateBtn.addEventListener('click', handleTranslation);
     detectLangBtn.addEventListener('click', detectLanguage);
+    document.getElementById('cancel-translation').addEventListener('click', cancelTranslation);
+    document.getElementById('formality').addEventListener('change', workspaceChanged);
     
     // Text input
     textInput.addEventListener('input', updateCharCounter);
@@ -280,7 +342,7 @@ function attachEventListeners() {
 }
 
 // Language Selection
-function selectLanguage(option, type) {
+function selectLanguage(option, type, translateOnChange = true) {
     const options = type === 'source' ? sourceLangOptions : targetLangOptions;
     options.forEach(opt => opt.classList.remove('selected'));
     option.classList.add('selected');
@@ -300,10 +362,11 @@ function selectLanguage(option, type) {
 
     // Save language pair to localStorage
     saveLanguagePair();
+    workspaceChanged();
 
     // Optional: auto-translate when language pair changes
     if (
-        appSettings.autoTranslate &&
+        translateOnChange && appSettings.autoTranslate &&
         textInput.value.trim() &&
         selectedTargetLang &&
         selectedSourceLang !== selectedTargetLang
@@ -327,14 +390,14 @@ function loadLanguagePair() {
             if (source) {
                 sourceLangOptions.forEach(opt => {
                     if (opt.dataset.lang === source) {
-                        selectLanguage(opt, 'source');
+                        selectLanguage(opt, 'source', false);
                     }
                 });
             }
             if (target) {
                 targetLangOptions.forEach(opt => {
                     if (opt.dataset.lang === target) {
-                        selectLanguage(opt, 'target');
+                        selectLanguage(opt, 'target', false);
                     }
                 });
             }
@@ -397,6 +460,7 @@ function updateCharCounter() {
     if (examplePhrases) {
         examplePhrases.classList.toggle('hidden', charCount > 0);
     }
+    workspaceChanged();
 }
 
 function updateOutputWordCounter() {
@@ -433,16 +497,28 @@ async function handleTranslation() {
     const requestSource = selectedSourceLang;
     const requestTarget = selectedTargetLang;
     const requestTone = document.getElementById('formality').value;
+    const requestVersion = ++resultVersion;
+    const controller = new AbortController();
+    translationController = controller;
+    let timedOut = false;
+    const timeout = setTimeout(() => { timedOut = true; controller.abort(); }, 45000);
+    stopTyping();
+    completedWorkspaceKey = null;
+    alternativesSection.style.display = 'none';
+    pronunciationGuide.style.display = 'none';
     try {
         setTranslationStatus('loading', 'Finding the right words…');
         textOutput.setAttribute('aria-busy', 'true');
         showLoading(true);
         translateBtn.disabled = true;
+        document.getElementById('cancel-translation').hidden = false;
+        refreshTranslationActions();
         
         const formality = document.getElementById('formality').value;
 
         const response = await fetch('/api/translate', {
             method: 'POST',
+            signal: controller.signal,
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -460,7 +536,7 @@ async function handleTranslation() {
         }
 
         const translationText = data.translation;
-        if (textInput.value.trim() !== text || selectedSourceLang !== requestSource || selectedTargetLang !== requestTarget || document.getElementById('formality').value !== requestTone) {
+        if (requestVersion !== resultVersion || textInput.value.trim() !== text || selectedSourceLang !== requestSource || selectedTargetLang !== requestTarget || document.getElementById('formality').value !== requestTone) {
             setTranslationStatus('idle', 'Your text or language changed. Translate again for an up-to-date result.');
             return;
         }
@@ -468,6 +544,7 @@ async function handleTranslation() {
             throw new Error('No translation was returned. Please try again.');
         }
         setTranslationStatus('success', 'Translation ready. Listen, copy, or save it for later.');
+        completedWorkspaceKey = workspaceKey();
 
         // Show action buttons
         copyBtn.style.display = 'flex';
@@ -480,11 +557,14 @@ async function handleTranslation() {
         typeText(translationText, () => {
             updateOutputWordCounter();
             checkIfFavorited();
+            refreshTranslationActions();
             announceToScreenReader('Translation complete: ' + translationText);
 
             // Auto-speak if enabled (after typing finishes)
             if (appSettings.autoSpeak) {
-                setTimeout(() => speakText(translationText, selectedTargetLang), 300);
+                setTimeout(() => {
+                    if (requestVersion === resultVersion && refreshTranslationActions()) speakText(translationText, requestTarget);
+                }, 300);
             }
         });
 
@@ -503,7 +583,7 @@ async function handleTranslation() {
 
         // Fetch alternatives for short texts
         if (text.length <= 200) {
-            fetchAlternatives(text, translationText);
+            fetchAlternatives(text, translationText, requestVersion);
         } else {
             alternativesSection.style.display = 'none';
         }
@@ -511,25 +591,32 @@ async function handleTranslation() {
         // Fetch pronunciation for non-Latin scripts
         const nonLatinLangs = ['zh', 'ja', 'ko', 'ar', 'hi', 'ru', 'th', 'el', 'he'];
         if (nonLatinLangs.includes(selectedTargetLang) && translationText.length <= 500) {
-            fetchPronunciation(translationText);
+            fetchPronunciation(translationText, requestVersion);
         } else {
             pronunciationGuide.style.display = 'none';
         }
         
     } catch (error) {
+        if (error.name === 'AbortError' && !timedOut) return;
+        if (requestVersion !== resultVersion) return;
         console.error('Translation error:', error);
-        setTranslationStatus('error', navigator.onLine ? `We couldn't translate this time. ${error.message}` : 'You are offline. Reconnect, then try again.', true);
+        setTranslationStatus('error', timedOut ? 'Translation took too long. Please try again.' : navigator.onLine ? `We couldn't translate this time. ${error.message}` : 'You are offline. Reconnect, then try again.', true);
         showToast(`Translation failed: ${error.message}`, 'error');
     } finally {
+        clearTimeout(timeout);
+        translationController = null;
+        document.getElementById('cancel-translation').hidden = true;
         textOutput.setAttribute('aria-busy', 'false');
         showLoading(false);
         translateBtn.disabled = false;
+        refreshTranslationActions();
     }
 }
 
 // Language Detection
 async function detectLanguage() {
     const text = textInput.value.trim();
+    const requestVersion = resultVersion;
     if (!text) {
         showToast('Please enter some text to detect its language', 'warning');
         return;
@@ -546,6 +633,7 @@ async function detectLanguage() {
         });
 
         const data = await response.json();
+        if (textInput.value.trim() !== text || requestVersion !== resultVersion) return;
         if (!response.ok) {
             throw new Error(data.error || 'Language detection failed');
         }
@@ -1319,6 +1407,8 @@ function attachHistoryTTSHandlers() {
 function useHistoryItem(index) {
     const item = translationHistory[index];
     if (!item) return;
+    stopTyping();
+    resultVersion++;
     
     textInput.value = item.sourceText;
     textOutput.textContent = item.targetText;
@@ -1327,14 +1417,19 @@ function useHistoryItem(index) {
     if (item.sourceLang !== 'auto') {
         sourceLangOptions.forEach(opt => {
             if (opt.dataset.lang === item.sourceLang) {
-                selectLanguage(opt, 'source');
+                selectLanguage(opt, 'source', false);
             }
         });
     }
     
+    if (item.sourceLang === 'auto') {
+        selectedSourceLang = null;
+        sourceLangOptions.forEach(opt => opt.classList.remove('selected'));
+    }
+
     targetLangOptions.forEach(opt => {
         if (opt.dataset.lang === item.targetLang) {
-            selectLanguage(opt, 'target');
+            selectLanguage(opt, 'target', false);
         }
     });
     
@@ -1346,6 +1441,8 @@ function useHistoryItem(index) {
 
     historySidebar.classList.remove('open');
     showToast('Translation loaded from history', 'success');
+    rememberTranslation();
+    updateOutputWordCounter();
 }
 
 function deleteHistoryItem(index) {
@@ -1371,8 +1468,10 @@ function swapLanguages() {
         return;
     }
 
+    const hasCurrentResult = refreshTranslationActions();
     // Save state for undo
     saveStateForUndo();
+    skipTypingAnimation();
 
     // Swap selections
     const tempLang = selectedSourceLang;
@@ -1389,11 +1488,16 @@ function swapLanguages() {
     });
 
     // Swap text
-    const tempText = textInput.value;
-    textInput.value = textOutput.textContent;
-    textOutput.textContent = tempText;
+    if (hasCurrentResult) {
+        const tempText = textInput.value;
+        textInput.value = textOutput.textContent;
+        textOutput.textContent = tempText;
+    }
     
     updateCharCounter();
+    saveLanguagePair();
+    if (hasCurrentResult) rememberTranslation();
+    updateOutputWordCounter();
     showToast('Languages swapped!', 'success');
 }
 
@@ -1403,7 +1507,8 @@ function saveStateForUndo() {
         sourceText: textInput.value,
         targetText: textOutput.textContent,
         sourceLang: selectedSourceLang,
-        targetLang: selectedTargetLang
+        targetLang: selectedTargetLang,
+        resultCurrent: refreshTranslationActions()
     });
     // Keep only last 5 states
     if (undoStack.length > 5) {
@@ -1418,20 +1523,26 @@ function undo() {
     }
 
     const state = undoStack.pop();
+    stopTyping();
+    resultVersion++;
     textInput.value = state.sourceText;
     textOutput.textContent = state.targetText;
 
     if (state.sourceLang) {
         sourceLangOptions.forEach(opt => {
             if (opt.dataset.lang === state.sourceLang) {
-                selectLanguage(opt, 'source');
+                selectLanguage(opt, 'source', false);
             }
         });
+    }
+    if (!state.sourceLang) {
+        selectedSourceLang = null;
+        sourceLangOptions.forEach(opt => opt.classList.remove('selected'));
     }
     if (state.targetLang) {
         targetLangOptions.forEach(opt => {
             if (opt.dataset.lang === state.targetLang) {
-                selectLanguage(opt, 'target');
+                selectLanguage(opt, 'target', false);
             }
         });
     }
@@ -1442,15 +1553,26 @@ function undo() {
         outputSpeakBtn.style.display = 'flex';
     }
     showToast('Undone!', 'success');
+    if (state.resultCurrent) rememberTranslation();
+    else {
+        completedWorkspaceKey = null;
+        refreshTranslationActions();
+    }
+    updateOutputWordCounter();
 }
 
 // Clear Text
 function clearText() {
+    if (translationController) translationController.abort();
+    stopTyping();
+    resultVersion++;
+    completedWorkspaceKey = null;
     if (textInput.value || textOutput.textContent) {
         saveStateForUndo();
     }
     textInput.value = '';
     textOutput.textContent = '';
+    updateOutputWordCounter();
     setTranslationStatus('idle', '');
     updateCharCounter();
     copyBtn.style.display = 'none';
@@ -1465,6 +1587,7 @@ function clearText() {
 
 // Save Current Translation
 function saveCurrentTranslation() {
+    if (!refreshTranslationActions()) return;
     const sourceText = textInput.value.trim();
     const targetText = textOutput.textContent.trim();
     
@@ -1634,7 +1757,7 @@ function announceToScreenReader(message) {
 }
 
 // Fetch alternative translations
-async function fetchAlternatives(sourceText, mainTranslation) {
+async function fetchAlternatives(sourceText, mainTranslation, version = resultVersion) {
     try {
         const response = await fetch('/api/alternatives', {
             method: 'POST',
@@ -1647,6 +1770,9 @@ async function fetchAlternatives(sourceText, mainTranslation) {
         });
 
         const data = await response.json();
+
+        if (version !== resultVersion) return;
+        if (!response.ok) throw new Error('Alternative phrasings unavailable');
 
         if (data.alternatives && data.alternatives.length > 0) {
             const filtered = data.alternatives.filter(
@@ -1662,6 +1788,7 @@ async function fetchAlternatives(sourceText, mainTranslation) {
             alternativesSection.style.display = 'none';
         }
     } catch (error) {
+        if (version !== resultVersion) return;
         console.error('Failed to fetch alternatives:', error);
         alternativesSection.style.display = 'none';
     }
@@ -1676,7 +1803,11 @@ function displayAlternatives(alternatives) {
         item.className = 'alternative-item';
         item.textContent = alt;
         item.addEventListener('click', () => {
+            stopTyping();
+            resultVersion++;
             textOutput.textContent = alt;
+            pronunciationGuide.style.display = 'none';
+            rememberTranslation(false);
             updateOutputWordCounter();
             checkIfFavorited();
             showToast('Alternative selected', 'success');
@@ -1688,7 +1819,7 @@ function displayAlternatives(alternatives) {
 }
 
 // Fetch pronunciation guide
-async function fetchPronunciation(translatedText) {
+async function fetchPronunciation(translatedText, version = resultVersion) {
     try {
         const response = await fetch('/api/pronunciation', {
             method: 'POST',
@@ -1701,6 +1832,9 @@ async function fetchPronunciation(translatedText) {
 
         const data = await response.json();
 
+        if (version !== resultVersion) return;
+        if (!response.ok) throw new Error('Pronunciation guide unavailable');
+
         if (data.phonetic) {
             pronunciationText.textContent = data.phonetic;
             pronunciationGuide.style.display = 'block';
@@ -1708,6 +1842,7 @@ async function fetchPronunciation(translatedText) {
             pronunciationGuide.style.display = 'none';
         }
     } catch (error) {
+        if (version !== resultVersion) return;
         console.error('Failed to fetch pronunciation:', error);
         pronunciationGuide.style.display = 'none';
     }
@@ -1750,6 +1885,7 @@ function filterLanguages(searchTerm, type) {
 
 // Share Translation
 async function shareTranslation() {
+    if (!refreshTranslationActions()) return;
     const sourceText = textInput.value.trim();
     const targetText = textOutput.textContent.trim();
     
@@ -1961,6 +2097,7 @@ function saveFavorites() {
 
 // Favorites System
 function toggleFavorite() {
+    if (!refreshTranslationActions()) return;
     const sourceText = textInput.value.trim();
     const targetText = textOutput.textContent.trim();
 
@@ -2150,6 +2287,8 @@ function speakFavoriteItem(text, lang, button) {
 function useFavoriteItem(index) {
     const item = favoriteTranslations[index];
     if (!item) return;
+    stopTyping();
+    resultVersion++;
 
     textInput.value = item.sourceText;
     textOutput.textContent = item.targetText;
@@ -2157,14 +2296,19 @@ function useFavoriteItem(index) {
     if (item.sourceLang !== 'auto') {
         sourceLangOptions.forEach(opt => {
             if (opt.dataset.lang === item.sourceLang) {
-                selectLanguage(opt, 'source');
+                selectLanguage(opt, 'source', false);
             }
         });
     }
 
+    if (item.sourceLang === 'auto') {
+        selectedSourceLang = null;
+        sourceLangOptions.forEach(opt => opt.classList.remove('selected'));
+    }
+
     targetLangOptions.forEach(opt => {
         if (opt.dataset.lang === item.targetLang) {
-            selectLanguage(opt, 'target');
+            selectLanguage(opt, 'target', false);
         }
     });
 
@@ -2176,6 +2320,8 @@ function useFavoriteItem(index) {
 
     historySidebar.classList.remove('open');
     showToast('Favorite loaded', 'success');
+    rememberTranslation();
+    updateOutputWordCounter();
 }
 
 function deleteFavoriteItem(index) {

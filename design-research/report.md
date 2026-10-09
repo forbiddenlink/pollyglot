@@ -144,3 +144,7 @@ Existing functionality and routes will be preserved. New local UI features do no
 | 7 | This report's commit | Final report and completed progress |
 
 Work stops here. Branch remains unmerged and undeployed.
+
+## Functionality continuation
+
+After the seven-phase upgrade, the user authorized additional feature/functionality work. Added cancellation and timeout recovery; corrected outdated-result actions, late responses, typing after Clear, draft/language persistence, swap/undo and saved-entry restoration. **14 new functionality tests and the original 59 browser checks pass**, plus 2/2 repository tests. New state screenshots and remaining priorities are in [functionality.md](functionality.md). No live paid providers, production changes or deployment were used.

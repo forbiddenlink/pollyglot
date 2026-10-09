@@ -19,3 +19,7 @@ Node verified `v22.23.1` via mise's global pin; packageManager pnpm 10.18.0. Ins
 ## Findings
 
 Mobile overflow and overlapping examples confirmed in screenshots. Supporting pages do not load declared web fonts. Existing service worker caches app shell first; version/cache additions will need to accompany new assets. Real API/microphone/mail delivery remain untested and must not be represented as tested by mock UI checks.
+
+## Functionality continuation — October 9
+
+User authorized continuing with features/functionality on the existing branch. Scope: result validity, late async responses, typing cancellation, programmatic draft/pair persistence and request cancellation/timeout; no service or API contract changes. Done: initial six Chrome regressions reproduced, followed by error/clear, swap/undo and saved-entry restoration cases. Final 14 functionality tests + 59 existing browser checks + 2 Vitest tests pass; automated accessibility checks pass, including new pending/Cancel state. See `functionality.md` and `functionality-after.json`. Commit this continuation; no merge/deploy.

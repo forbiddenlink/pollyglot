@@ -125,6 +125,7 @@
     function saveDraft() {
         note.textContent = storage.set('pollyglotDraft', input.value) ? 'Draft saved in this browser' : 'Browser storage unavailable — keep this page open';
     }
+    document.addEventListener('pollyglot:workspace-change', saveDraft);
     input.addEventListener('input', saveDraft);
     document.querySelector('.clear-text-btn').addEventListener('click', saveDraft);
     document.querySelector('.swap-lang-btn').addEventListener('click', saveDraft);
@@ -174,6 +175,7 @@
         event.target.value = '';
     });
     document.getElementById('download-text').addEventListener('click', () => {
+        if (!refreshTranslationActions()) return;
         const text = textOutput.textContent.trim();
         if (!text) { showToast('Translate some text first, then download it.', 'warning'); return; }
         const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));

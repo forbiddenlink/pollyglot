@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Edited source cannot be saved against a previous result",
+    "passed": true
+  },
+  {
+    "name": "Late alternatives do not return after clear",
+    "passed": true
+  },
+  {
+    "name": "Late detection does not replace the language of edited text",
+    "passed": true
+  },
+  {
+    "name": "Clear stops an in-progress typing animation",
+    "passed": true
+  },
+  {
+    "name": "Swap and undo persist the actual workspace draft and pair",
+    "passed": true
+  },
+  {
+    "name": "Slow translation can be cancelled and retried",
+    "passed": true
+  },
+  {
+    "name": "Failed replacement translation keeps retry available",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\n'idle' !== 'error'\n"
+  },
+  {
+    "name": "Clearing during a slow request immediately releases the translator",
+    "passed": false,
+    "error": "Expected values to be strictly equal:\n\ntrue !== false\n"
+  }
+]

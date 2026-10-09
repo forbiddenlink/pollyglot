@@ -152,6 +152,8 @@ a { color: inherit; text-underline-offset: 4px; }
 .translate-btn { width: auto; min-height: 46px; margin: 0; padding: 12px 26px; gap: 10px; border: 0; border-radius: 8px; background: var(--forest); color: var(--paper); box-shadow: none; text-transform: none; font-size: 13px; letter-spacing: 0; order: 3; }
 .translate-btn:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: none; }
 .translate-btn .parrot-icon { width: 20px; height: 20px; }
+.cancel-translation { order: 3; min-height: 46px; padding: 10px 16px; border: 1px solid var(--coral); border-radius: 8px; background: var(--surface); color: var(--coral); font-size: 13px; }
+.middle-controls:has(.cancel-translation:not([hidden])) .translate-btn { display: none; }
 .swap-lang-btn { width: 40px; height: 40px; margin: 0; padding: 10px; color: var(--forest); border: 1px solid var(--line); border-radius: 50%; background: transparent; order: 2; }
 .swap-lang-btn:hover { transform: none; background: var(--sage); }
 .workspace-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin: 12px 0 0; font-size: 11px; color: var(--muted); }
