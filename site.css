@@ -59,6 +59,8 @@ button { cursor: pointer; }
 button:disabled { cursor: wait; opacity: .6; }
 a { color: inherit; text-underline-offset: 4px; }
 :focus-visible { outline: 3px solid var(--coral); outline-offset: 4px; }
+.toast.success { background: #276841; color: #ffffff; }
+.toast.warning { background: #f2ca7e; color: #193c32; }
 [hidden] { display: none !important; }
 .skip-link { position: fixed; z-index: 9999; top: 8px; left: 16px; padding: 12px 20px; background: var(--forest); color: var(--paper); transform: translateY(-160%); }
 .skip-link:focus { transform: none; }
@@ -102,6 +104,8 @@ a { color: inherit; text-underline-offset: 4px; }
 .panel-header button { width: 32px; height: 32px; padding: 8px; background: transparent; color: var(--muted); border: 0; box-shadow: none; border-radius: 6px; }
 .panel-header button:hover { background: var(--sage); }
 .language-picker { position: relative; margin-bottom: 16px; }
+.js .panel > .language-selector { display: none; }
+.js .panel > .language-search-container { height: 47px; margin-bottom: 16px; visibility: hidden; }
 .language-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 9px 0; color: var(--forest); border: 0; border-bottom: 1px solid var(--line); background: transparent; text-align: left; font-weight: 600; font-size: 17px; }
 .language-trigger span:last-child { font-size: 15px; color: var(--muted); }
 .language-menu { position: absolute; top: calc(100% + 8px); left: 0; width: 100%; min-width: 240px; z-index: 30; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 12px 36px #102a2326; }
@@ -112,6 +116,7 @@ a { color: inherit; text-underline-offset: 4px; }
 .lang-option .lang-flag { font-size: 20px; margin: 0; }
 .lang-option .lang-label { font-size: 12px; }
 .lang-option.selected { background: var(--sage); color: var(--forest); box-shadow: none; }
+.lang-option.selected .lang-label { color: var(--forest); }
 .lang-option:hover { transform: none; background: var(--sage); }
 .language-empty { padding: 12px; font-size: 13px; color: var(--muted); }
 .detect-lang { margin: 0 0 10px; padding: 5px 10px; min-height: 32px; font-size: 11px; box-shadow: none; border: 1px solid var(--line); border-radius: 5px; background: transparent; color: var(--forest); }
@@ -139,6 +144,7 @@ a { color: inherit; text-underline-offset: 4px; }
 .text-stats { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin: 16px 0 0; padding: 0; color: var(--muted); font-size: 10px; }
 .stats-row { gap: 12px; }
 .word-counter, .char-counter, .reading-time { font: 400 10px/1.5 var(--font-body); letter-spacing: 0; }
+.reading-time { color: var(--muted); }
 .middle-controls { grid-column: 1 / -1; grid-row: 2; display: flex; flex-direction: row; justify-content: flex-end; align-items: center; gap: 16px; padding: 16px 24px; margin: 0; border-top: 1px solid var(--line); background: var(--surface); border-radius: 0 0 16px 16px; }
 .formality-selector { margin: 0 auto 0 0; display: flex; gap: 10px; align-items: center; }
 .formality-selector label { font-size: 12px; }
@@ -283,12 +289,14 @@ body.fullscreen .workspace-topline { padding-top: 24px; }
     .translation-grid { grid-template-columns: minmax(0,1fr); }
     .panel { padding: 18px 20px 16px; }
     .input-section { border-right: 0; border-bottom: 1px solid var(--line); border-radius: 16px 16px 0 0; }
-    .output-section { grid-column: 1; grid-row: 2; border-radius: 0; }
-    .middle-controls { grid-row: 3; padding: 16px 20px; gap: 10px; flex-wrap: wrap; }
+    .output-section { grid-column: 1; grid-row: 3; border-radius: 0 0 16px 16px; }
+    .middle-controls { grid-row: 2; padding: 16px 20px; gap: 10px; flex-wrap: wrap; border-radius: 0; border-top: 0; border-bottom: 1px solid var(--line); }
     .translate-btn { padding: 11px 16px; }
     .formality-selector { gap: 6px; }
     .formality-select { width: 85px; }
     .text-input, .text-output { font-size: 20px; }
+    .text-input { min-height: 160px; height: 160px; }
+    .input-speak, .voice-input-btn { top: 114px; }
     .text-input::placeholder, .text-output:empty::before { font-size: 20px; }
     .text-output { min-height: 170px; }
     .workspace-meta { font-size: 10px; }

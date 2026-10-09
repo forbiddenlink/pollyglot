@@ -21,3 +21,7 @@ Motion is intentionally restrained for a utility; a high score means appropriate
 | Privacy | 4 / 4 / 4 / 4 / 4 / 4 / 4 / 4 | Desktop contents column becomes wrapping links on mobile. Original policy and date retained; section navigation verified. No asynchronous loading/error/success state applies to static policy content. |
 
 All four templates have final desktop/mobile captures in `screenshots/after/`; intermediate rollout captures are retained as evidence. Scores reflect a coherent utility design with restrained motion; they do not claim independent user validation.
+
+## Final verification refinement
+
+Final mobile review moved Translate/tone/swap immediately after source input, before the result, and shortened the input area. Lighthouse-triggered contrast/name fixes and keyboard alternative buttons preserve all scores at 4. All 59 browser checks pass; 11 axe states have zero WCAG A/AA violations. These automated checks complement the screenshot review and do not substitute for assistive-technology/user studies.

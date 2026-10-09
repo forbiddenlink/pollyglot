@@ -48,6 +48,7 @@
         pickerButtons.forEach(({ button, type, options }) => {
             const selected = options.querySelector('.selected');
             button.firstElementChild.textContent = selected ? selected.querySelector('.lang-label').textContent : 'Detect language';
+            button.setAttribute('aria-label', `${button.firstElementChild.textContent}: choose ${type} language`);
             options.querySelectorAll('.lang-option').forEach(option => {
                 option.setAttribute('aria-pressed', String(option.classList.contains('selected')));
             });

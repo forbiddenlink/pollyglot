@@ -1671,7 +1671,8 @@ function displayAlternatives(alternatives) {
     alternativesList.textContent = '';
 
     alternatives.forEach(alt => {
-        const item = document.createElement('div');
+        const item = document.createElement('button');
+        item.type = 'button';
         item.className = 'alternative-item';
         item.textContent = alt;
         item.addEventListener('click', () => {
@@ -1817,6 +1818,7 @@ function exportHistory() {
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
     link.setAttribute('download', `pollyglot-history-${Date.now()}.csv`);
+    link.addEventListener('click', event => event.stopPropagation());
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();

@@ -1,0 +1,39 @@
+{
+  "cached": [
+    "/",
+    "/index.css",
+    "/site.css",
+    "/index.html",
+    "/site.js",
+    "/assets/parrot-192.png",
+    "/script.js",
+    "/manifest.json",
+    "/assets/parrot-512.png",
+    "/about",
+    "/contact",
+    "/privacy-policy"
+  ],
+  "offlinePages": [
+    {
+      "route": "/",
+      "title": "PollyGlot AI Translation App - 20 Languages",
+      "shellVisible": true
+    },
+    {
+      "route": "/about",
+      "title": "About PollyGlot",
+      "shellVisible": true
+    },
+    {
+      "route": "/contact",
+      "title": "Contact PollyGlot",
+      "shellVisible": true
+    },
+    {
+      "route": "/privacy-policy",
+      "title": "PollyGlot Privacy Policy",
+      "shellVisible": true
+    }
+  ],
+  "note": "Chrome local app-shell offline test; no mobile install prompt or offline translation claimed."
+}

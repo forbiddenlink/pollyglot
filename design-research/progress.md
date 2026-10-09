@@ -9,8 +9,8 @@ Branch: `design/upgrade`. Started from `b999453`, 18 commits behind origin/main.
 | 3 Decide | done | `plan.md` selects editorial paper/forest direction, ten ranked local improvements and every-page rollout. |
 | 4 Foundation + home | done | Shared system, rebuilt home and local features; two screenshot/score/fix rounds plus final home capture; 25 browser checks passed. `scores.md`, `browser-results.json`. |
 | 5 Every page | done | About, Contact, Privacy: desktop/mobile reviewed; FAQ, contact empty/invalid/prepared/edited states and policy anchors checked. 54 browser checks passed. |
-| 6 Verify | in progress | Browser journeys passed; Lighthouse running. Root tests passed 2/2. |
-| 7 Report | pending | Honest before/after, scores, limitations, approval list. |
+| 6 Verify | done | 59 Chrome checks; 11 axe states clean; four offline app-shell pages; Vitest 2/2; JS syntax/diff checks. Lighthouse performance 96/100/100/100, accessibility 100 throughout. See `verification.md`. |
+| 7 Report | in progress | Assemble final report and evidence; commit, then stop without merging. |
 
 ## Runtime and tooling
 
