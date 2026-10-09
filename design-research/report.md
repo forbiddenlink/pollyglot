@@ -166,3 +166,12 @@ The corrected preview reaches the API but returns explicit service-not-configure
 PR #76 merged and deployed successfully. Production's API paths now reach their handlers, with allowed own-site Origin; live responses identify provider configuration errors rather than the old 403/404 failures. Production configuration metadata lacked OpenAI/Magica entries and included MiniMax. The user confirmed securely configuring OPENAI_API_KEY in Vercel; no credential values were requested or retrieved.
 
 Corrected the existing MiniMax request URL to the endpoint in [its official documentation](https://platform.minimax.io/docs/api-reference/speech-t2a-http), with its existing model, voice and payload preserved. Fake-provider integration tests fail before the one-line fix and pass afterward; real provider credentials are never used by those tests. Final live translation/audio QA follows the next automatic deployment.
+
+
+## Speech fix merged; translation configuration remains blocked
+
+PR #77 merged at 17ad7a07dd53f0711c6e1b33b7312342993a960d after CI, CodeQL and both Socket checks passed. Automatic production deployment dpl_3yruGac6KfYqmWjkoYVVA66vJT3u is READY at that exact commit.
+
+Bounded real Chrome QA: speech endpoint returned HTTP 200, 31,092 bytes of MP3; playback started and ended without errors. Decoded audio is 1.79 seconds, mono, non-silent. Translation still returns HTTP 500 with the explicit missing-configuration error. A fresh Vercel metadata-only check (decrypt=false, no credential values displayed) lists MiniMax production entries but no OPENAI_API_KEY entry in this project. Asked the user to verify the project/team and Production scope, despite their earlier configuration confirmation. No additional paid retries pending that change.
+
+Evidence: `live/production/results.json`, `live/production/speech.mp3`, desktop/mobile Chrome screenshots. Earlier configuration-error evidence preserved in `live/production-before-key/`. Speech playback is verified; translation success/accuracy, microphone capture and OS share/mail handoffs remain untested. Provider identity is not exposed by the existing speech response. Final QA evidence is committed on design/upgrade; application code is already merged. Resume by confirming the key exists in this project and redeploying through an authorized path, then rerun bounded live QA.

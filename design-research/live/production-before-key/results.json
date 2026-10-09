@@ -6,17 +6,20 @@
       "status": 500,
       "contentType": "application/json; charset=utf-8",
       "bytes": 58,
-      "elapsedMs": 1543,
+      "elapsedMs": 2985,
       "response": {
         "error": "Translation service is not configured properly"
       }
     },
     {
       "path": "/api/tts",
-      "status": 200,
-      "contentType": "audio/mpeg",
-      "bytes": 31092,
-      "elapsedMs": 2825
+      "status": 500,
+      "contentType": "application/json; charset=utf-8",
+      "bytes": 38,
+      "elapsedMs": 3032,
+      "response": {
+        "error": "TTS service not configured"
+      }
     }
   ],
   "auxiliaryRequests": "Blocked to limit paid usage",
@@ -26,15 +29,9 @@
     "state": "error"
   },
   "playback": {
-    "started": true,
-    "ended": true,
+    "started": false,
+    "ended": false,
     "error": null
-  },
-  "audio": {
-    "durationSeconds": 1.7879375,
-    "sampleRate": 48000,
-    "channels": 1,
-    "rms": 0.07457261830412214
   },
   "passed": false
 }
