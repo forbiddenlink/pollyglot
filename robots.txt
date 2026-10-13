@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pollyglot.vercel.app/sitemap.xml
+Sitemap: https://pollyglot-topaz.vercel.app/sitemap.xml
