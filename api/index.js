@@ -3,6 +3,7 @@ const express = require("express");
 const { getLangfuse, flushLangfuse } = require("../lib/langfuse");
 const { captureEvent } = require("../lib/posthog");
 const { sendTranslationEmail } = require("../lib/email");
+const { createRateLimiter } = require("./ratelimit");
 
 const app = express();
 const port = Number.parseInt(process.env.PORT, 10) || 3000;
@@ -96,10 +97,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Rate limiting (simple in-memory implementation)
-const requestCounts = new Map();
-const RATE_LIMIT = 50; // requests per minute
-const RATE_WINDOW = 60000; // 1 minute
+// Rate limiting: durable via Upstash when configured, in-memory otherwise (see ratelimit.js)
+const rateLimiter = createRateLimiter();
 const CLEANUP_INTERVAL = 300000; // 5 minutes
 
 function getClientIp(req) {
@@ -110,36 +109,12 @@ function getClientIp(req) {
   return req.ip || req.connection.remoteAddress || "unknown";
 }
 
-function checkRateLimit(ip) {
-  const now = Date.now();
-  const userRequests = requestCounts.get(ip) || [];
-
-  // Remove old requests outside the window
-  const recentRequests = userRequests.filter(
-    (time) => now - time < RATE_WINDOW,
-  );
-
-  if (recentRequests.length >= RATE_LIMIT) {
-    return false;
-  }
-
-  recentRequests.push(now);
-  requestCounts.set(ip, recentRequests);
-  return true;
+function checkRateLimit(ip, bucket = "default") {
+  return rateLimiter.check(ip, bucket);
 }
 
-// Periodically clean up old rate limit entries to prevent memory leak
-const cleanupTimer = setInterval(() => {
-  const now = Date.now();
-  for (const [ip, requests] of requestCounts.entries()) {
-    const recentRequests = requests.filter((time) => now - time < RATE_WINDOW);
-    if (recentRequests.length === 0) {
-      requestCounts.delete(ip);
-    } else {
-      requestCounts.set(ip, recentRequests);
-    }
-  }
-}, CLEANUP_INTERVAL);
+// Periodically clean up old in-memory entries to prevent memory leak
+const cleanupTimer = setInterval(rateLimiter.cleanup, CLEANUP_INTERVAL);
 cleanupTimer.unref?.();
 
 function normalizeLanguage(input, { required = false } = {}) {
@@ -302,7 +277,7 @@ app.post("/translate", async (req, res) => {
     const clientIp = getClientIp(req);
 
     // Check rate limit
-    if (!checkRateLimit(clientIp)) {
+    if (!(await checkRateLimit(clientIp))) {
       return res.status(429).json({
         error: "Too many requests. Please try again later.",
       });
@@ -419,7 +394,7 @@ app.post("/detect", async (req, res) => {
     const clientIp = getClientIp(req);
 
     // Check rate limit
-    if (!checkRateLimit(clientIp)) {
+    if (!(await checkRateLimit(clientIp))) {
       return res.status(429).json({
         error: "Too many requests. Please try again later.",
       });
@@ -504,7 +479,7 @@ app.post("/pronunciation", async (req, res) => {
   try {
     const clientIp = getClientIp(req);
 
-    if (!checkRateLimit(clientIp)) {
+    if (!(await checkRateLimit(clientIp))) {
       return res.status(429).json({
         error: "Too many requests. Please try again later.",
       });
@@ -584,7 +559,7 @@ app.post("/alternatives", async (req, res) => {
   try {
     const clientIp = getClientIp(req);
 
-    if (!checkRateLimit(clientIp)) {
+    if (!(await checkRateLimit(clientIp))) {
       return res.status(429).json({
         error: "Too many requests. Please try again later.",
       });
@@ -691,6 +666,12 @@ app.get("/health", (req, res) => {
 // TTS endpoint — MiniMax speech-02-hd with OpenAI TTS fallback
 app.post("/tts", async (req, res) => {
   try {
+    if (!(await checkRateLimit(getClientIp(req), "tts"))) {
+      return res.status(429).json({
+        error: "Too many requests. Please try again later.",
+      });
+    }
+
     const { text, language } = req.body;
 
     if (!text || typeof text !== "string" || !text.trim()) {
