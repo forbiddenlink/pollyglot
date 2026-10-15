@@ -47,10 +47,14 @@ function validateAudio(body, contentTypeHeader) {
   if (!AUDIO_TYPES.has(contentType)) {
     return { ok: false, status: 415, error: "Unsupported audio type" };
   }
-  if (!Buffer.isBuffer(body) || body.length === 0) {
+  if (!Buffer.isBuffer(body)) {
     return { ok: false, status: 400, error: "Audio is required" };
   }
-  if (body.length > MAX_AUDIO_BYTES) {
+  const size = Buffer.byteLength(body);
+  if (size === 0) {
+    return { ok: false, status: 400, error: "Audio is required" };
+  }
+  if (size > MAX_AUDIO_BYTES) {
     return { ok: false, status: 413, error: "Audio too large (max 4MB)" };
   }
   return { ok: true, contentType };
