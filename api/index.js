@@ -4,6 +4,12 @@ const { getLangfuse, flushLangfuse } = require("../lib/langfuse");
 const { captureEvent } = require("../lib/posthog");
 const { sendTranslationEmail } = require("../lib/email");
 const { createRateLimiter } = require("./ratelimit");
+const {
+  validateAudio,
+  transcribeAudio,
+  SttError,
+  MAX_AUDIO_BYTES,
+} = require("./stt");
 
 const app = express();
 const port = Number.parseInt(process.env.PORT, 10) || 3000;
@@ -795,8 +801,50 @@ app.post("/tts", async (req, res) => {
   }
 });
 
+// Speech-to-text endpoint — raw audio body, for browsers without SpeechRecognition
+app.post(
+  "/transcribe",
+  express.raw({ type: "audio/*", limit: MAX_AUDIO_BYTES }),
+  async (req, res) => {
+    try {
+      if (!(await checkRateLimit(getClientIp(req), "stt"))) {
+        return res.status(429).json({
+          error: "Too many requests. Please try again later.",
+        });
+      }
+      if (!process.env.MAGICA_KEY) {
+        return res.status(503).json({ error: "Transcription not configured" });
+      }
+
+      const checked = validateAudio(req.body, req.get("content-type"));
+      if (!checked.ok) {
+        return res.status(checked.status).json({ error: checked.error });
+      }
+
+      const lang = normalizeLanguage(req.query.lang);
+      const text = await transcribeAudio({
+        body: req.body,
+        contentType: checked.contentType,
+        language: lang.valid ? lang.code : null,
+        apiKey: process.env.MAGICA_KEY,
+        fetchImpl,
+      });
+      return res.json({ text });
+    } catch (error) {
+      if (error instanceof SttError) {
+        return res.status(error.status).json({ error: error.message });
+      }
+      console.error("Transcribe error:", error);
+      res.status(500).json({ error: "An unexpected error occurred" });
+    }
+  },
+);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
+  if (err?.type === "entity.too.large") {
+    return res.status(413).json({ error: "Request body too large" });
+  }
   console.error("Unhandled error:", err);
   res.status(500).json({
     error: "An unexpected error occurred",

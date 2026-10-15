@@ -54,6 +54,8 @@ let currentAudio = null; // Magica server-TTS audio element (for stop-toggle)
 let availableVoices = [];
 let translationHistory = [];
 let recognition = null;
+let serverRecording = null; // active server-STT recording session (Safari/Firefox fallback)
+let useServerStt = false;
 let favoriteLanguages = [];
 let favoriteTranslations = [];
 let undoStack = [];
@@ -1162,12 +1164,19 @@ window.stopTTS = stopTTS;
 window.hasVoiceForLanguage = hasVoiceForLanguage;
 
 // Voice Input
+// Native SpeechRecognition is the first choice. Without it (Safari, Firefox), or when it
+// fails, audio is recorded with MediaRecorder and transcribed by POST /api/transcribe.
 function initializeVoiceRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
+    const serverSttAvailable = !!(window.ServerStt && window.ServerStt.isSupported());
+
     if (!SpeechRecognition) {
-        voiceInputBtn.style.display = 'none';
-        console.warn('Speech recognition not supported');
+        if (serverSttAvailable) {
+            useServerStt = true;
+        } else {
+            voiceInputBtn.style.display = 'none';
+            console.warn('Speech recognition not supported');
+        }
         return;
     }
 
@@ -1186,6 +1195,13 @@ function initializeVoiceRecognition() {
     recognition.onerror = (event) => {
         console.error('Recognition error:', event.error);
         voiceInputBtn.classList.remove('recording');
+        // Errors where the browser engine itself is unusable: retry through the server.
+        const engineFailure = ['network', 'service-not-allowed', 'language-not-supported'].includes(event.error);
+        if (engineFailure && serverSttAvailable) {
+            useServerStt = true;
+            startServerRecording();
+            return;
+        }
         showToast(`Voice input error: ${event.error}`, 'error');
     };
 
@@ -1194,9 +1210,52 @@ function initializeVoiceRecognition() {
     };
 }
 
+async function startServerRecording() {
+    try {
+        serverRecording = await window.ServerStt.startRecording();
+        voiceInputBtn.classList.add('recording');
+        showToast('Recording... tap again to finish', 'success');
+    } catch (err) {
+        console.error('Recording error:', err);
+        serverRecording = null;
+        showToast('Microphone unavailable', 'error');
+    }
+}
+
+async function finishServerRecording() {
+    const session = serverRecording;
+    serverRecording = null;
+    voiceInputBtn.classList.remove('recording');
+    if (!session) return;
+    try {
+        const blob = await session.stop();
+        showToast('Transcribing...', 'success');
+        const transcript = await window.ServerStt.transcribe(blob, selectedSourceLang);
+        if (!transcript) {
+            showToast('No speech detected', 'warning');
+            return;
+        }
+        textInput.value = transcript;
+        updateCharCounter();
+        showToast('Voice input completed!', 'success');
+    } catch (err) {
+        console.error('Server transcription error:', err);
+        showToast(`Voice input error: ${err.message}`, 'error');
+    }
+}
+
 function toggleVoiceInput() {
-    if (!recognition) {
+    if (!recognition && !useServerStt) {
         showToast('Voice input is not supported in your browser', 'error');
+        return;
+    }
+
+    if (useServerStt) {
+        if (serverRecording) {
+            finishServerRecording();
+        } else {
+            startServerRecording();
+        }
         return;
     }
 
