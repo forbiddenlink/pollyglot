@@ -1,6 +1,6 @@
 # PollyGlot - AI Translation App
 
-A vanilla JS + Express translation app using OpenAI's GPT-4o-mini for translation, language detection, pronunciation guides, and alternative phrasings between 20 languages. Text-to-speech runs through a server-side voice pipeline (Magica/ElevenLabs, then MiniMax, then OpenAI TTS) with a browser `speechSynthesis` fallback. Voice input uses the browser's native Web Speech API.
+A vanilla JS + Express translation app using OpenAI's GPT-4o-mini for translation, language detection, pronunciation guides, and alternative phrasings between 20 languages. Text-to-speech runs through a server-side voice pipeline (Magica/ElevenLabs, then MiniMax, then OpenAI TTS) with a browser `speechSynthesis` fallback. Voice input uses the browser's native Web Speech API, with server-side speech-to-text (Magica `ai_transcription`) for browsers that lack it or where it fails.
 
 The repo also carries a number of dependencies for features that aren't wired into the running app yet (see "Not Yet Wired Up" below). Don't assume something works just because it's in `package.json`.
 
@@ -16,7 +16,7 @@ The repo also carries a number of dependencies for features that aren't wired in
 
 ### Audio
 - **Text-to-Speech**: Server-side voice via Magica (ElevenLabs multilingual v2), falling back to MiniMax `speech-02-hd`, falling back to OpenAI `tts-1`. Falls back further to the browser's `speechSynthesis` if none of those are configured or all fail
-- **Voice Input**: Native browser `SpeechRecognition`/`webkitSpeechRecognition` (Chrome/Edge)
+- **Voice Input**: Native browser `SpeechRecognition`/`webkitSpeechRecognition` (Chrome/Edge) first. Safari, Firefox, and native-engine failures fall back to `MediaRecorder` capture (max 60 s / 4 MB) sent to `POST /api/transcribe`, which transcribes through Magica `ai_transcription` (needs `MAGICA_KEY`; the mic button stays hidden only if the browser has neither API)
 
 ### Organization
 - **Favorites**: Star translations for quick access
@@ -38,7 +38,7 @@ The repo also carries a number of dependencies for features that aren't wired in
 
 ### Technical
 - **PWA Support**: `manifest.json` + service worker (`sw.js`), installable
-- **Rate Limiting**: In-memory per-IP rate limit on the API (50 requests/minute)
+- **Rate Limiting**: Per-IP sliding window on the API (50/min for translation routes, 20/min for `/tts`, 10/min for `/transcribe`). Durable across Vercel instances when `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_API_URL`/`KV_REST_API_TOKEN`) are set; otherwise falls back to a per-instance in-memory limit, which does not cap spend across instances
 - **Accessibility**: Keyboard navigation, `aria-live` screen reader announcer
 - **Observability**: Langfuse tracing on every OpenAI call, PostHog event capture on completed translations (both no-op if their keys aren't configured)
 
@@ -48,7 +48,7 @@ These packages are in `package.json` but aren't imported by `index.html` or `scr
 
 - **Next.js, `next-safe-action`**: no `app/`/`pages/` directory exists; `next` is only used for `next-sitemap`'s postbuild sitemap/robots.txt generation
 - **`@ai-sdk/google`, `ai`**: not imported anywhere
-- **`@xenova/transformers`, `whisper-web-transcriber`**: an in-browser Whisper transcription module exists at `lib/speech-recognition.js`/`.ts` but isn't loaded by the app; voice input actually uses the browser's native Web Speech API
+- **`@xenova/transformers`**: an in-browser Whisper transcription module exists at `lib/speech-recognition.js`/`.ts` but isn't loaded by the app. Voice input uses the native Web Speech API, with `lib/server-stt.js` + `POST /api/transcribe` (Magica) as the fallback. `whisper-web-transcriber` was never imported and has been removed. The in-browser pronunciation-practice recorder still fetches `@xenova/transformers` from a CDN (`script.js`)
 - **`wavesurfer.js`**: a waveform audio player exists at `lib/audio-player.js` but isn't used
 - **`ts-fsrs`**: a spaced-repetition scheduler exists at `lib/spaced-repetition.js` but isn't used
 - **`franc`, `compromise`, `natural`**: NLP/language-detection utilities exist at `src/lib/language.ts` but aren't used
@@ -61,7 +61,7 @@ These packages are in `package.json` but aren't imported by `index.html` or `scr
 ### Prerequisites
 - Node.js (v18+)
 - OpenAI API key ([Get one here](https://platform.openai.com/api-keys)) - required for translation, detection, pronunciation, and alternatives
-- Optional: Magica, MiniMax, Resend, Langfuse, PostHog API keys for TTS voices, email delivery, and tracing/analytics (each feature degrades gracefully if its key is missing)
+- Optional: Magica (TTS voices and speech-to-text), MiniMax, Resend, Langfuse, PostHog API keys for TTS voices, email delivery, and tracing/analytics; Upstash Redis REST credentials for a rate limit that holds across Vercel instances (each feature degrades gracefully if its key is missing)
 
 ### Setup
 
@@ -115,7 +115,7 @@ pnpm test:coverage # with coverage
 - **Frontend**: Vanilla JavaScript, CSS3, Web Speech API
 - **Backend**: Node.js, Express (deployed as a single Vercel serverless function, routed via `vercel.json` rewrites)
 - **AI**: OpenAI GPT-4o-mini (translation, detection, pronunciation, alternatives)
-- **Voice**: Magica (ElevenLabs) / MiniMax `speech-02-hd` / OpenAI `tts-1`, with browser `speechSynthesis` fallback
+- **Voice**: Magica (ElevenLabs) / MiniMax `speech-02-hd` / OpenAI `tts-1`, with browser `speechSynthesis` fallback; Magica `ai_transcription` for server speech-to-text
 - **Email**: Resend (optional, for emailing translation results)
 - **Observability**: Langfuse (tracing), PostHog (product analytics)
 - **Testing**: Vitest, Testing Library, MSW

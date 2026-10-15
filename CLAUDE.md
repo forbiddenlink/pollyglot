@@ -57,8 +57,9 @@ These are real dependencies in root `package.json` with no import path reaching 
 
 - Next.js, `next-safe-action` - no `app/`/`pages/` directory exists
 - `@ai-sdk/google`, `ai` - not imported anywhere
-- `@xenova/transformers`, `whisper-web-transcriber` - an in-browser Whisper module exists at
-  `lib/speech-recognition.js`/`.ts` but isn't loaded; voice input uses the native Web Speech API
+- `@xenova/transformers` - an in-browser Whisper module exists at
+  `lib/speech-recognition.js`/`.ts` but isn't loaded; voice input uses the native Web Speech API,
+  falling back to `POST /api/transcribe` (Magica) via `lib/server-stt.js`
 - `wavesurfer.js` - a waveform player exists at `lib/audio-player.js` but isn't used
 - `ts-fsrs` - a spaced-repetition scheduler exists at `lib/spaced-repetition.js` but isn't used
 - `franc`, `compromise`, `natural` - language utilities exist at `src/lib/language.ts` but
@@ -69,7 +70,7 @@ These are real dependencies in root `package.json` with no import path reaching 
 
 ## Conventions
 
-- Rate limiting is in-memory, per-IP, 50 requests/minute in the Express API.
+- Rate limiting is a per-IP sliding window: Upstash Redis (durable across Vercel instances) when `UPSTASH_REDIS_REST_URL`/`_TOKEN` or `KV_REST_API_URL`/`_TOKEN` are set, per-instance in-memory otherwise (`api/ratelimit.js`). Buckets: default 50/min, `/tts` 20/min, `/transcribe` 10/min.
 - Translation history auto-saves the last 50 entries to `localStorage`; export as CSV.
 - Keyboard shortcuts are part of the UX contract: Enter translate, Esc clear, Ctrl/Cmd+K swap
   languages, Ctrl/Cmd+H toggle history, Ctrl/Cmd+Z undo.
