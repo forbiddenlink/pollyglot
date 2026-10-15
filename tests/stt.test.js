@@ -52,7 +52,7 @@ describe('transcribeAudio', () => {
   it('omits language when none given (auto-detect)', async () => {
     const fetchImpl = vi
       .fn()
-      .mockResolvedValueOnce(json({ url: 'https://static/x' }))
+      .mockResolvedValueOnce(json({ url: 'https://static/x', metadata: { duration: 3 } }))
       .mockResolvedValueOnce(json({ runId: 'r' }))
       .mockResolvedValueOnce(json({ status: 'COMPLETED', output: { result: 'hi' } }))
     await transcribeAudio({ ...base, language: null, fetchImpl })
@@ -65,6 +65,17 @@ describe('transcribeAudio', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(1)
   })
 
+  it.each([
+    ['missing metadata', undefined],
+    ['missing duration', {}],
+    ['NaN duration', { duration: NaN }],
+    ['string duration', { duration: '4' }],
+  ])('fails closed (422) on %s, before any paid run', async (_n, metadata) => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(json({ url: 'https://static/x', metadata }))
+    await expect(transcribeAudio({ ...base, fetchImpl })).rejects.toMatchObject({ status: 422 })
+    expect(fetchImpl).toHaveBeenCalledTimes(1)
+  })
+
   it('throws SttError when upload fails', async () => {
     const fetchImpl = vi.fn().mockResolvedValueOnce(json({}, false))
     await expect(transcribeAudio({ ...base, fetchImpl })).rejects.toBeInstanceOf(SttError)
@@ -73,7 +84,7 @@ describe('transcribeAudio', () => {
   it('throws when the run fails', async () => {
     const fetchImpl = vi
       .fn()
-      .mockResolvedValueOnce(json({ url: 'https://static/x' }))
+      .mockResolvedValueOnce(json({ url: 'https://static/x', metadata: { duration: 3 } }))
       .mockResolvedValueOnce(json({ runId: 'r' }))
       .mockResolvedValueOnce(json({ status: 'FAILED' }))
     await expect(transcribeAudio({ ...base, fetchImpl })).rejects.toMatchObject({ status: 502 })
@@ -82,7 +93,7 @@ describe('transcribeAudio', () => {
   it('times out with 504 if the run never finishes', async () => {
     const fetchImpl = vi.fn(async (url) =>
       String(url).includes('/uploads')
-        ? json({ url: 'https://static/x' })
+        ? json({ url: 'https://static/x', metadata: { duration: 3 } })
         : String(url).endsWith('/run')
           ? json({ runId: 'r' })
           : json({ status: 'RUNNING' }),

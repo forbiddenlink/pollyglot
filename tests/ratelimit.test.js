@@ -160,3 +160,22 @@ describe('in-memory limiter', () => {
     expect(m.size()).toBe(0)
   })
 })
+
+describe('fail-closed paid buckets', () => {
+  const env = { UPSTASH_REDIS_REST_URL: 'https://u', UPSTASH_REDIS_REST_TOKEN: 't' }
+  it('throws 503-style error for stt and tts when Redis errors', async () => {
+    const { deps } = fakeDeps({ failWith: 'boom' })
+    const limiter = createRateLimiter({ env, deps, logger: { error: () => {} } })
+    await expect(limiter.check('ip', 'stt')).rejects.toMatchObject({ status: 503 })
+    await expect(limiter.check('ip', 'tts')).rejects.toMatchObject({ status: 503 })
+  })
+  it('still falls back for non-paid buckets', async () => {
+    const { deps } = fakeDeps({ failWith: 'boom' })
+    const limiter = createRateLimiter({ env, deps, logger: { error: () => {} } })
+    expect(await limiter.check('ip')).toBe(true)
+  })
+  it('without Redis env, paid buckets use memory', async () => {
+    const limiter = createRateLimiter({ env: {} })
+    expect(await limiter.check('ip', 'stt')).toBe(true)
+  })
+})

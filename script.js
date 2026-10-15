@@ -1214,7 +1214,7 @@ async function startServerRecording() {
     try {
         serverRecording = await window.ServerStt.startRecording();
         voiceInputBtn.classList.add('recording');
-        showToast('Recording... tap again to finish', 'success');
+        showToast('Recording... audio is sent to our speech provider for transcription. Tap again to finish', 'success', 5000);
     } catch (err) {
         console.error('Recording error:', err);
         serverRecording = null;

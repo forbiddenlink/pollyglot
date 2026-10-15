@@ -79,7 +79,11 @@ async function transcribeAudio({
   if (!upload?.url) throw new SttError("Audio upload failed");
 
   const duration = upload.metadata?.duration;
-  if (typeof duration === "number" && duration > MAX_AUDIO_SECONDS + 1) {
+  // Fail closed: unknown duration could be a long low-bitrate file, billed per minute.
+  if (typeof duration !== "number" || !Number.isFinite(duration)) {
+    throw new SttError("Could not determine audio duration", 422);
+  }
+  if (duration > MAX_AUDIO_SECONDS + 1) {
     throw new SttError(`Audio too long (max ${MAX_AUDIO_SECONDS}s)`, 413);
   }
 

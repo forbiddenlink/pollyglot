@@ -11,6 +11,17 @@ const LIMITS = Object.freeze({
   stt: 10,
 });
 
+// Paid-provider buckets: when the durable store is configured but errors, deny rather than
+// fall back to a per-instance counter that would not cap spend.
+const FAIL_CLOSED = new Set(["tts", "stt"]);
+
+class RateLimitUnavailableError extends Error {
+  constructor() {
+    super("Rate limit store unavailable");
+    this.status = 503;
+  }
+}
+
 function resolveRedisConfig(env = process.env) {
   const url = env.UPSTASH_REDIS_REST_URL || env.KV_REST_API_URL;
   const token = env.UPSTASH_REDIS_REST_TOKEN || env.KV_REST_API_TOKEN;
@@ -89,6 +100,10 @@ function createRateLimiter({ env = process.env, deps, limits = LIMITS, logger = 
         return success;
       } catch (err) {
         // Redis outage must not take translation down, but must not remove the cap either.
+        if (FAIL_CLOSED.has(bucket)) {
+          logger.error("Rate limit store unavailable, failing closed:", err.message);
+          throw new RateLimitUnavailableError();
+        }
         logger.error("Rate limit store unavailable, using in-memory fallback:", err.message);
         return memory.check(key, bucket);
       }
@@ -96,4 +111,4 @@ function createRateLimiter({ env = process.env, deps, limits = LIMITS, logger = 
   };
 }
 
-module.exports = { createRateLimiter, createMemoryLimiter, resolveRedisConfig, LIMITS, WINDOW_MS };
+module.exports = { RateLimitUnavailableError, createRateLimiter, createMemoryLimiter, resolveRedisConfig, LIMITS, WINDOW_MS };

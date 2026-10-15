@@ -3,7 +3,7 @@ const express = require("express");
 const { getLangfuse, flushLangfuse } = require("../lib/langfuse");
 const { captureEvent } = require("../lib/posthog");
 const { sendTranslationEmail } = require("../lib/email");
-const { createRateLimiter } = require("./ratelimit");
+const { createRateLimiter, RateLimitUnavailableError } = require("./ratelimit");
 const {
   validateAudio,
   transcribeAudio,
@@ -796,6 +796,9 @@ app.post("/tts", async (req, res) => {
     const audioBuffer = Buffer.from(await ttsRes.arrayBuffer());
     return res.send(audioBuffer);
   } catch (error) {
+    if (error instanceof RateLimitUnavailableError) {
+      return res.status(503).json({ error: "Service temporarily unavailable" });
+    }
     console.error("TTS error:", error);
     res.status(500).json({ error: "An unexpected error occurred" });
   }
@@ -834,7 +837,10 @@ app.post(
       if (error instanceof SttError) {
         return res.status(error.status).json({ error: error.message });
       }
-      console.error("Transcribe error:", error);
+      if (error instanceof RateLimitUnavailableError) {
+        return res.status(503).json({ error: "Service temporarily unavailable" });
+      }
+      console.error("Transcribe error:", error.message);
       res.status(500).json({ error: "An unexpected error occurred" });
     }
   },
