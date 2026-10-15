@@ -179,3 +179,34 @@ describe('fail-closed paid buckets', () => {
     expect(await limiter.check('ip', 'stt')).toBe(true)
   })
 })
+
+describe('timeout handling (Upstash resolves success:true, reason:timeout)', () => {
+  const env = { UPSTASH_REDIS_REST_URL: 'https://u', UPSTASH_REDIS_REST_TOKEN: 't' }
+
+  it('fake SDK reporting reason=timeout fails closed on paid buckets and falls back elsewhere', async () => {
+    const { deps } = fakeDeps()
+    deps.ratelimit.Ratelimit.prototype.limit = async () => ({ success: true, reason: 'timeout' })
+    const limiter = createRateLimiter({ env, deps, logger: { error: () => {} } })
+    await expect(limiter.check('ip', 'stt')).rejects.toMatchObject({ status: 503 })
+    expect(await limiter.check('ip')).toBe(true)
+  })
+
+  it('REAL SDK with a hanging transport: stt fails closed, default falls back to memory limits', async () => {
+    const realFetch = globalThis.fetch
+    globalThis.fetch = () => new Promise(() => {}) // never resolves
+    try {
+      const limiter = createRateLimiter({
+        env: { UPSTASH_REDIS_REST_URL: 'https://example.upstash.io', UPSTASH_REDIS_REST_TOKEN: 'tok' },
+        timeoutMs: 50,
+        limits: { default: 2, stt: 2 },
+        logger: { error: () => {} },
+      })
+      await expect(limiter.check('ip', 'stt')).rejects.toMatchObject({ status: 503 })
+      expect(await limiter.check('ip')).toBe(true)
+      expect(await limiter.check('ip')).toBe(true)
+      expect(await limiter.check('ip')).toBe(false)
+    } finally {
+      globalThis.fetch = realFetch
+    }
+  })
+})

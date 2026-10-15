@@ -55,6 +55,8 @@ let availableVoices = [];
 let translationHistory = [];
 let recognition = null;
 let serverRecording = null; // active server-STT recording session (Safari/Firefox fallback)
+let sttState = 'idle'; // idle | starting | recording | transcribing
+let sttSessionId = 0; // discards results from superseded sessions
 let useServerStt = false;
 let favoriteLanguages = [];
 let favoriteTranslations = [];
@@ -1211,26 +1213,34 @@ function initializeVoiceRecognition() {
 }
 
 async function startServerRecording() {
+    if (sttState !== 'idle') return;
+    sttState = 'starting';
+    const id = ++sttSessionId;
     try {
-        serverRecording = await window.ServerStt.startRecording();
+        const session = await window.ServerStt.startRecording();
+        serverRecording = session;
+        sttState = 'recording';
         voiceInputBtn.classList.add('recording');
         showToast('Recording... audio is sent to our speech provider for transcription. Tap again to finish', 'success', 5000);
+        // Single completion path: manual stop and the 60s auto-stop both resolve `done`.
+        session.done.then((blob) => handleServerRecordingDone(id, blob));
     } catch (err) {
         console.error('Recording error:', err);
         serverRecording = null;
+        sttState = 'idle';
         showToast('Microphone unavailable', 'error');
     }
 }
 
-async function finishServerRecording() {
-    const session = serverRecording;
+async function handleServerRecordingDone(id, blob) {
+    if (id !== sttSessionId || sttState !== 'recording') return;
     serverRecording = null;
+    sttState = 'transcribing';
     voiceInputBtn.classList.remove('recording');
-    if (!session) return;
     try {
-        const blob = await session.stop();
         showToast('Transcribing...', 'success');
         const transcript = await window.ServerStt.transcribe(blob, selectedSourceLang);
+        if (id !== sttSessionId) return;
         if (!transcript) {
             showToast('No speech detected', 'warning');
             return;
@@ -1240,7 +1250,9 @@ async function finishServerRecording() {
         showToast('Voice input completed!', 'success');
     } catch (err) {
         console.error('Server transcription error:', err);
-        showToast(`Voice input error: ${err.message}`, 'error');
+        if (id === sttSessionId) showToast(`Voice input error: ${err.message}`, 'error');
+    } finally {
+        if (id === sttSessionId) sttState = 'idle';
     }
 }
 
@@ -1251,9 +1263,9 @@ function toggleVoiceInput() {
     }
 
     if (useServerStt) {
-        if (serverRecording) {
-            finishServerRecording();
-        } else {
+        if (sttState === 'recording' && serverRecording) {
+            serverRecording.stop();
+        } else if (sttState === 'idle') {
             startServerRecording();
         }
         return;

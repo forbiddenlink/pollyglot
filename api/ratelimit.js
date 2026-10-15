@@ -59,7 +59,13 @@ function createMemoryLimiter({ now = () => Date.now(), limits = LIMITS } = {}) {
 
 // Returns { check(key, bucket) -> Promise<boolean>, mode, cleanup }.
 // `deps` lets tests inject fakes instead of loading the Upstash packages.
-function createRateLimiter({ env = process.env, deps, limits = LIMITS, logger = console } = {}) {
+function createRateLimiter({
+  env = process.env,
+  deps,
+  limits = LIMITS,
+  logger = console,
+  timeoutMs = 2000,
+} = {}) {
   const memory = createMemoryLimiter({ limits });
   const config = resolveRedisConfig(env);
 
@@ -85,6 +91,8 @@ function createRateLimiter({ env = process.env, deps, limits = LIMITS, logger = 
           redis,
           limiter: Ratelimit.slidingWindow(limits[name], "60 s"),
           prefix: `pollyglot:rl:${name}`,
+          // Short explicit timeout; the SDK default is 5s and it RESOLVES (does not throw) on timeout.
+          timeout: timeoutMs,
         }),
       );
     }
@@ -96,8 +104,10 @@ function createRateLimiter({ env = process.env, deps, limits = LIMITS, logger = 
     cleanup: memory.cleanup,
     async check(key, bucket = "default") {
       try {
-        const { success } = await forBucket(bucket).limit(key);
-        return success;
+        const result = await forBucket(bucket).limit(key);
+        // On timeout the SDK resolves { success: true, reason: "timeout" }: treat as a store failure.
+        if (result.reason === "timeout") throw new Error("Rate limit store timed out");
+        return result.success;
       } catch (err) {
         // Redis outage must not take translation down, but must not remove the cap either.
         if (FAIL_CLOSED.has(bucket)) {

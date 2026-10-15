@@ -101,3 +101,41 @@ describe('transcribeAudio', () => {
     await expect(transcribeAudio({ ...base, fetchImpl })).rejects.toMatchObject({ status: 504 })
   })
 })
+
+describe('overall deadline', () => {
+  const base = { body: Buffer.from('audio'), contentType: 'audio/webm', apiKey: 'k' }
+
+  it('returns 504 when a fetch never resolves, and passes an abort signal', async () => {
+    vi.useFakeTimers()
+    try {
+      const fetchImpl = vi.fn(() => new Promise(() => {}))
+      const p = transcribeAudio({ ...base, fetchImpl, deadlineMs: 1000 })
+      const assertion = expect(p).rejects.toMatchObject({ status: 504 })
+      await vi.advanceTimersByTimeAsync(1001)
+      await assertion
+      expect(fetchImpl.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('returns 504 when polling runs past the deadline', async () => {
+    vi.useFakeTimers()
+    try {
+      const fetchImpl = vi.fn(async (url) =>
+        String(url).includes('/uploads')
+          ? json({ url: 'https://static/x', metadata: { duration: 3 } })
+          : String(url).endsWith('/run')
+            ? json({ runId: 'r' })
+            : json({ status: 'RUNNING' }),
+      )
+      const p = transcribeAudio({ ...base, fetchImpl, deadlineMs: 5000 })
+      const assertion = expect(p).rejects.toMatchObject({ status: 504 })
+      await vi.advanceTimersByTimeAsync(6000)
+      await assertion
+      expect(fetchImpl.mock.calls.length).toBeLessThan(10)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})

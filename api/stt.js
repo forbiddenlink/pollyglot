@@ -9,6 +9,8 @@ const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
 const MAX_AUDIO_SECONDS = 60;
 const POLL_INTERVAL_MS = 1500;
 const POLL_ATTEMPTS = 30;
+// Vercel maxDuration is 60s; answer with a controlled 504 before it kills the function.
+const DEADLINE_MS = 50000;
 
 const AUDIO_TYPES = new Set([
   "audio/webm",
@@ -61,60 +63,79 @@ async function transcribeAudio({
   apiKey,
   fetchImpl,
   sleep = (ms) => new Promise((r) => setTimeout(r, ms)),
+  deadlineMs = DEADLINE_MS,
 }) {
+  const controller = new AbortController();
+  const { signal } = controller;
+  const timer = setTimeout(() => controller.abort(), deadlineMs);
+  const aborted = new Promise((_, reject) => {
+    signal.addEventListener("abort", () => reject(new SttError("Transcription timed out", 504)));
+  });
+  aborted.catch(() => {}); // avoid unhandled rejection when nothing is racing it
+
+  const guard = (promise) => Promise.race([promise, aborted]);
   const auth = { Authorization: `Bearer ${apiKey}` };
+  const call = (url, init) => guard(fetchImpl(url, { ...init, signal }));
 
-  const uploadRes = await fetchImpl(MAGICA_UPLOAD, {
-    method: "POST",
-    headers: { ...auth, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      base64: body.toString("base64"),
-      content_type: contentType,
-      media_type: "audio",
-      filename: `speech.${extensionFor(contentType)}`,
-    }),
-  });
-  if (!uploadRes.ok) throw new SttError("Audio upload failed");
-  const upload = await uploadRes.json();
-  if (!upload?.url) throw new SttError("Audio upload failed");
+  try {
+    const uploadRes = await call(MAGICA_UPLOAD, {
+      method: "POST",
+      headers: { ...auth, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        base64: body.toString("base64"),
+        content_type: contentType,
+        media_type: "audio",
+        filename: `speech.${extensionFor(contentType)}`,
+      }),
+    });
+    if (!uploadRes.ok) throw new SttError("Audio upload failed");
+    const upload = await guard(uploadRes.json());
+    if (!upload?.url) throw new SttError("Audio upload failed");
 
-  const duration = upload.metadata?.duration;
-  // Fail closed: unknown duration could be a long low-bitrate file, billed per minute.
-  if (typeof duration !== "number" || !Number.isFinite(duration)) {
-    throw new SttError("Could not determine audio duration", 422);
-  }
-  if (duration > MAX_AUDIO_SECONDS + 1) {
-    throw new SttError(`Audio too long (max ${MAX_AUDIO_SECONDS}s)`, 413);
-  }
-
-  const input = {
-    inputMode: "upload",
-    audioUrl: [upload.url],
-    output_format: "text",
-    diarize: false,
-  };
-  if (language) input.language = language;
-
-  const startRes = await fetchImpl(`${MAGICA_API}/nodes/ai_transcription/run`, {
-    method: "POST",
-    headers: { ...auth, "Content-Type": "application/json" },
-    body: JSON.stringify({ input }),
-  });
-  if (!startRes.ok) throw new SttError("Transcription failed to start");
-  const { runId } = await startRes.json();
-  if (!runId) throw new SttError("Transcription failed to start");
-
-  for (let i = 0; i < POLL_ATTEMPTS; i++) {
-    const pollRes = await fetchImpl(`${MAGICA_API}/nodes/runs/${runId}`, { headers: auth });
-    const run = await pollRes.json();
-    if (!["RUNNING", "PENDING", "QUEUED"].includes(run.status)) {
-      const text = run?.output?.result;
-      if (run.status === "COMPLETED" && typeof text === "string") return text.trim();
-      throw new SttError("Transcription failed");
+    const duration = upload.metadata?.duration;
+    // Fail closed: unknown duration could be a long low-bitrate file, billed per minute.
+    if (typeof duration !== "number" || !Number.isFinite(duration)) {
+      throw new SttError("Could not determine audio duration", 422);
     }
-    await sleep(POLL_INTERVAL_MS);
+    if (duration > MAX_AUDIO_SECONDS + 1) {
+      throw new SttError(`Audio too long (max ${MAX_AUDIO_SECONDS}s)`, 413);
+    }
+
+    const input = {
+      inputMode: "upload",
+      audioUrl: [upload.url],
+      output_format: "text",
+      diarize: false,
+    };
+    if (language) input.language = language;
+
+    const startRes = await call(`${MAGICA_API}/nodes/ai_transcription/run`, {
+      method: "POST",
+      headers: { ...auth, "Content-Type": "application/json" },
+      body: JSON.stringify({ input }),
+    });
+    if (!startRes.ok) throw new SttError("Transcription failed to start");
+    const { runId } = await guard(startRes.json());
+    if (!runId) throw new SttError("Transcription failed to start");
+
+    for (let i = 0; i < POLL_ATTEMPTS; i++) {
+      const pollRes = await call(`${MAGICA_API}/nodes/runs/${runId}`, { headers: auth });
+      const run = await guard(pollRes.json());
+      if (!["RUNNING", "PENDING", "QUEUED"].includes(run.status)) {
+        const text = run?.output?.result;
+        if (run.status === "COMPLETED" && typeof text === "string") return text.trim();
+        throw new SttError("Transcription failed");
+      }
+      await guard(sleep(POLL_INTERVAL_MS));
+    }
+    throw new SttError("Transcription timed out", 504);
+  } catch (err) {
+    if (err instanceof SttError) throw err;
+    if (signal.aborted) throw new SttError("Transcription timed out", 504);
+    throw err;
+  } finally {
+    clearTimeout(timer);
   }
-  throw new SttError("Transcription timed out", 504);
 }
 
 module.exports = {
@@ -123,5 +144,6 @@ module.exports = {
   SttError,
   MAX_AUDIO_BYTES,
   MAX_AUDIO_SECONDS,
+  DEADLINE_MS,
   AUDIO_TYPES,
 };
