@@ -83,9 +83,6 @@ importers:
       wavesurfer.js:
         specifier: ^7.12.11
         version: 7.12.12
-      whisper-web-transcriber:
-        specifier: ^0.2.5
-        version: 0.2.5
     devDependencies:
       '@next/bundle-analyzer':
         specifier: 16.4.0
@@ -2577,9 +2574,6 @@ packages:
     resolution: {integrity: sha512-IhLIHNcBrzIixC5XXsbr4DxdjajyA5vQ5RwGZMtrUp+GbtE5Nrsge9QKau7jXrC0aTXLYGV0xiW7Tb4YS2aomw==}
     engines: {node: ^22.14.0 || >=24.0.0}
 
-  whisper-web-transcriber@0.2.5:
-    resolution: {integrity: sha512-M8u+QpBBHrSHhF25W1Dd2yO93iUeDPJIV0fzVL84nRTO8p0CkFzHkcqgnU42eFeGqW/N8eBVcQiz0MTlbV1G6g==}
-
   why-is-node-running@2.3.0:
     resolution: {integrity: sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w==}
     engines: {node: '>=8'}
@@ -5051,8 +5045,6 @@ snapshots:
       webidl-conversions: 8.0.1
     transitivePeerDependencies:
       - '@noble/hashes'
-
-  whisper-web-transcriber@0.2.5: {}
 
   why-is-node-running@2.3.0:
     dependencies:
