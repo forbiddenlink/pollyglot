@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/forbiddenlink/pollyglot/compare/v1.2.0...v1.2.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** raise override floors so ip-address and vite resolve to patched versions ([#90](https://github.com/forbiddenlink/pollyglot/issues/90)) ([4348da8](https://github.com/forbiddenlink/pollyglot/commit/4348da8767d97707a178d846aa055dd26db43609))
+
 ## [1.2.0](https://github.com/forbiddenlink/pollyglot/compare/v1.1.1...v1.2.0) (2026-10-15)
 
 
