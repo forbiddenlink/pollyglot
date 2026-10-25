@@ -15,12 +15,13 @@ overrides:
   protobufjs: '>=7.6.5 <8'
   sharp: '>=0.35.0 <1'
   systeminformation: '>=5.31.0 <6'
-  undici: '>=7.29.0 <8'
+  undici: '>=7.30.1 <8'
   uuid: '>=12.0.1 <13'
   vite: 8.1.6
   ws: '>=8.20.1 <9'
   ip-address: '>=10.7.4 <11'
   shell-quote: '>=1.11.0 <2'
+  zod@>=4.0.0 <4.6.6: 4.6.6
 
 importers:
 
@@ -28,16 +29,16 @@ importers:
     dependencies:
       '@ai-sdk/google':
         specifier: ^4.0.63
-        version: 4.0.98(zod@4.3.6)
+        version: 4.0.98(zod@4.6.6)
       '@trigger.dev/sdk':
         specifier: ^4.5.16
-        version: 4.5.16(ai@7.0.142(zod@4.3.6))(react@19.2.8)(zod@4.3.6)
+        version: 4.5.16(ai@7.0.142(zod@4.6.6))(react@19.2.8)(zod@4.6.6)
       '@xenova/transformers':
         specifier: ^2.17.2
         version: 2.17.2(@types/node@26.1.2)
       ai:
         specifier: ^7.0.92
-        version: 7.0.142(zod@4.3.6)
+        version: 7.0.142(zod@4.6.6)
       compromise:
         specifier: ^14.16.0
         version: 14.16.0
@@ -95,7 +96,7 @@ importers:
         version: 16.3.3(@testing-library/dom@10.4.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@trigger.dev/build':
         specifier: 4.7.4
-        version: 4.7.4(typescript@7.0.2)(zod@4.3.6)
+        version: 4.7.4(typescript@7.0.2)(zod@4.6.6)
       '@vitejs/plugin-react':
         specifier: 6.1.2
         version: 6.1.2(vite@8.1.6(@types/node@26.1.2)(jiti@2.7.0))
@@ -124,19 +125,19 @@ packages:
     resolution: {integrity: sha512-Xn+gDWM4Ti2FzYmxhlZtjEuGBGZlOYaQMpwcVRSN4c9qCMUszD5F5TAbkxgLV/tHKeMfEX+WEuTCl6Kkj2r73A==}
     engines: {node: '>=22'}
     peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
+      zod: 4.6.6
 
   '@ai-sdk/google@4.0.98':
     resolution: {integrity: sha512-oKV8Alas+fs4q0rfm/cErkP8HudA8L4hkR+JyFCmN/plyXU1w0pqF+K41ovnytK+m91HAwPcrrzh7YxLZji0UA==}
     engines: {node: '>=22'}
     peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
+      zod: 4.6.6
 
   '@ai-sdk/provider-utils@5.0.61':
     resolution: {integrity: sha512-Y+Z3539UXw0ctFDNepTtG23VqBQHr2A6yI2qUxvQcg75DJYgJoD2F9U2Vp5OgQjX7lxto1BLgFtKuOhzrr52vQ==}
     engines: {node: '>=22'}
     peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
+      zod: 4.6.6
 
   '@ai-sdk/provider@4.0.28':
     resolution: {integrity: sha512-6ThcmkJQXSMlBrf6mirIjUUS04Q5/kApbYTOzd5lZfYXLa1XPpnDLxP/G96/DKc00fDIUOW9S2ls0mSzb0+l9w==}
@@ -1070,7 +1071,7 @@ packages:
     resolution: {integrity: sha512-DbiQ/yXejlTmxHx0jsbGz7ZaKw0vgmhVVJyjrK8Ys+cT0pp7xD2hDfmchM5hsfBPcjQqjmwCWeQTb9IXoxIHTg==}
     engines: {node: '>=18.20.0'}
     peerDependencies:
-      zod: ^3.25.56 || ^4.0.0
+      zod: 4.6.6
 
   '@trigger.dev/sdk@4.5.16':
     resolution: {integrity: sha512-YjHz3Zv/yyLAS6tqFZMTVD2yTP6FopbPaLgtECLUqYx/pV2LQftgs7XI5o6NvtJxaDDLEz2wHqegCte1Ww2lKg==}
@@ -1079,7 +1080,7 @@ packages:
       '@ai-sdk/otel': '>=1.0.0-0 <2'
       ai: ^5.0.0 || ^6.0.0 || >=7.0.0-canary <8
       react: ^18.0 || ^19.0
-      zod: ^3.0.0 || ^4.0.0
+      zod: 4.6.6
     peerDependenciesMeta:
       '@ai-sdk/otel':
         optional: true
@@ -1312,7 +1313,7 @@ packages:
     resolution: {integrity: sha512-Tifni6/6nNhCu4GnFEeYYR7CGmJ3Yhm44SGxYrOupqP2aaZwmGGiiB5Zx4hiauJR0AWimcXULejDT+Qsj+SHOQ==}
     engines: {node: '>=22'}
     peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
+      zod: 4.6.6
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -2447,10 +2448,6 @@ packages:
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
 
-  undici@7.30.0:
-    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.30.1:
     resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
     engines: {node: '>=20.18.1'}
@@ -2652,39 +2649,39 @@ packages:
     resolution: {integrity: sha512-hmk+pkyKq7Q71PiWVSDUc3VfpzpvcRHZ3QPw9yEMVvmtCekaMeOHnbr3WbxfrgEnQTv6haGP4cmv0Ojmihzsxw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      zod: ^3.25.0 || ^4.0.0
+      zod: 4.6.6
 
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.3.6:
-    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+  zod@4.6.6:
+    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
 
 snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@ai-sdk/gateway@4.0.115(zod@4.3.6)':
+  '@ai-sdk/gateway@4.0.115(zod@4.6.6)':
     dependencies:
       '@ai-sdk/provider': 4.0.28
-      '@ai-sdk/provider-utils': 5.0.61(zod@4.3.6)
+      '@ai-sdk/provider-utils': 5.0.61(zod@4.6.6)
       '@vercel/oidc': 3.2.0
-      zod: 4.3.6
+      zod: 4.6.6
 
-  '@ai-sdk/google@4.0.98(zod@4.3.6)':
+  '@ai-sdk/google@4.0.98(zod@4.6.6)':
     dependencies:
       '@ai-sdk/provider': 4.0.28
-      '@ai-sdk/provider-utils': 5.0.61(zod@4.3.6)
-      zod: 4.3.6
+      '@ai-sdk/provider-utils': 5.0.61(zod@4.6.6)
+      zod: 4.6.6
 
-  '@ai-sdk/provider-utils@5.0.61(zod@4.3.6)':
+  '@ai-sdk/provider-utils@5.0.61(zod@4.6.6)':
     dependencies:
       '@ai-sdk/provider': 4.0.28
       '@standard-schema/spec': 1.1.0
       '@workflow/serde': 4.1.0
       eventsource-parser: 3.1.1
       undici: 7.30.1
-      zod: 4.3.6
+      zod: 4.6.6
 
   '@ai-sdk/provider@4.0.28':
     dependencies:
@@ -3585,10 +3582,10 @@ snapshots:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@trigger.dev/build@4.7.4(typescript@7.0.2)(zod@4.3.6)':
+  '@trigger.dev/build@4.7.4(typescript@7.0.2)(zod@4.6.6)':
     dependencies:
       '@prisma/config': 6.19.3
-      '@trigger.dev/core': 4.7.4(zod@4.3.6)
+      '@trigger.dev/core': 4.7.4(zod@4.6.6)
       mlly: 1.8.2
       pkg-types: 1.3.1
       tinyglobby: 0.2.17
@@ -3640,7 +3637,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/core@4.7.4(zod@4.3.6)':
+  '@trigger.dev/core@4.7.4(zod@4.6.6)':
     dependencies:
       '@bugsnag/cuid': 3.2.2
       '@electric-sql/client': 1.0.14
@@ -3671,22 +3668,22 @@ snapshots:
       std-env: 3.10.0
       tinyexec: 0.3.2
       uncrypto: 0.1.3
-      zod: 4.3.6
-      zod-validation-error: 5.0.0(zod@4.3.6)
+      zod: 4.6.6
+      zod-validation-error: 5.0.0(zod@4.6.6)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
 
-  '@trigger.dev/sdk@4.5.16(ai@7.0.142(zod@4.3.6))(react@19.2.8)(zod@4.3.6)':
+  '@trigger.dev/sdk@4.5.16(ai@7.0.142(zod@4.6.6))(react@19.2.8)(zod@4.6.6)':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.41.1
       '@trigger.dev/core': 4.5.16
       uncrypto: 0.1.3
-      zod: 4.3.6
+      zod: 4.6.6
     optionalDependencies:
-      ai: 7.0.142(zod@4.3.6)
+      ai: 7.0.142(zod@4.6.6)
       react: 19.2.8
     transitivePeerDependencies:
       - bufferutil
@@ -3857,12 +3854,12 @@ snapshots:
 
   afinn-165@2.0.2: {}
 
-  ai@7.0.142(zod@4.3.6):
+  ai@7.0.142(zod@4.6.6):
     dependencies:
-      '@ai-sdk/gateway': 4.0.115(zod@4.3.6)
+      '@ai-sdk/gateway': 4.0.115(zod@4.6.6)
       '@ai-sdk/provider': 4.0.28
-      '@ai-sdk/provider-utils': 5.0.61(zod@4.3.6)
-      zod: 4.3.6
+      '@ai-sdk/provider-utils': 5.0.61(zod@4.6.6)
+      zod: 4.6.6
 
   ansi-regex@5.0.1: {}
 
@@ -4234,7 +4231,7 @@ snapshots:
       parse5: 8.0.1
       saxes: 6.0.0
       tough-cookie: 6.0.2
-      undici: 7.30.0
+      undici: 7.30.1
       w3c-xmlserializer: 6.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -4953,8 +4950,6 @@ snapshots:
 
   undici-types@8.3.0: {}
 
-  undici@7.30.0: {}
-
   undici@7.30.1: {}
 
   until-async@3.0.2: {}
@@ -5104,10 +5099,10 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
-  zod-validation-error@5.0.0(zod@4.3.6):
+  zod-validation-error@5.0.0(zod@4.6.6):
     dependencies:
-      zod: 4.3.6
+      zod: 4.6.6
 
   zod@3.25.76: {}
 
-  zod@4.3.6: {}
+  zod@4.6.6: {}
