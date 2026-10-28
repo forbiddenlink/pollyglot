@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/forbiddenlink/pollyglot/compare/v1.2.1...v1.2.2) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** patch undici and zod, bump trigger.dev to 4.8.1 ([#95](https://github.com/forbiddenlink/pollyglot/issues/95)) ([1040936](https://github.com/forbiddenlink/pollyglot/commit/1040936c571c8cfaca1e7959aa8160843dce984a))
+
 ## [1.2.1](https://github.com/forbiddenlink/pollyglot/compare/v1.2.0...v1.2.1) (2026-10-23)
 
 
