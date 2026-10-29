@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/forbiddenlink/pollyglot/compare/v1.2.2...v1.2.3) (2026-10-29)
+
+
+### Bug Fixes
+
+* **deps:** raise systeminformation and @hono/node-server override floors ([#98](https://github.com/forbiddenlink/pollyglot/issues/98)) ([300e3e5](https://github.com/forbiddenlink/pollyglot/commit/300e3e5db1b861dde4911dd683a6b0ace44319a6))
+
 ## [1.2.2](https://github.com/forbiddenlink/pollyglot/compare/v1.2.1...v1.2.2) (2026-10-27)
 
 
