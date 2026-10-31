@@ -2525,71 +2525,6 @@ body.fullscreen footer {
    palette. Reduced-motion gated at the bottom of this block.
    ========================================================================== */
 
-/* --- 1. Hero: world-scripts ribbon (the signature) ----------------------- */
-.script-ribbon {
-    flex-basis: 100%;
-    order: 3;
-    overflow: hidden;
-    margin-top: 1.25rem;
-    padding: 0.35rem 0;
-    min-width: 0;
-    max-width: 100vw;
-    overflow-x: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-}
-
-.script-ribbon-track {
-    display: flex;
-    align-items: baseline;
-    gap: 2.4rem;
-    width: max-content;
-    min-width: 0;
-    animation: scriptDrift 46s linear infinite;
-}
-
-.script-ribbon .glyph {
-    font-family: var(--font-display);
-    font-size: 1.7rem;
-    font-weight: 600;
-    line-height: 1;
-    color: var(--jungle-light);
-    opacity: 0.42;
-    transition: opacity var(--duration-normal) var(--ease-out),
-                color var(--duration-normal) var(--ease-out),
-                transform var(--duration-normal) var(--ease-out);
-}
-
-.script-ribbon .glyph:nth-child(3n) {
-    color: var(--sunset-orange);
-    opacity: 0.6;
-}
-
-.script-ribbon .glyph:nth-child(4n) {
-    color: var(--sunset-gold);
-    opacity: 0.55;
-}
-
-/* The ribbon quietly warms up when the header is hovered */
-header:hover .script-ribbon .glyph {
-    opacity: 0.72;
-}
-
-[data-theme="dark"] .script-ribbon .glyph {
-    color: var(--sunset-peach);
-    opacity: 0.32;
-}
-
-[data-theme="dark"] .script-ribbon .glyph:nth-child(3n) {
-    color: var(--sunset-gold);
-    opacity: 0.5;
-}
-
-@keyframes scriptDrift {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-}
-
 /* --- 2. Translation output: card-reveal craft ---------------------------- */
 .output-section {
     perspective: 1400px;
@@ -2784,17 +2719,6 @@ header:hover .script-ribbon .glyph {
 
 /* --- 6. Reduced-motion gating (covers this layer + heavy legacy anims) -- */
 @media (prefers-reduced-motion: reduce) {
-    .script-ribbon-track {
-        animation: none;
-        justify-content: center;
-        width: 100%;
-        flex-wrap: wrap;
-        gap: 1.4rem;
-    }
-    .script-ribbon {
-        -webkit-mask-image: none;
-        mask-image: none;
-    }
     .output-section:has(.text-output:not(:empty))::before,
     .output-section:has(.text-output:not(:empty)) .text-output,
     .practice-feedback,
