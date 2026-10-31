@@ -3,14 +3,14 @@
 (() => {
     'use strict';
 
-    // The only foreign-language text in the repo is the 404 page's "page not found" line,
-    // so the card reuses it verbatim (tests/hero-phrase.test.js checks it against 404.html).
-    // The repo carries no region information for these phrases, so the chip names the language only.
-    const MEANING = 'Page not found';
+    // One greeting per language, approved by the owner for these three common words only.
+    // None of it has been checked by a native speaker. The repo carries no region information
+    // for them, so the chip names the language only.
+    const MEANING = 'Hello';
     const PHRASES = [
-        { lang: 'es', name: 'Spanish', text: 'Página no encontrada' },
-        { lang: 'fr', name: 'French', text: 'Page introuvable' },
-        { lang: 'ja', name: 'Japanese', text: 'ページが見つかりません' }
+        { lang: 'es', name: 'Spanish', text: 'Hola' },
+        { lang: 'fr', name: 'French', text: 'Bonjour' },
+        { lang: 'ja', name: 'Japanese', text: 'こんにちは' }
     ];
     const NARROW = '(max-width: 760px)';
 

@@ -35,13 +35,14 @@ function fakeWindow({ voices = [], matches = false, withSpeech = true } = {}) {
 }
 
 describe('hero phrase data', () => {
-  it('uses only foreign-language text already present on the 404 page', () => {
+  it('holds one greeting per language, all meaning Hello', () => {
     const { PHRASES } = loadModule()
-    const page = read('404.html')
-    expect(PHRASES.length).toBeGreaterThanOrEqual(2)
-    for (const p of PHRASES) {
-      expect(page).toContain(`lang="${p.lang}">${p.text}<`)
-    }
+    expect(PHRASES.map((p) => [p.lang, p.text])).toEqual([
+      ['es', 'Hola'],
+      ['fr', 'Bonjour'],
+      ['ja', 'こんにちは'],
+    ])
+    expect(read('index.html')).toContain('<p class="hero-meaning">Hello</p>')
   })
 })
 
@@ -56,7 +57,7 @@ describe('hero phrase card', () => {
     const fr = [...card.querySelectorAll('[data-hero-lang]')].find((b) => b.dataset.heroLang === 'fr')
     fr.click()
     const text = card.querySelector('.hero-phrase')
-    expect(text.textContent).toBe('Page introuvable')
+    expect(text.textContent).toBe('Bonjour')
     expect(text.getAttribute('lang')).toBe('fr')
     expect(card.querySelector('.hero-chip-name').textContent).toBe('French')
     expect(fr.getAttribute('aria-pressed')).toBe('true')
@@ -83,7 +84,7 @@ describe('hero phrase card', () => {
     const play = card.querySelector('.hero-play')
     expect(play.hidden).toBe(false)
     play.click()
-    expect(spoken[0].text).toBe('Página no encontrada')
+    expect(spoken[0].text).toBe('Hola')
     expect(spoken[0].lang).toBe('es')
     expect(spoken[0].voice).toBe(voice)
     play.click()
