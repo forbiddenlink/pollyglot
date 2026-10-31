@@ -45,13 +45,6 @@
                     <h1>A world of words.<br>A little <em>closer.</em></h1>
                     <p class="subtitle">Find the right words. Hear them. Make them yours.</p>
                 </div>
-                <!-- Fluency-journey signature: a warm ribbon celebrating the beauty of the world's writing systems (decorative) -->
-                <div class="script-ribbon" aria-hidden="true">
-                    <div class="script-ribbon-track">
-                        <span class="glyph">Aa</span><span class="glyph">あ</span><span class="glyph">你</span><span class="glyph">ñ</span><span class="glyph">ع</span><span class="glyph">Ω</span><span class="glyph">क</span><span class="glyph">Ж</span><span class="glyph">한</span><span class="glyph">ก</span><span class="glyph">א</span><span class="glyph">ß</span>
-                        <span class="glyph" aria-hidden="true">Aa</span><span class="glyph">あ</span><span class="glyph">你</span><span class="glyph">ñ</span><span class="glyph">ع</span><span class="glyph">Ω</span><span class="glyph">क</span><span class="glyph">Ж</span><span class="glyph">한</span><span class="glyph">ก</span><span class="glyph">א</span><span class="glyph">ß</span>
-                    </div>
-                </div>
                 <div class="header-right">
                     <button type="button" class="fullscreen-toggle" aria-label="Toggle fullscreen mode" title="Fullscreen (F11)">
                         <svg class="icon" viewBox="0 0 24 24">
@@ -78,6 +71,24 @@
                         </svg>
                     </button>
                 </div>
+                <aside class="hero-card" aria-label="Phrase card">
+                    <img class="hero-parrot" src="/assets/parrot-192.png" alt="" width="96" height="96">
+                    <div class="hero-chip">
+                        <button type="button" class="hero-play" aria-label="Hear the Spanish phrase" hidden>
+                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <span class="hero-chip-name">Spanish</span>
+                    </div>
+                    <div class="hero-lines" aria-live="polite">
+                        <p class="hero-phrase" lang="es">Hola</p>
+                        <p class="hero-meaning">Hello</p>
+                    </div>
+                    <div class="hero-langs" role="group" aria-label="Choose a language">
+                        <button type="button" data-hero-lang="es" aria-pressed="true">Spanish</button>
+                        <button type="button" data-hero-lang="fr" aria-pressed="false">French</button>
+                        <button type="button" data-hero-lang="ja" aria-pressed="false">Japanese</button>
+                    </div>
+                </aside>
             </div>
         </header>
         
@@ -653,5 +664,6 @@
     <script src="lib/server-stt.js"></script>
     <script src="script.js"></script>
     <script src="site.js"></script>
+    <script src="hero-phrase.js"></script>
 </body>
 </html>
