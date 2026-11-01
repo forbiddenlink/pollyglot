@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/forbiddenlink/pollyglot/compare/v1.2.3...v1.3.0) (2026-10-31)
+
+
+### Features
+
+* add branded 404 page ([#100](https://github.com/forbiddenlink/pollyglot/issues/100)) ([52776d5](https://github.com/forbiddenlink/pollyglot/commit/52776d5b728f95a7f91a1d0a57f299a284999f57))
+* replace hero glyph ribbon with a phrase card ([#102](https://github.com/forbiddenlink/pollyglot/issues/102)) ([34722ad](https://github.com/forbiddenlink/pollyglot/commit/34722ad45e0594203bc9f8b3d0913a3b97391706))
+
 ## [1.2.3](https://github.com/forbiddenlink/pollyglot/compare/v1.2.2...v1.2.3) (2026-10-29)
 
 
