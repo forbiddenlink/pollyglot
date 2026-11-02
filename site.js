@@ -123,7 +123,7 @@
         note.textContent = shared.has('text') ? 'Shared text ready to translate' : 'Your draft has been restored';
     }
     function saveDraft() {
-        note.textContent = storage.set('pollyglotDraft', input.value) ? 'Draft saved in this browser' : 'Browser storage unavailable — keep this page open';
+        note.textContent = storage.set('pollyglotDraft', input.value) ? 'Draft saved in this browser' : 'Browser storage unavailable. Keep this page open';
     }
     document.addEventListener('pollyglot:workspace-change', saveDraft);
     input.addEventListener('input', saveDraft);
@@ -189,7 +189,7 @@
     document.getElementById('shortcut-help').addEventListener('click', () => document.getElementById('shortcut-dialog').showModal());
     function updateConnection() { document.getElementById('connection-status').hidden = navigator.onLine; }
     window.addEventListener('online', updateConnection);
-    window.addEventListener('offline', updateConnection);
+    window.addEventListener('offline', () => { updateConnection(); revealNotice(document.getElementById('connection-status')); });
     updateConnection();
 
     const historySearch = document.getElementById('history-search');

@@ -1,8 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const { getLangfuse, flushLangfuse } = require("./_lib/langfuse");
-const { captureEvent } = require("./_lib/posthog");
-const { sendTranslationEmail } = require("./_lib/email");
+const { anonymizeIp, captureEvent } = require("./_lib/posthog");
 const { createRateLimiter, RateLimitUnavailableError } = require("./ratelimit");
 const {
   validateAudio,
@@ -79,7 +78,7 @@ app.use((req, res, next) => {
   if (req.url.startsWith("/api/")) req.url = req.url.slice(4);
   next();
 });
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "64kb" }));
 
 // CORS configuration
 app.use((req, res, next) => {
@@ -305,7 +304,7 @@ app.post("/translate", async (req, res) => {
     // Check API key
     if (!process.env.OPENAI_API_KEY) {
       console.error("OpenAI API key not configured");
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Translation service is not configured properly",
       });
     }
@@ -338,8 +337,10 @@ app.post("/translate", async (req, res) => {
     );
 
     if (!response.ok) {
-      const errorMessage = data.error?.message || "Translation failed";
-      console.error("OpenAI API error:", errorMessage);
+      console.error(
+        "OpenAI API error:",
+        data.error?.message || "Translation failed",
+      );
 
       if (response.status === 401) {
         return res.status(500).json({
@@ -351,7 +352,7 @@ app.post("/translate", async (req, res) => {
         });
       }
 
-      return res.status(500).json({ error: errorMessage });
+      return res.status(500).json({ error: "Translation failed. Please try again." });
     }
 
     const translation = extractAssistantContent(data);
@@ -359,26 +360,13 @@ app.post("/translate", async (req, res) => {
       return res.status(502).json({ error: "Translation response was empty" });
     }
 
-    captureEvent("translation_completed", {
-      sessionId: clientIp,
+    await captureEvent("translation_completed", {
+      sessionId: anonymizeIp(clientIp),
       sourceLanguage: validation.sourceLanguage,
       targetLanguage: validation.targetLanguage,
       formality,
       textLength: validation.text.length,
     });
-
-    // Send translation result email if requested
-    if (req.body?.emailAddress) {
-      try {
-        await sendTranslationEmail({
-          to: req.body.emailAddress,
-          targetLanguage: validation.targetLanguage,
-          translatedContent: translation,
-        });
-      } catch (emailError) {
-        console.warn("Email notification failed:", emailError.message);
-      }
-    }
 
     res.json({ translation });
   } catch (error) {
@@ -386,6 +374,9 @@ app.post("/translate", async (req, res) => {
       return res.status(504).json({
         error: "Translation request timed out. Please try again.",
       });
+    }
+    if (error instanceof RateLimitUnavailableError) {
+      return res.status(503).json({ error: "Service temporarily unavailable" });
     }
     console.error("Translation error:", error);
     res.status(500).json({
@@ -427,7 +418,7 @@ app.post("/detect", async (req, res) => {
     // Check API key
     if (!process.env.OPENAI_API_KEY) {
       console.error("OpenAI API key not configured");
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Language detection service is not configured properly",
       });
     }
@@ -449,9 +440,13 @@ app.post("/detect", async (req, res) => {
     );
 
     if (!response.ok) {
-      const errorMessage = data.error?.message || "Language detection failed";
-      console.error("OpenAI API error:", errorMessage);
-      return res.status(500).json({ error: errorMessage });
+      console.error(
+        "OpenAI API error:",
+        data.error?.message || "Language detection failed",
+      );
+      return res
+        .status(500)
+        .json({ error: "Language detection failed. Please try again." });
     }
 
     const detectedLanguage = extractAssistantContent(data).toLowerCase();
@@ -472,6 +467,9 @@ app.post("/detect", async (req, res) => {
       return res.status(504).json({
         error: "Language detection timed out. Please try again.",
       });
+    }
+    if (error instanceof RateLimitUnavailableError) {
+      return res.status(503).json({ error: "Service temporarily unavailable" });
     }
     console.error("Language detection error:", error);
     res.status(500).json({
@@ -514,7 +512,7 @@ app.post("/pronunciation", async (req, res) => {
     }
 
     if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Service not configured",
       });
     }
@@ -536,9 +534,11 @@ app.post("/pronunciation", async (req, res) => {
     );
 
     if (!response.ok) {
-      return res.status(500).json({
-        error: data.error?.message || "Failed to get pronunciation",
-      });
+      console.error(
+        "OpenAI API error:",
+        data.error?.message || "Failed to get pronunciation",
+      );
+      return res.status(500).json({ error: "Failed to get pronunciation guide" });
     }
 
     const phonetic = extractAssistantContent(data);
@@ -554,6 +554,9 @@ app.post("/pronunciation", async (req, res) => {
       return res.status(504).json({
         error: "Pronunciation request timed out. Please try again.",
       });
+    }
+    if (error instanceof RateLimitUnavailableError) {
+      return res.status(503).json({ error: "Service temporarily unavailable" });
     }
     console.error("Pronunciation error:", error);
     res.status(500).json({ error: "Failed to get pronunciation guide" });
@@ -601,7 +604,7 @@ app.post("/alternatives", async (req, res) => {
     }
 
     if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Translation service is not configured properly",
       });
     }
@@ -625,9 +628,13 @@ app.post("/alternatives", async (req, res) => {
     );
 
     if (!response.ok) {
-      return res.status(500).json({
-        error: data.error?.message || "Failed to get alternatives",
-      });
+      console.error(
+        "OpenAI API error:",
+        data.error?.message || "Failed to get alternatives",
+      );
+      return res
+        .status(500)
+        .json({ error: "Failed to get alternative translations" });
     }
 
     try {
@@ -654,6 +661,9 @@ app.post("/alternatives", async (req, res) => {
         error: "Alternatives request timed out. Please try again.",
       });
     }
+    if (error instanceof RateLimitUnavailableError) {
+      return res.status(503).json({ error: "Service temporarily unavailable" });
+    }
     console.error("Alternatives error:", error);
     res.status(500).json({ error: "Failed to get alternative translations" });
   }
@@ -661,13 +671,33 @@ app.post("/alternatives", async (req, res) => {
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.json({
-    status: "ok",
+  const configured = !!process.env.OPENAI_API_KEY;
+  res.status(configured ? 200 : 503).json({
+    status: configured ? "ok" : "unconfigured",
     timestamp: new Date().toISOString(),
-    hasApiKey: !!process.env.OPENAI_API_KEY,
     supportedLanguages: Object.keys(SUPPORTED_LANGUAGES).length,
   });
 });
+
+// The whole /tts provider chain must finish before vercel.json maxDuration (60s),
+// so each outbound call carries a deadline derived from one shared budget.
+function getTtsDeadlineMs() {
+  return Number.parseInt(process.env.TTS_DEADLINE_MS, 10) || 50000;
+}
+
+function ttsFetch(url, init, { deadlineAt, capMs = Infinity }) {
+  const remaining = Math.min(deadlineAt - Date.now(), capMs);
+  if (remaining <= 0) {
+    const err = new Error("TTS deadline exceeded");
+    err.name = "TimeoutError";
+    throw err;
+  }
+  return fetchImpl(url, { ...init, signal: AbortSignal.timeout(remaining) });
+}
+
+function isTimeoutError(error) {
+  return error?.name === "TimeoutError" || error?.name === "AbortError";
+}
 
 // TTS endpoint — MiniMax speech-02-hd with OpenAI TTS fallback
 app.post("/tts", async (req, res) => {
@@ -689,11 +719,16 @@ app.post("/tts", async (req, res) => {
         .json({ error: "Text too long (max 1000 characters)" });
     }
 
+    const budgetMs = getTtsDeadlineMs();
+    const deadlineAt = Date.now() + budgetMs;
+    // Magica may use half the budget (it polls), MiniMax a fifth; OpenAI gets what is left.
+    const magicaDeadline = { deadlineAt: Math.min(deadlineAt, Date.now() + budgetMs * 0.5) };
+
     // Magica TTS (preferred when configured — ElevenLabs multilingual v2 via aggregator).
     // Inert unless MAGICA_KEY is set; falls through to MiniMax/OpenAI on any failure.
     if (process.env.MAGICA_KEY) {
       try {
-        const startRes = await fetchImpl(
+        const startRes = await ttsFetch(
           "https://api.magica.com/api/v1/nodes/elevenlabs_multilingual_v2_tts/run",
           {
             method: "POST",
@@ -704,20 +739,23 @@ app.post("/tts", async (req, res) => {
             body: JSON.stringify({
               input: { text: text.trim(), voice_id: "21m00Tcm4TlvDq8ikWAM" },
             }),
-          }
+          },
+          magicaDeadline,
         );
         if (startRes.ok) {
           const { runId } = await startRes.json();
-          for (let i = 0; i < 30 && runId; i++) {
-            const pollRes = await fetchImpl(
+          for (let i = 0; i < 30 && runId && Date.now() < magicaDeadline.deadlineAt; i++) {
+            const pollRes = await ttsFetch(
               `https://api.magica.com/api/v1/nodes/runs/${runId}`,
-              { headers: { Authorization: `Bearer ${process.env.MAGICA_KEY}` } }
+              { headers: { Authorization: `Bearer ${process.env.MAGICA_KEY}` } },
+              magicaDeadline,
             );
             const run = await pollRes.json();
             if (!["RUNNING", "PENDING", "QUEUED"].includes(run.status)) {
               const url = run?.output?.result?.[0];
               if (run.status === "COMPLETED" && url) {
-                const audioRes = await fetchImpl(url);
+                const audioRes = await ttsFetch(url, {}, magicaDeadline);
+                if (!audioRes.ok) break; // fall through to other providers
                 const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
                 res.set("Content-Type", "audio/mpeg");
                 return res.send(audioBuffer);
@@ -734,36 +772,44 @@ app.post("/tts", async (req, res) => {
 
     // MiniMax TTS (preferred — native multilingual)
     if (process.env.MINIMAX_API_KEY) {
-      const minimaxRes = await fetchImpl("https://api.minimax.io/v1/t2a_v2", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.MINIMAX_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "speech-02-hd",
-          text: text.trim(),
-          stream: false,
-          voice_setting: { voice_id: "Calm_Woman", speed: 1.0, vol: 1.0 },
-          audio_setting: { format: "mp3", sample_rate: 32000 },
-        }),
-      });
+      try {
+        const minimaxRes = await ttsFetch(
+          "https://api.minimax.io/v1/t2a_v2",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.MINIMAX_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "speech-02-hd",
+              text: text.trim(),
+              stream: false,
+              voice_setting: { voice_id: "Calm_Woman", speed: 1.0, vol: 1.0 },
+              audio_setting: { format: "mp3", sample_rate: 32000 },
+            }),
+          },
+          { deadlineAt, capMs: budgetMs * 0.2 },
+        );
 
-      if (minimaxRes.ok) {
-        const minimaxData = await minimaxRes.json();
-        const hexAudio = minimaxData?.data?.audio;
-        if (hexAudio) {
-          const audioBuffer = Buffer.from(hexAudio, "hex");
-          res.set("Content-Type", "audio/mpeg");
-          return res.send(audioBuffer);
+        if (minimaxRes.ok) {
+          const minimaxData = await minimaxRes.json();
+          const hexAudio = minimaxData?.data?.audio;
+          if (hexAudio) {
+            const audioBuffer = Buffer.from(hexAudio, "hex");
+            res.set("Content-Type", "audio/mpeg");
+            return res.send(audioBuffer);
+          }
         }
+      } catch (err) {
+        console.error("MiniMax TTS failed, falling back:", err.message);
       }
       // Fall through to OpenAI TTS if MiniMax fails
     }
 
     // OpenAI TTS fallback
     if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({ error: "TTS service not configured" });
+      return res.status(503).json({ error: "TTS service not configured" });
     }
 
     const langCode = language || "en";
@@ -771,25 +817,28 @@ app.post("/tts", async (req, res) => {
       ? "nova"
       : "alloy";
 
-    const ttsRes = await fetchImpl("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    const ttsRes = await ttsFetch(
+      "https://api.openai.com/v1/audio/speech",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "tts-1",
+          input: text.trim(),
+          voice,
+          response_format: "mp3",
+        }),
       },
-      body: JSON.stringify({
-        model: "tts-1",
-        input: text.trim(),
-        voice,
-        response_format: "mp3",
-      }),
-    });
+      { deadlineAt },
+    );
 
     if (!ttsRes.ok) {
       const errData = await ttsRes.json().catch(() => ({}));
-      return res
-        .status(502)
-        .json({ error: errData.error?.message || "TTS failed" });
+      console.error("OpenAI TTS error:", errData.error?.message || "TTS failed");
+      return res.status(502).json({ error: "Speech generation failed. Please try again." });
     }
 
     res.set("Content-Type", "audio/mpeg");
@@ -798,6 +847,9 @@ app.post("/tts", async (req, res) => {
   } catch (error) {
     if (error instanceof RateLimitUnavailableError) {
       return res.status(503).json({ error: "Service temporarily unavailable" });
+    }
+    if (isTimeoutError(error)) {
+      return res.status(504).json({ error: "Speech took too long. Please try again." });
     }
     console.error("TTS error:", error);
     res.status(500).json({ error: "An unexpected error occurred" });

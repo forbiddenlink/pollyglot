@@ -44,7 +44,7 @@ Frontend (no build): serve the repo root with any static server, e.g.
 - `OPENAI_TIMEOUT_MS` - request timeout override (default 30000)
 - `MAGICA_KEY` - Magica/ElevenLabs TTS voice (optional, first choice in the TTS fallback chain)
 - `MINIMAX_API_KEY` - MiniMax `speech-02-hd` TTS (optional, second fallback)
-- `RESEND_API_KEY` / `RESEND_FROM_EMAIL` - email delivery of a translation result (optional)
+- `TTS_DEADLINE_MS` - total time budget for the /tts provider chain (default 50000, under the 60s function limit)
 - `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` - LLM call tracing (optional)
 - `NEXT_PUBLIC_POSTHOG_KEY` / `POSTHOG_HOST` - product analytics (optional)
 

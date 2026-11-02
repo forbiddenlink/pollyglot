@@ -64,9 +64,9 @@
     <header class="site-header"><a class="brand" href="/" aria-label="PollyGlot home"><img src="/assets/parrot-192.png" alt="" width="30" height="30">Polly<em>Glot</em></a><nav class="site-nav" aria-label="Main navigation"><a class="nav-home" href="/">Translator</a><a href="/about">About</a><a href="/contact">Contact</a></nav><span class="nav-note">A world of words. Within reach.</span></header>
     <main class="wrap" id="main-content">
 <section class="page-intro"><div><span class="eyebrow">Your words, your choices</span><h1>Privacy Policy</h1></div><p class="intro-note">How text, preferences, and saved translations are handled.</p></section>
-        <div class="reading-grid"><aside class="reading-aside"><span class="eyebrow">On this page</span><p>Jump to the details you need.</p><nav aria-label="Privacy policy contents"><a href="#overview">Overview</a><a href="#translation-data">Data processed for translation</a><a href="#local-storage">Local storage and settings</a><a href="#security-retention">Security and retention</a><a href="#privacy-contact">Contact</a></nav></aside>
+        <div class="reading-grid"><aside class="reading-aside"><span class="eyebrow">On this page</span><p>Jump to the details you need.</p><nav aria-label="Privacy policy contents"><a href="#overview">Overview</a><a href="#translation-data">Data processed for translation</a><a href="#processors">Services that process your data</a><a href="#local-storage">Local storage and settings</a><a href="#security-retention">Security and retention</a><a href="#privacy-contact">Contact</a></nav></aside>
         <article class="card">
-            <p class="small">Last updated: February 10, 2026</p>
+            <p class="small">Last updated: November 2, 2026</p>
             <h2 id="overview">Overview</h2>
             <p>
                 PollyGlot is built to provide translation features with minimal data collection.
@@ -80,6 +80,19 @@
                 provide core functionality. Translation requests may include temporary metadata such as request
                 time and IP-derived rate-limit counters for abuse protection.
             </p>
+            <h2 id="processors">Services that process your data</h2>
+            <p>These services receive data when you use the matching feature. Some run only when the site operator has turned them on.</p>
+            <ul>
+                <li><strong>OpenAI</strong>: receives the text you submit to translate it, detect its language, and create pronunciation guides and alternative phrasings. It can also turn text into speech.</li>
+                <li><strong>Magica</strong> (ElevenLabs voices): receives text to generate speech, and receives recorded audio to transcribe it when your browser has no built-in speech recognition.</li>
+                <li><strong>MiniMax</strong>: receives text to generate speech.</li>
+                <li><strong>Langfuse</strong>: records the prompts and results of translation requests for debugging and quality monitoring.</li>
+                <li><strong>PostHog</strong>: records product analytics events with the language pair, tone, text length, and your IP address.</li>
+                <li><strong>Upstash</strong>: stores your IP address in rate-limit counters for abuse protection.</li>
+                <li><strong>Vercel</strong>: hosts the site and the API, and handles your requests.</li>
+                <li><strong>Google Fonts</strong>: your browser requests fonts from Google when a page loads.</li>
+                <li><strong>jsDelivr</strong> and <strong>Hugging Face</strong>: when you use pronunciation practice, your browser loads speech recognition and waveform libraries from jsDelivr and downloads the speech model from Hugging Face. The recording is processed in your browser.</li>
+            </ul>
             <h2 id="local-storage">Local storage and settings</h2>
             <p>
                 PollyGlot stores settings, translation history, and favorites in your browser local storage

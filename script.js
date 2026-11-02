@@ -536,7 +536,9 @@ async function handleTranslation() {
 
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.error || 'Translation failed');
+            const failure = new Error(data.error || 'Translation failed');
+            failure.status = response.status;
+            throw failure;
         }
 
         const translationText = data.translation;
@@ -604,8 +606,8 @@ async function handleTranslation() {
         if (error.name === 'AbortError' && !timedOut) return;
         if (requestVersion !== resultVersion) return;
         console.error('Translation error:', error);
-        setTranslationStatus('error', timedOut ? 'Translation took too long. Please try again.' : navigator.onLine ? `We couldn't translate this time. ${error.message}` : 'You are offline. Reconnect, then try again.', true);
-        showToast(`Translation failed: ${error.message}`, 'error');
+        setTranslationStatus('error', timedOut ? 'Translation took too long. Please try again.' : navigator.onLine ? translationFailureMessage(error.status) : 'You are offline. Reconnect, then try again.', true);
+        showToast('Translation failed.', 'error');
     } finally {
         clearTimeout(timeout);
         translationController = null;
@@ -1392,13 +1394,13 @@ function renderHistory() {
         return `
             <div class="history-item" data-index="${index}">
                 <div class="history-item-header">
-                    <span class="history-item-langs">${sourceLangName} → ${targetLangName}</span>
+                    <span class="history-item-langs">${escapeHtml(sourceLangName)} → ${escapeHtml(targetLangName)}</span>
                     <span class="history-item-date">${dateStr}</span>
                 </div>
                 <div class="history-item-source">${escapeHtml(item.sourceText.substring(0, 100))}${item.sourceText.length > 100 ? '...' : ''}</div>
                 <div class="history-item-target">
                     ${escapeHtml(item.targetText.substring(0, 100))}${item.targetText.length > 100 ? '...' : ''}
-                    <button type="button" class="tts-inline-btn history-tts-btn" data-text="${escapeHtml(item.targetText)}" data-lang="${item.targetLang}" aria-label="Hear pronunciation" title="Hear pronunciation">
+                    <button type="button" class="tts-inline-btn history-tts-btn" data-text="${escapeHtml(item.targetText)}" data-lang="${escapeHtml(item.targetLang)}" aria-label="Hear pronunciation" title="Hear pronunciation">
                         <svg class="icon" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/>
                         </svg>
@@ -1743,13 +1745,30 @@ function showLoading(show) {
     loadingOverlay.classList.toggle('hidden', !show);
 }
 
+// Fixed user-facing copy. Server error text is never shown to users.
+function translationFailureMessage(status) {
+    if (status === 429) return 'Too many requests right now. Wait a moment, then try again.';
+    if (status === 400) return "That text couldn't be translated. Check the text and languages, then try again.";
+    return "Translation isn't available right now. Try again in a few minutes.";
+}
+
+// On narrow screens the notices sit below the fold. Scroll one into view and move focus to it.
+function revealNotice(notice) {
+    if (!notice) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    notice.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+    notice.focus({ preventScroll: true });
+}
+
 function setTranslationStatus(state, message, retry = false) {
     const status = document.getElementById('translation-status');
     if (!status) return;
     status.hidden = !message;
     status.dataset.state = state;
+    status.setAttribute('role', state === 'error' ? 'alert' : 'status');
     status.querySelector('span').textContent = message;
     document.getElementById('retry-translation').hidden = !retry;
+    if (state === 'error' && message) revealNotice(status);
 }
 
 // Typing animation for translation output
@@ -1813,7 +1832,8 @@ function skipTypingAnimation() {
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
-    return div.innerHTML;
+    // innerHTML leaves quotes alone, and callers also use this inside attributes.
+    return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // Screen reader announcements

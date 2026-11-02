@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>document.documentElement.classList.add('js');</script>
-    <meta name="description" content="Translate text across 20 languages with PollyGlot AI. Use voice input, text-to-speech, history, favorites, pronunciation guides, and tone controls in one fast app.">
+    <meta name="description" content="Translate text across 20 languages with PollyGlot AI. Use voice input, text-to-speech, history, favorites, pronunciation guides, and tone controls in one app.">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#193c32">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,7 +19,7 @@
     <meta property="og:image" content="https://pollyglot-topaz.vercel.app/assets/parrot-512.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="PollyGlot AI Translation App">
-    <meta name="twitter:description" content="Fast AI translation with tone control, speech features, and saved history.">
+    <meta name="twitter:description" content="AI translation with tone control, speech features, and saved history.">
     <meta name="twitter:image" content="https://pollyglot-topaz.vercel.app/assets/parrot-512.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,6 @@
     <header class="site-header">
         <a class="brand" href="/" aria-label="PollyGlot home"><img src="/assets/parrot-192.png" alt="" width="30" height="30">Polly<em>Glot</em></a>
         <nav class="site-nav" aria-label="Main navigation"><a class="nav-home" href="/" aria-current="page">Translator</a><a href="/about">About</a><a href="/contact">Contact</a></nav>
-        <span class="nav-note">A world of words. Within reach.</span>
     </header>
     <div class="container">
         <header class="workspace-intro">
@@ -59,7 +58,7 @@
                     <button type="button" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
                         <svg class="icon sun-icon" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M12 17.5C14.7614 17.5 17 15.2614 17 12.5C17 9.73858 14.7614 7.5 12 7.5C9.23858 7.5 7 9.73858 7 12.5C7 15.2614 9.23858 17.5 12 17.5Z"/>
-                            <path fill="currentColor" d="M12 1.25V3.75M12 21.25V23.75M3.75 12.5H1.25M22.75 12.5H20.25M19.0711 19.0711L17.3033 17.3033M6.69672 6.69672L4.92894 4.92894M19.0711 5.92894L17.3033 7.69672M6.69672 17.3033L4.92894 19.0711"/>
+                            <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M12 1.25V3.75M12 21.25V23.75M3.75 12.5H1.25M22.75 12.5H20.25M19.0711 19.0711L17.3033 17.3033M6.69672 6.69672L4.92894 4.92894M19.0711 5.92894L17.3033 7.69672M6.69672 17.3033L4.92894 19.0711"/>
                         </svg>
                         <svg class="icon moon-icon" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M21.53 15.93c-.16-.27-.61-.69-1.73-.49a8.46 8.46 0 01-1.88.13 8.409 8.409 0 01-5.91-2.82 8.068 8.068 0 01-1.44-8.66c.44-1.01.13-1.54-.09-1.76s-.77-.55-1.83-.11a10.318 10.318 0 00-6.32 10.21 10.475 10.475 0 007.04 8.99 10 10 0 002.89.55c.16.01.32.02.48.02a10.5 10.5 0 008.47-4.27c.67-.93.49-1.519.32-1.79z"/>
@@ -427,9 +426,9 @@
                     </div>
                 </div>
             </div>
-            <div class="translation-status" id="translation-status" role="status" aria-live="polite" hidden><span></span><button type="button" id="retry-translation" hidden>Try again</button></div>
+            <div class="translation-status" id="translation-status" tabindex="-1" role="status" aria-live="polite" hidden><span></span><button type="button" id="retry-translation" hidden>Try again</button></div>
             <div class="workspace-tools"><button type="button" class="text-link-button" id="import-text">Import a .txt file</button><input type="file" id="text-file" accept=".txt,text/plain" hidden><button type="button" class="text-link-button" id="download-text">Download translation</button><button type="button" class="text-link-button" id="shortcut-help">Keyboard shortcuts</button><span class="draft-note" id="draft-note">Draft stays in this browser</span></div>
-            <p class="connection-status" id="connection-status" role="status" hidden>You're offline. Saved phrases are available; new translations need a connection.</p>
+            <p class="connection-status" id="connection-status" tabindex="-1" role="status" hidden>You're offline. Saved phrases are available; new translations need a connection.</p>
             <section class="phrase-library" aria-labelledby="phrase-heading"><div><span class="eyebrow">A place to start</span><h2>Good words to have.</h2><p>For wherever the conversation takes you.</p></div><div><div class="phrase-tabs" role="group" aria-label="Phrase categories"><button class="phrase-tab" type="button" data-category="everyday" aria-pressed="true">Everyday</button><button class="phrase-tab" type="button" data-category="travel" aria-pressed="false">Travel</button><button class="phrase-tab" type="button" data-category="dining" aria-pressed="false">Dining</button><button class="phrase-tab" type="button" data-category="work" aria-pressed="false">At work</button></div><div class="phrase-list" id="phrase-list"></div></div></section>
             <section class="feature-strip" aria-label="Make the most of PollyGlot"><article><span class="feature-number">01 / SAY IT YOUR WAY</span><h3>The right words. The right tone.</h3><p>Keep it neutral, make it formal, or go casual. Choose the tone that fits your conversation.</p></article><article><span class="feature-number">02 / HEAR THE DIFFERENCE</span><h3>Go from reading to speaking.</h3><p>Listen to your translation, explore pronunciation, and practice saying it out loud.</p></article><article><span class="feature-number">03 / KEEP WHAT MATTERS</span><h3>A phrase worth remembering.</h3><p>Save useful translations to your history or favorites. Find them again, right in this browser.</p></article></section>
         </main>
