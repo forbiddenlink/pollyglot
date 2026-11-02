@@ -289,6 +289,12 @@ body.fullscreen .workspace-topline { padding-top: 24px; }
     .feature-strip { gap: 24px; }
 }
 @media (max-width: 560px) {
+    /* Keep Translate in reach while the phone user types above it. */
+    .translation-grid { display: block; }
+    .middle-controls { display: contents; }
+    .translate-btn { position: sticky; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 5; display: flex; width: calc(100% - 32px); margin: 12px 16px; justify-content: center; }
+    .middle-controls > :not(.translate-btn) { margin: 12px 16px; }
+    #translator textarea { min-height: 120px; height: 120px; }
     .info-page .wrap { width: calc(100% - 32px); }
     .page-intro h1 { font-size: 42px; letter-spacing: -1.4px; }
     .info-page .card > p { font-size: 15px; }

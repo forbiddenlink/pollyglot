@@ -36,6 +36,6 @@ describe('service worker cache', () => {
     expect(added).toContain('/lib/server-stt.js')
     expect(added).toContain('/script.js')
     await run('activate')
-    expect([...store.keys()]).toEqual(['pollyglot-v6'])
+    expect([...store.keys()]).toEqual(['pollyglot-v7'])
   })
 })

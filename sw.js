@@ -1,5 +1,5 @@
 // Service Worker for PollyGlot PWA
-const CACHE_NAME = 'pollyglot-v6';
+const CACHE_NAME = 'pollyglot-v7';
 const urlsToCache = [
   '/',
   '/index.html',
