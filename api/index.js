@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const { getLangfuse, flushLangfuse } = require("./_lib/langfuse");
-const { captureEvent } = require("./_lib/posthog");
+const { anonymizeIp, captureEvent } = require("./_lib/posthog");
 const { createRateLimiter, RateLimitUnavailableError } = require("./ratelimit");
 const {
   validateAudio,
@@ -78,7 +78,7 @@ app.use((req, res, next) => {
   if (req.url.startsWith("/api/")) req.url = req.url.slice(4);
   next();
 });
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "64kb" }));
 
 // CORS configuration
 app.use((req, res, next) => {
@@ -304,7 +304,7 @@ app.post("/translate", async (req, res) => {
     // Check API key
     if (!process.env.OPENAI_API_KEY) {
       console.error("OpenAI API key not configured");
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Translation service is not configured properly",
       });
     }
@@ -360,8 +360,8 @@ app.post("/translate", async (req, res) => {
       return res.status(502).json({ error: "Translation response was empty" });
     }
 
-    captureEvent("translation_completed", {
-      sessionId: clientIp,
+    await captureEvent("translation_completed", {
+      sessionId: anonymizeIp(clientIp),
       sourceLanguage: validation.sourceLanguage,
       targetLanguage: validation.targetLanguage,
       formality,
@@ -418,7 +418,7 @@ app.post("/detect", async (req, res) => {
     // Check API key
     if (!process.env.OPENAI_API_KEY) {
       console.error("OpenAI API key not configured");
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Language detection service is not configured properly",
       });
     }
@@ -512,7 +512,7 @@ app.post("/pronunciation", async (req, res) => {
     }
 
     if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Service not configured",
       });
     }
@@ -604,7 +604,7 @@ app.post("/alternatives", async (req, res) => {
     }
 
     if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
+      return res.status(503).json({
         error: "Translation service is not configured properly",
       });
     }
@@ -671,10 +671,10 @@ app.post("/alternatives", async (req, res) => {
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.json({
-    status: "ok",
+  const configured = !!process.env.OPENAI_API_KEY;
+  res.status(configured ? 200 : 503).json({
+    status: configured ? "ok" : "unconfigured",
     timestamp: new Date().toISOString(),
-    hasApiKey: !!process.env.OPENAI_API_KEY,
     supportedLanguages: Object.keys(SUPPORTED_LANGUAGES).length,
   });
 });
@@ -755,6 +755,7 @@ app.post("/tts", async (req, res) => {
               const url = run?.output?.result?.[0];
               if (run.status === "COMPLETED" && url) {
                 const audioRes = await ttsFetch(url, {}, magicaDeadline);
+                if (!audioRes.ok) break; // fall through to other providers
                 const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
                 res.set("Content-Type", "audio/mpeg");
                 return res.send(audioBuffer);
@@ -808,7 +809,7 @@ app.post("/tts", async (req, res) => {
 
     // OpenAI TTS fallback
     if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({ error: "TTS service not configured" });
+      return res.status(503).json({ error: "TTS service not configured" });
     }
 
     const langCode = language || "en";
