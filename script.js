@@ -536,7 +536,9 @@ async function handleTranslation() {
 
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.error || 'Translation failed');
+            const failure = new Error(data.error || 'Translation failed');
+            failure.status = response.status;
+            throw failure;
         }
 
         const translationText = data.translation;
@@ -604,8 +606,8 @@ async function handleTranslation() {
         if (error.name === 'AbortError' && !timedOut) return;
         if (requestVersion !== resultVersion) return;
         console.error('Translation error:', error);
-        setTranslationStatus('error', timedOut ? 'Translation took too long. Please try again.' : navigator.onLine ? `We couldn't translate this time. ${error.message}` : 'You are offline. Reconnect, then try again.', true);
-        showToast(`Translation failed: ${error.message}`, 'error');
+        setTranslationStatus('error', timedOut ? 'Translation took too long. Please try again.' : navigator.onLine ? translationFailureMessage(error.status) : 'You are offline. Reconnect, then try again.', true);
+        showToast('Translation failed.', 'error');
     } finally {
         clearTimeout(timeout);
         translationController = null;
@@ -1743,13 +1745,30 @@ function showLoading(show) {
     loadingOverlay.classList.toggle('hidden', !show);
 }
 
+// Fixed user-facing copy. Server error text is never shown to users.
+function translationFailureMessage(status) {
+    if (status === 429) return 'Too many requests right now. Wait a moment, then try again.';
+    if (status === 400) return "That text couldn't be translated. Check the text and languages, then try again.";
+    return "Translation isn't available right now. Try again in a few minutes.";
+}
+
+// On narrow screens the notices sit below the fold. Scroll one into view and move focus to it.
+function revealNotice(notice) {
+    if (!notice) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    notice.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+    notice.focus({ preventScroll: true });
+}
+
 function setTranslationStatus(state, message, retry = false) {
     const status = document.getElementById('translation-status');
     if (!status) return;
     status.hidden = !message;
     status.dataset.state = state;
+    status.setAttribute('role', state === 'error' ? 'alert' : 'status');
     status.querySelector('span').textContent = message;
     document.getElementById('retry-translation').hidden = !retry;
+    if (state === 'error' && message) revealNotice(status);
 }
 
 // Typing animation for translation output

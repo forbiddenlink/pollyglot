@@ -189,7 +189,7 @@
     document.getElementById('shortcut-help').addEventListener('click', () => document.getElementById('shortcut-dialog').showModal());
     function updateConnection() { document.getElementById('connection-status').hidden = navigator.onLine; }
     window.addEventListener('online', updateConnection);
-    window.addEventListener('offline', updateConnection);
+    window.addEventListener('offline', () => { updateConnection(); revealNotice(document.getElementById('connection-status')); });
     updateConnection();
 
     const historySearch = document.getElementById('history-search');
