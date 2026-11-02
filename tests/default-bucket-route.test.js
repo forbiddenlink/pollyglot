@@ -39,6 +39,6 @@ describe('default rate-limit bucket when the store is down', () => {
     vi.stubGlobal('fetch', realFetch)
     errSpy.mockRestore()
     expect(res.status).toBe(503)
-    expect(outbound.some((u) => u.includes('openai.com'))).toBe(false)
+    expect(outbound.some((u) => new URL(u).hostname === 'api.openai.com')).toBe(false)
   })
 })

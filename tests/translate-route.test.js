@@ -57,7 +57,7 @@ describe('POST /translate', () => {
     vi.stubGlobal('fetch', realFetch)
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ translation: 'Bonjour' })
-    expect(outbound.filter((u) => u.includes('resend.com'))).toEqual([])
+    expect(outbound.filter((u) => new URL(u).hostname === 'api.resend.com')).toEqual([])
   })
 })
 

@@ -65,7 +65,7 @@ describe('POST /tts deadline', () => {
 
   it('falls through hung Magica and MiniMax to OpenAI TTS', async () => {
     stub((url, init) => {
-      if (url.includes('openai.com')) {
+      if (new URL(url).hostname === 'api.openai.com') {
         return Promise.resolve({ ok: true, status: 200, arrayBuffer: async () => new TextEncoder().encode('mp3').buffer })
       }
       return hang(init)
