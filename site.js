@@ -123,7 +123,7 @@
         note.textContent = shared.has('text') ? 'Shared text ready to translate' : 'Your draft has been restored';
     }
     function saveDraft() {
-        note.textContent = storage.set('pollyglotDraft', input.value) ? 'Draft saved in this browser' : 'Browser storage unavailable — keep this page open';
+        note.textContent = storage.set('pollyglotDraft', input.value) ? 'Draft saved in this browser' : 'Browser storage unavailable. Keep this page open';
     }
     document.addEventListener('pollyglot:workspace-change', saveDraft);
     input.addEventListener('input', saveDraft);
