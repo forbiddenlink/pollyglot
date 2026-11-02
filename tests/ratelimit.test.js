@@ -110,13 +110,11 @@ describe('redis-backed limiter', () => {
     expect(await limiter.check('ip')).toBe(false)
   })
 
-  it('falls back to in-memory limits when Redis throws, and logs', async () => {
+  it('fails closed on the default bucket when Redis throws, and logs', async () => {
     const { deps } = fakeDeps({ failWith: 'boom' })
     const logger = { error: vi.fn() }
     const limiter = createRateLimiter({ env, deps, logger, limits: { default: 2 } })
-    expect(await limiter.check('ip')).toBe(true)
-    expect(await limiter.check('ip')).toBe(true)
-    expect(await limiter.check('ip')).toBe(false)
+    await expect(limiter.check('ip')).rejects.toMatchObject({ status: 503 })
     expect(logger.error).toHaveBeenCalled()
   })
 })
@@ -161,37 +159,48 @@ describe('in-memory limiter', () => {
   })
 })
 
-describe('fail-closed paid buckets', () => {
+describe('fail-closed buckets', () => {
   const env = { UPSTASH_REDIS_REST_URL: 'https://u', UPSTASH_REDIS_REST_TOKEN: 't' }
-  it('throws 503-style error for stt and tts when Redis errors', async () => {
+  it('throws 503-style error for default, stt and tts when Redis errors', async () => {
     const { deps } = fakeDeps({ failWith: 'boom' })
     const limiter = createRateLimiter({ env, deps, logger: { error: () => {} } })
     await expect(limiter.check('ip', 'stt')).rejects.toMatchObject({ status: 503 })
     await expect(limiter.check('ip', 'tts')).rejects.toMatchObject({ status: 503 })
+    await expect(limiter.check('ip')).rejects.toMatchObject({ status: 503 })
   })
-  it('still falls back for non-paid buckets', async () => {
-    const { deps } = fakeDeps({ failWith: 'boom' })
-    const limiter = createRateLimiter({ env, deps, logger: { error: () => {} } })
+  it('without Redis env, every bucket uses memory and keeps working', async () => {
+    const limiter = createRateLimiter({ env: {}, logger: { warn: () => {}, error: () => {} } })
+    expect(await limiter.check('ip', 'stt')).toBe(true)
     expect(await limiter.check('ip')).toBe(true)
   })
-  it('without Redis env, paid buckets use memory', async () => {
-    const limiter = createRateLimiter({ env: {} })
-    expect(await limiter.check('ip', 'stt')).toBe(true)
+  it('without Redis env, warns once at creation and never again per request', async () => {
+    const logger = { warn: vi.fn(), error: vi.fn() }
+    const limiter = createRateLimiter({ env: {}, logger })
+    await limiter.check('ip')
+    await limiter.check('ip')
+    expect(logger.warn).toHaveBeenCalledTimes(1)
+    expect(logger.warn.mock.calls[0][0]).toMatch(/in-memory/)
+  })
+  it('with Redis env, does not warn', () => {
+    const { deps } = fakeDeps()
+    const logger = { warn: vi.fn(), error: vi.fn() }
+    createRateLimiter({ env, deps, logger })
+    expect(logger.warn).not.toHaveBeenCalled()
   })
 })
 
 describe('timeout handling (Upstash resolves success:true, reason:timeout)', () => {
   const env = { UPSTASH_REDIS_REST_URL: 'https://u', UPSTASH_REDIS_REST_TOKEN: 't' }
 
-  it('fake SDK reporting reason=timeout fails closed on paid buckets and falls back elsewhere', async () => {
+  it('fake SDK reporting reason=timeout fails closed on every bucket', async () => {
     const { deps } = fakeDeps()
     deps.ratelimit.Ratelimit.prototype.limit = async () => ({ success: true, reason: 'timeout' })
     const limiter = createRateLimiter({ env, deps, logger: { error: () => {} } })
     await expect(limiter.check('ip', 'stt')).rejects.toMatchObject({ status: 503 })
-    expect(await limiter.check('ip')).toBe(true)
+    await expect(limiter.check('ip')).rejects.toMatchObject({ status: 503 })
   })
 
-  it('REAL SDK with a hanging transport: stt fails closed, default falls back to memory limits', async () => {
+  it('REAL SDK with a hanging transport: stt and default both fail closed', async () => {
     const realFetch = globalThis.fetch
     globalThis.fetch = () => new Promise(() => {}) // never resolves
     try {
@@ -202,9 +211,7 @@ describe('timeout handling (Upstash resolves success:true, reason:timeout)', () 
         logger: { error: () => {} },
       })
       await expect(limiter.check('ip', 'stt')).rejects.toMatchObject({ status: 503 })
-      expect(await limiter.check('ip')).toBe(true)
-      expect(await limiter.check('ip')).toBe(true)
-      expect(await limiter.check('ip')).toBe(false)
+      await expect(limiter.check('ip')).rejects.toMatchObject({ status: 503 })
     } finally {
       globalThis.fetch = realFetch
     }

@@ -11,10 +11,6 @@ const LIMITS = Object.freeze({
   stt: 10,
 });
 
-// Paid-provider buckets: when the durable store is configured but errors, deny rather than
-// fall back to a per-instance counter that would not cap spend.
-const FAIL_CLOSED = new Set(["tts", "stt"]);
-
 class RateLimitUnavailableError extends Error {
   constructor() {
     super("Rate limit store unavailable");
@@ -70,6 +66,9 @@ function createRateLimiter({
   const config = resolveRedisConfig(env);
 
   if (!config) {
+    logger.warn(
+      "Rate limiter: no Upstash/KV credentials set. Using per-instance in-memory limits, which do not cap spend across serverless instances.",
+    );
     return {
       mode: "memory",
       cleanup: memory.cleanup,
@@ -109,13 +108,10 @@ function createRateLimiter({
         if (result.reason === "timeout") throw new Error("Rate limit store timed out");
         return result.success;
       } catch (err) {
-        // Redis outage must not take translation down, but must not remove the cap either.
-        if (FAIL_CLOSED.has(bucket)) {
-          logger.error("Rate limit store unavailable, failing closed:", err.message);
-          throw new RateLimitUnavailableError();
-        }
-        logger.error("Rate limit store unavailable, using in-memory fallback:", err.message);
-        return memory.check(key, bucket);
+        // Every bucket guards a paid provider. A per-instance counter would not cap spend
+        // across serverless instances, so deny rather than fall back to memory.
+        logger.error("Rate limit store unavailable, failing closed:", err.message);
+        throw new RateLimitUnavailableError();
       }
     },
   };
