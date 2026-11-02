@@ -12,7 +12,6 @@ The repo also carries a number of dependencies for features that aren't wired in
 - **Formality Selector**: Choose neutral, formal, or informal tone
 - **Alternative Translations**: 3 alternative phrasings for short text (under 200 characters)
 - **Pronunciation Guide**: Phonetic spelling for non-Latin scripts (under 500 characters)
-- **Email Delivery**: Optionally send a translation result via email (Resend), if `RESEND_API_KEY` is configured
 
 ### Audio
 - **Text-to-Speech**: Server-side voice via Magica (ElevenLabs multilingual v2), falling back to MiniMax `speech-02-hd`, falling back to OpenAI `tts-1`. Falls back further to the browser's `speechSynthesis` if none of those are configured or all fail
@@ -61,7 +60,7 @@ These packages are in `package.json` but aren't imported by `index.html` or `scr
 ### Prerequisites
 - Node.js (v18+)
 - OpenAI API key ([Get one here](https://platform.openai.com/api-keys)) - required for translation, detection, pronunciation, and alternatives
-- Optional: Magica (TTS voices and speech-to-text), MiniMax, Resend, Langfuse, PostHog API keys for TTS voices, email delivery, and tracing/analytics; Upstash Redis REST credentials for a rate limit that holds across Vercel instances (each feature degrades gracefully if its key is missing)
+- Optional: Magica (TTS voices and speech-to-text), MiniMax, Langfuse, PostHog API keys for TTS voices and tracing/analytics; Upstash Redis REST credentials for a rate limit that holds across Vercel instances (each feature degrades gracefully if its key is missing)
 
 ### Setup
 
@@ -116,7 +115,6 @@ pnpm test:coverage # with coverage
 - **Backend**: Node.js, Express (deployed as a single Vercel serverless function, routed via `vercel.json` rewrites)
 - **AI**: OpenAI GPT-4o-mini (translation, detection, pronunciation, alternatives)
 - **Voice**: Magica (ElevenLabs) / MiniMax `speech-02-hd` / OpenAI `tts-1`, with browser `speechSynthesis` fallback; Magica `ai_transcription` for server speech-to-text
-- **Email**: Resend (optional, for emailing translation results)
 - **Observability**: Langfuse (tracing), PostHog (product analytics)
 - **Testing**: Vitest, Testing Library, MSW
 

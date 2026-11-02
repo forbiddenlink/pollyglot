@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const { getLangfuse, flushLangfuse } = require("./_lib/langfuse");
 const { captureEvent } = require("./_lib/posthog");
-const { sendTranslationEmail } = require("./_lib/email");
 const { createRateLimiter, RateLimitUnavailableError } = require("./ratelimit");
 const {
   validateAudio,
@@ -366,19 +365,6 @@ app.post("/translate", async (req, res) => {
       formality,
       textLength: validation.text.length,
     });
-
-    // Send translation result email if requested
-    if (req.body?.emailAddress) {
-      try {
-        await sendTranslationEmail({
-          to: req.body.emailAddress,
-          targetLanguage: validation.targetLanguage,
-          translatedContent: translation,
-        });
-      } catch (emailError) {
-        console.warn("Email notification failed:", emailError.message);
-      }
-    }
 
     res.json({ translation });
   } catch (error) {

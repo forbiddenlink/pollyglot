@@ -13,8 +13,7 @@
     "express": "^5.2.1",
     "langfuse": "^3.39.2",
     "node-fetch": "^3.3.2",
-    "posthog-node": "^5.61.0",
-    "resend": "^6.35.0"
+    "posthog-node": "^5.61.0"
   },
   "devDependencies": {
     "nodemon": "3.1.14"
