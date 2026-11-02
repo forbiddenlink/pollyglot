@@ -1,8 +1,8 @@
 require("dotenv").config();
 const express = require("express");
-const { getLangfuse, flushLangfuse } = require("../lib/langfuse");
-const { captureEvent } = require("../lib/posthog");
-const { sendTranslationEmail } = require("../lib/email");
+const { getLangfuse, flushLangfuse } = require("./_lib/langfuse");
+const { captureEvent } = require("./_lib/posthog");
+const { sendTranslationEmail } = require("./_lib/email");
 const { createRateLimiter, RateLimitUnavailableError } = require("./ratelimit");
 const {
   validateAudio,
