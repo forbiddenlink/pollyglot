@@ -49,8 +49,8 @@
     --space-8: 64px;
 
     /* Typography */
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: var(--font-heading);
+    --font-body: 'IBM Plex Sans', 'Noto Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --text-xs: 0.75rem;
     --text-sm: 0.875rem;
     --text-base: 1rem;
@@ -130,7 +130,7 @@ a:focus-visible {
 
 /* Base Typography */
 body {
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-body);
     min-height: 100vh;
     background: var(--bg);
     color: var(--text);
@@ -276,7 +276,7 @@ h1 .accent {
 /* Accent underline removed for cleaner look */
 
 h2 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
     font-size: 1.5rem;
     color: var(--text);
     margin-bottom: 1.25rem;
@@ -285,7 +285,7 @@ h2 {
 }
 
 h3 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
     font-size: 1.35rem;
     color: var(--text);
     font-weight: 600;
@@ -538,7 +538,7 @@ h3 {
 }
 
 .alternatives-section .alternatives-title {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.9rem;
     color: var(--text-light);
     margin-bottom: 0.75rem;
@@ -598,7 +598,7 @@ h3 {
     font-size: 1rem;
     color: var(--text);
     font-style: italic;
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
 }
 
 [data-theme="dark"] .pronunciation-guide {
@@ -858,7 +858,7 @@ h3 {
     border-radius: 50px;
     cursor: pointer;
     font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     color: var(--text);
     transition: var(--transition);
     box-shadow: 0 2px 8px var(--shadow);
@@ -1086,7 +1086,7 @@ h3 {
     border: 2px solid var(--border);
     border-radius: 12px;
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-light);
@@ -1158,7 +1158,7 @@ h3 {
     border-radius: 12px;
     cursor: pointer;
     font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-weight: 700;
     transition: var(--transition);
     text-transform: uppercase;
@@ -1313,7 +1313,7 @@ h3 {
 }
 
 .loading-overlay p {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
     font-size: 1.4rem;
     font-weight: 600;
     color: var(--text);
@@ -1438,7 +1438,7 @@ kbd {
     border-radius: 8px;
     padding: 0.25rem 0.625rem;
     font-size: 0.8rem;
-    font-family: 'DM Sans', monospace;
+    font-family: var(--font-mono);
     font-weight: 700;
     color: var(--jungle-mid);
     box-shadow: 0 2px 0 var(--border-hover);
@@ -1679,7 +1679,7 @@ kbd {
 }
 
 .setting-group h4 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
     font-size: 1.15rem;
     color: var(--jungle-mid);
     font-weight: 700;
@@ -1877,7 +1877,7 @@ body.fullscreen footer {
 }
 
 .practice-header h2 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0;
@@ -1920,7 +1920,7 @@ body.fullscreen footer {
 }
 
 .phrase-text {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
     font-size: 1.75rem;
     font-weight: 600;
     color: var(--jungle-deep);
@@ -2064,7 +2064,7 @@ body.fullscreen footer {
 }
 
 .recording-timer {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-body);
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--sunset-orange);

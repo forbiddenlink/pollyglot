@@ -28,7 +28,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/parrot-192.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/parrot-192.png">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
 </head>
 <body class="workspace-page">
     <a class="skip-link" href="#translator">Skip to translator</a>
@@ -41,7 +41,7 @@
             <div class="header-content">
                 <div class="header-left">
                     <span class="pill">AI-powered translation · 20 languages</span>
-                    <h1>A world of words.<br>A little <em>closer.</em></h1>
+                    <h1>A world of words.<br>A little closer.</h1>
                     <p class="subtitle">Find the right words. Hear them. Make them yours.</p>
                 </div>
                 <div class="header-right">
@@ -70,23 +70,29 @@
                         </svg>
                     </button>
                 </div>
-                <aside class="hero-card" aria-label="Phrase card">
-                    <img class="hero-parrot" src="/assets/parrot-192.png" alt="" width="96" height="96">
-                    <div class="hero-chip">
-                        <button type="button" class="hero-play" aria-label="Hear the Spanish phrase" hidden>
-                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
-                        </button>
-                        <span class="hero-chip-name">Spanish</span>
+                <aside class="route" aria-label="Hello in three languages">
+                    <div class="route-bar"><span>One word, three languages</span><span>Play where your browser has a voice</span></div>
+                    <div class="route-src">
+                        <div><span class="route-code" aria-hidden="true">EN</span><p class="route-word" lang="en">Hello</p><p class="route-name">English</p></div>
+                        <span class="route-line" aria-hidden="true"></span>
                     </div>
-                    <div class="hero-lines" aria-live="polite">
-                        <p class="hero-phrase" lang="es">Hola</p>
-                        <p class="hero-meaning">Hello</p>
-                    </div>
-                    <div class="hero-langs" role="group" aria-label="Choose a language">
-                        <button type="button" data-hero-lang="es" aria-pressed="true">Spanish</button>
-                        <button type="button" data-hero-lang="fr" aria-pressed="false">French</button>
-                        <button type="button" data-hero-lang="ja" aria-pressed="false">Japanese</button>
-                    </div>
+                    <ol class="route-legs" aria-label="Translations of Hello">
+                        <li class="leg" data-hero-lang="es" style="--leg: var(--macaw-red); --on-leg: var(--on-red);">
+                            <span class="leg-code" aria-hidden="true">ES</span>
+                            <div><p class="leg-word" lang="es">Hola</p><p class="leg-meta">Spanish</p></div>
+                            <button type="button" class="hero-play" aria-label="Hear the Spanish phrase" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+                        </li>
+                        <li class="leg" data-hero-lang="fr" style="--leg: var(--macaw-blue); --on-leg: var(--on-blue);">
+                            <span class="leg-code" aria-hidden="true">FR</span>
+                            <div><p class="leg-word" lang="fr">Bonjour</p><p class="leg-meta">French</p></div>
+                            <button type="button" class="hero-play" aria-label="Hear the French phrase" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+                        </li>
+                        <li class="leg" data-hero-lang="ja" style="--leg: var(--macaw-yellow); --on-leg: var(--on-yellow);">
+                            <span class="leg-code" aria-hidden="true">JA</span>
+                            <div><p class="leg-word" lang="ja">こんにちは</p><p class="leg-meta">Japanese <span class="leg-say">konnichiwa</span></p></div>
+                            <button type="button" class="hero-play" aria-label="Hear the Japanese phrase" hidden><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+                        </li>
+                    </ol>
                 </aside>
             </div>
         </header>
