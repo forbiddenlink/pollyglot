@@ -96,12 +96,12 @@ a { color: inherit; text-underline-offset: 4px; }
 .pill { display: inline-flex; gap: 8px; align-items: center; border: 2px solid var(--forest); background: var(--surface); padding: 5px 12px; border-radius: 6px; font: 500 11px/1.5 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
 .pill::before { content: ''; width: 8px; height: 8px; background: var(--macaw-green); border: 2px solid var(--forest); border-radius: 50%; }
 .container { max-width: 1200px; width: calc(100% - 48px); margin: 0 auto; padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent; overflow: visible; backdrop-filter: none; animation: none; gap: 0; }
-.workspace-intro { margin: 0; padding: 48px 0 40px; border: 0; position: relative; }
+.workspace-intro { margin: 0; padding: 32px 0 40px; border: 0; position: relative; }
 .header-content { display: grid; grid-template-columns: minmax(0,1fr); row-gap: 0; align-items: start; }
 .header-left { grid-column: 1; grid-row: 1; text-align: left; flex: auto; }
-.workspace-intro h1 { display: block; max-width: 980px; margin: 20px 0 18px; font: 700 clamp(52px,8.4vw,116px)/.92 var(--font-heading); letter-spacing: -.035em; color: var(--forest); text-wrap: balance; }
+.workspace-intro h1 { display: block; max-width: 980px; margin: 16px 0 14px; font: 700 clamp(52px,6.8vw,96px)/.92 var(--font-heading); letter-spacing: -.035em; color: var(--forest); text-wrap: balance; }
 .workspace-intro .subtitle { color: var(--muted); text-transform: none; font-size: 17px; letter-spacing: 0; font-weight: 400; max-width: 46ch; margin: 0; }
-.header-right { grid-column: 1; grid-row: 2; position: static; justify-content: flex-start; gap: 8px; margin: 22px 0 36px; }
+.header-right { grid-column: 1; grid-row: 2; position: static; justify-content: flex-start; gap: 8px; margin: 18px 0 28px; }
 .header-right button { width: 44px; height: 44px; padding: 11px; border-radius: 8px; border: 2px solid var(--forest); color: var(--forest); background: var(--surface); box-shadow: none; }
 .header-right button:hover { background: var(--macaw-yellow); color: var(--on-yellow); transform: none; }
 
@@ -115,7 +115,7 @@ a { color: inherit; text-underline-offset: 4px; }
 .route-src > div { padding: 24px 0; }
 .route-line { flex: 1; align-self: center; min-width: 24px; height: 4px; margin-left: 20px; background: var(--forest); transform-origin: left; animation: route-draw .5s .1s ease-out both; }
 .route-line::after { content: ''; display: block; }
-.route-legs { list-style: none; margin: 0; padding: 0; position: relative; display: grid; grid-auto-rows: minmax(116px,auto); }
+.route-legs { list-style: none; margin: 0; padding: 0; position: relative; display: grid; grid-auto-rows: minmax(104px,auto); }
 .route-legs::before { content: ''; position: absolute; left: 0; top: calc(100% / 6); bottom: calc(100% / 6); width: 4px; margin-left: -2px; background: var(--forest); transform-origin: top; animation: route-drop .45s .45s ease-out both; }
 .leg { position: relative; display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 22px; padding: 14px 28px 14px 84px; }
 .leg + .leg { border-top: 2px dashed var(--line); }
@@ -313,7 +313,7 @@ body.fullscreen .workspace-topline { padding-top: 24px; }
     .nav-note { display: none; }
     .header-content { grid-template-columns: minmax(0,1fr); grid-template-rows: none; }
     .header-left, .header-right { grid-column: 1; grid-row: auto; }
-    .route { grid-column: 1; grid-row: auto; grid-template-columns: minmax(0,1fr); box-shadow: 5px 5px 0 var(--forest); }
+    .route { order: 3; grid-column: 1; grid-row: auto; grid-template-columns: minmax(0,1fr); box-shadow: 5px 5px 0 var(--forest); }
     .route-bar { padding: 10px 16px; }
     .route-src { padding: 0 20px; border-bottom: 2px solid var(--forest); }
     .route-src > div { padding: 18px 0; }
@@ -325,6 +325,7 @@ body.fullscreen .workspace-topline { padding-top: 24px; }
     .leg::before { left: 22px; width: 26px; }
     .leg::after { left: 46px; }
     .leg-word { font-size: 40px; }
+    .leg-word:lang(ja) { font-size: 30px; }
     .leg-code { min-width: 0; }
     .workspace-intro { padding: 32px 0 24px; }
     .workspace-intro h1 { font-size: clamp(48px,15vw,64px); letter-spacing: -.03em; }
