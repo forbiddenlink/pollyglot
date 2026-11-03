@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0](https://github.com/forbiddenlink/pollyglot/compare/v1.3.0...v1.4.0) (2026-11-03)
+
+
+### Features
+
+* route-map hero and restyled page system ([#108](https://github.com/forbiddenlink/pollyglot/issues/108)) ([d785ab3](https://github.com/forbiddenlink/pollyglot/commit/d785ab35e78952fb5f9713d861d8689e5a4a5911))
+
+
+### Bug Fixes
+
+* **api:** make the deployed function load its runtime modules ([#105](https://github.com/forbiddenlink/pollyglot/issues/105)) ([a6c9243](https://github.com/forbiddenlink/pollyglot/commit/a6c9243eb09f23e6b50f852aafe6ba2e46f4f6c4))
+* quick-audit repairs for API abuse limits, errors and mobile UI ([#107](https://github.com/forbiddenlink/pollyglot/issues/107)) ([b13c636](https://github.com/forbiddenlink/pollyglot/commit/b13c636091d0451090debe5d93805ac55e6648b5))
+
 ## [1.3.0](https://github.com/forbiddenlink/pollyglot/compare/v1.2.3...v1.3.0) (2026-10-31)
 
 
