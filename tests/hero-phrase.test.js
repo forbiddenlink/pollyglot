@@ -12,10 +12,10 @@ function loadModule() {
 }
 
 function mountCard() {
-  const card = read('index.html').match(/<aside class="hero-card"[\s\S]*?<\/aside>/)
-  expect(card, 'index.html has the hero card').not.toBeNull()
+  const card = read('index.html').match(/<aside class="route"[\s\S]*?<\/aside>/)
+  expect(card, 'index.html has the hero route map').not.toBeNull()
   document.body.innerHTML = `<div id="home">${card[0]}</div><main id="translator"></main>`
-  return document.querySelector('.hero-card')
+  return document.querySelector('.route')
 }
 
 function fakeWindow({ voices = [], matches = false, withSpeech = true } = {}) {
@@ -42,70 +42,74 @@ describe('hero phrase data', () => {
       ['fr', 'Bonjour'],
       ['ja', 'こんにちは'],
     ])
-    expect(read('index.html')).toContain('<p class="hero-meaning">Hello</p>')
+    expect(read('index.html')).toContain('<p class="route-word" lang="en">Hello</p>')
   })
 })
 
-describe('hero phrase card', () => {
+describe('hero route map', () => {
   let api
   beforeEach(() => { api = loadModule() })
 
-  it('swaps the phrase, lang attribute, chip and pressed state from the language control', () => {
+  it('renders every language row in the markup, each with a lang attribute and its word', () => {
     const card = mountCard()
-    const { win } = fakeWindow()
-    api.init(card, win)
-    const fr = [...card.querySelectorAll('[data-hero-lang]')].find((b) => b.dataset.heroLang === 'fr')
-    fr.click()
-    const text = card.querySelector('.hero-phrase')
-    expect(text.textContent).toBe('Bonjour')
-    expect(text.getAttribute('lang')).toBe('fr')
-    expect(card.querySelector('.hero-chip-name').textContent).toBe('French')
-    expect(fr.getAttribute('aria-pressed')).toBe('true')
-    expect(card.querySelectorAll('[aria-pressed="true"]').length).toBe(1)
+    const rows = [...card.querySelectorAll('[data-hero-lang]')]
+    expect(rows.map((r) => r.dataset.heroLang)).toEqual(['es', 'fr', 'ja'])
+    expect(rows.map((r) => r.querySelector('.leg-word').textContent)).toEqual(['Hola', 'Bonjour', 'こんにちは'])
+    expect(rows.map((r) => r.querySelector('.leg-word').getAttribute('lang'))).toEqual(['es', 'fr', 'ja'])
+    expect(rows[2].querySelector('.leg-say').textContent).toBe('konnichiwa')
   })
 
-  it('keeps the play button hidden when speech synthesis is missing', () => {
+  it('keeps every play button hidden when speech synthesis is missing', () => {
     const card = mountCard()
     api.init(card, fakeWindow({ withSpeech: false }).win)
-    expect(card.querySelector('.hero-play').hidden).toBe(true)
+    expect([...card.querySelectorAll('.hero-play')].every((b) => b.hidden)).toBe(true)
   })
 
-  it('keeps the play button hidden when no voice matches the language', () => {
+  it('shows the play button only for languages that have a matching voice', () => {
     const card = mountCard()
-    api.init(card, fakeWindow({ voices: [{ lang: 'de-DE', name: 'Anna' }] }).win)
-    expect(card.querySelector('.hero-play').hidden).toBe(true)
+    api.init(card, fakeWindow({ voices: [{ lang: 'de-DE', name: 'Anna' }, { lang: 'fr-FR', name: 'Thomas' }] }).win)
+    const hidden = Object.fromEntries([...card.querySelectorAll('[data-hero-lang]')].map((r) => [r.dataset.heroLang, r.querySelector('.hero-play').hidden]))
+    expect(hidden).toEqual({ es: true, fr: false, ja: true })
   })
 
-  it('speaks the visible phrase with a matching voice, and stops on a second press', () => {
+  it('speaks the pressed row with a matching voice, and stops on a second press', () => {
     const card = mountCard()
     const voice = { lang: 'es-MX', name: 'Paulina' }
     const { win, synth, spoken } = fakeWindow({ voices: [{ lang: 'de-DE' }, voice] })
     api.init(card, win)
-    const play = card.querySelector('.hero-play')
+    const row = card.querySelector('[data-hero-lang="es"]')
+    const play = row.querySelector('.hero-play')
     expect(play.hidden).toBe(false)
     play.click()
     expect(spoken[0].text).toBe('Hola')
     expect(spoken[0].lang).toBe('es')
     expect(spoken[0].voice).toBe(voice)
+    expect(row.hasAttribute('data-speaking')).toBe(true)
+    expect(play.getAttribute('aria-label')).toBe('Stop the Spanish phrase')
     play.click()
     expect(synth.cancel).toHaveBeenCalled()
+    expect(row.hasAttribute('data-speaking')).toBe(false)
+    expect(play.getAttribute('aria-label')).toBe('Hear the Spanish phrase')
   })
 
-  it('moves the card below the translator on narrow screens and back on wide ones', () => {
+  it('moves the speaking state to the newest row', () => {
     const card = mountCard()
-    const { win } = fakeWindow({ matches: true })
+    const { win } = fakeWindow({ voices: [{ lang: 'es-MX' }, { lang: 'fr-FR' }] })
     api.init(card, win)
-    expect(document.getElementById('translator').nextElementSibling).toBe(card)
-    api.place(card, false)
-    expect(card.parentElement.id).toBe('home')
+    const es = card.querySelector('[data-hero-lang="es"]')
+    const fr = card.querySelector('[data-hero-lang="fr"]')
+    es.querySelector('.hero-play').click()
+    fr.querySelector('.hero-play').click()
+    expect(es.hasAttribute('data-speaking')).toBe(false)
+    expect(fr.hasAttribute('data-speaking')).toBe(true)
   })
 })
 
 describe('hero markup', () => {
-  it('drops the decorative ribbon, keeps the H1, and loads the script after script.js', () => {
+  it('drops the decorative ribbon, keeps the H1 copy without an accent word, and loads the script after script.js', () => {
     const html = read('index.html')
     expect(html).not.toContain('script-ribbon')
-    expect(html).toContain('<h1>A world of words.<br>A little <em>closer.</em></h1>')
+    expect(html).toContain('<h1>A world of words.<br>A little closer.</h1>')
     expect(html.indexOf('src="script.js"')).toBeLessThan(html.indexOf('src="hero-phrase.js"'))
   })
 
