@@ -14,7 +14,6 @@
     "ai": "^7.0.92",
     "compromise": "^14.16.0",
     "franc": "^6.2.0",
-    "langfuse": "^3.38.20",
     "natural": "^8.1.1",
     "next": "^16.3.4",
     "next-safe-action": "^8.6.1",
