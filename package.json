@@ -61,6 +61,6 @@
       "deepmerge-ts": ">=8.0.0 <9"
     }
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "packageManager": "pnpm@10.34.7"
 }

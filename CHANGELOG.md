@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/forbiddenlink/pollyglot/compare/v1.4.0...v1.4.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* **observability:** move Langfuse tracing to SDK v6 before v4 cutover ([#109](https://github.com/forbiddenlink/pollyglot/issues/109)) ([5a4e253](https://github.com/forbiddenlink/pollyglot/commit/5a4e25331604ac2bcb21389ab8333db9aa351101))
+
 ## [1.4.0](https://github.com/forbiddenlink/pollyglot/compare/v1.3.0...v1.4.0) (2026-11-03)
 
 
