@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/forbiddenlink/pollyglot/compare/v1.4.1...v1.4.2) (2026-11-12)
+
+
+### Bug Fixes
+
+* **deps:** bump next to 16.4.5 (security) ([#111](https://github.com/forbiddenlink/pollyglot/issues/111)) ([e2e7d6b](https://github.com/forbiddenlink/pollyglot/commit/e2e7d6b910ed45f9bc630563f72776969f43d41d))
+
 ## [1.4.1](https://github.com/forbiddenlink/pollyglot/compare/v1.4.0...v1.4.1) (2026-11-11)
 
 
