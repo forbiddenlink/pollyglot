@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/forbiddenlink/pollyglot/compare/v1.4.3...v1.5.0) (2026-11-15)
+
+
+### Features
+
+* **share:** link shared translations so the recipient sees the result ([#116](https://github.com/forbiddenlink/pollyglot/issues/116)) ([390a985](https://github.com/forbiddenlink/pollyglot/commit/390a985dcbc74b58531b6c42779f218ad15f7948))
+
 ## [1.4.3](https://github.com/forbiddenlink/pollyglot/compare/v1.4.2...v1.4.3) (2026-11-15)
 
 
