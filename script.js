@@ -1371,7 +1371,13 @@ function loadHistory() {
     try {
         const saved = localStorage.getItem('translationHistory');
         if (saved) {
-            translationHistory = JSON.parse(saved);
+            const parsed = JSON.parse(saved);
+            translationHistory = Array.isArray(parsed) ? parsed.filter(item =>
+                item && typeof item === 'object' &&
+                ['sourceText', 'targetText', 'sourceLang', 'targetLang'].every(key => typeof item[key] === 'string') &&
+                (typeof item.timestamp === 'number' || typeof item.timestamp === 'string') &&
+                Number.isFinite(new Date(item.timestamp).getTime())
+            ) : [];
         }
     } catch (error) {
         console.error('Failed to load history:', error);
