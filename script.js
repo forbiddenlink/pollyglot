@@ -218,6 +218,24 @@ function init() {
     attachEventListeners();
     registerServiceWorker();
     initPronunciationPractice();
+    applyShareLink();
+}
+
+// Open a shared link (?t=...&from=...&to=...): fill the input, pick the
+// languages and run the translation so the recipient sees the result.
+function applyShareLink() {
+    if (!window.ShareLink) return;
+    const shared = window.ShareLink.parseShareParams(window.location.search, Object.keys(languageNames));
+    if (!shared) return;
+    textInput.value = shared.text;
+    updateCharCounter();
+    if (shared.from) {
+        sourceLangOptions.forEach(opt => { if (opt.dataset.lang === shared.from) selectLanguage(opt, 'source', false); });
+    }
+    if (shared.to) {
+        targetLangOptions.forEach(opt => { if (opt.dataset.lang === shared.to) selectLanguage(opt, 'target', false); });
+    }
+    handleTranslation();
 }
 
 // Event Listeners
@@ -2012,7 +2030,12 @@ async function shareTranslation() {
     
     const sourceLangName = selectedSourceLang ? languageNames[selectedSourceLang] : 'Auto';
     const targetLangName = languageNames[selectedTargetLang];
-    const shareText = `Translation (${sourceLangName} → ${targetLangName}):\n\n${sourceText}\n\n→\n\n${targetText}\n\n(via PollyGlot)`;
+    const link = window.ShareLink && window.ShareLink.buildShareUrl(window.location.origin, {
+        text: sourceText,
+        from: selectedSourceLang,
+        to: selectedTargetLang
+    });
+    const shareText = `Translation (${sourceLangName} → ${targetLangName}):\n\n${sourceText}\n\n→\n\n${targetText}\n\n(via PollyGlot)` + (link ? `\n${link}` : '');
     
     if (navigator.share) {
         try {
