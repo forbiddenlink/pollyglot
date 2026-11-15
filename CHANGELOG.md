@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/forbiddenlink/pollyglot/compare/v1.4.1...v1.4.2) (2026-11-15)
+
+
+### Bug Fixes
+
+* **deps:** bump next to 16.4.5 (security) ([#111](https://github.com/forbiddenlink/pollyglot/issues/111)) ([e2e7d6b](https://github.com/forbiddenlink/pollyglot/commit/e2e7d6b910ed45f9bc630563f72776969f43d41d))
+* **history:** drop malformed saved history entries instead of crashing later ([#113](https://github.com/forbiddenlink/pollyglot/issues/113)) ([f44414a](https://github.com/forbiddenlink/pollyglot/commit/f44414ab21e8b8f977a3da56a2a80bcaf5000751))
+
 ## [1.4.1](https://github.com/forbiddenlink/pollyglot/compare/v1.4.0...v1.4.1) (2026-11-11)
 
 
