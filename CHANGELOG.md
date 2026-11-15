@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/forbiddenlink/pollyglot/compare/v1.4.2...v1.4.3) (2026-11-15)
+
+
+### Bug Fixes
+
+* **translate:** check response.ok before parsing the body ([#114](https://github.com/forbiddenlink/pollyglot/issues/114)) ([1dea1c3](https://github.com/forbiddenlink/pollyglot/commit/1dea1c382e4d92686abc0d3aa7836e82b6403ecd))
+
 ## [1.4.2](https://github.com/forbiddenlink/pollyglot/compare/v1.4.1...v1.4.2) (2026-11-15)
 
 
