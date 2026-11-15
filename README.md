@@ -1,5 +1,7 @@
 # PollyGlot - AI Translation App
 
+**Live site:** [pollyglot-topaz.vercel.app](https://pollyglot-topaz.vercel.app)
+
 A vanilla JS + Express translation app using OpenAI's GPT-4o-mini for translation, language detection, pronunciation guides, and alternative phrasings between 20 languages. Text-to-speech runs through a server-side voice pipeline (Magica/ElevenLabs, then MiniMax, then OpenAI TTS) with a browser `speechSynthesis` fallback. Voice input uses the browser's native Web Speech API, with server-side speech-to-text (Magica `ai_transcription`) for browsers that lack it or where it fails.
 
 The repo also carries a number of dependencies for features that aren't wired into the running app yet (see "Not Yet Wired Up" below). Don't assume something works just because it's in `package.json`.
@@ -16,6 +18,8 @@ The repo also carries a number of dependencies for features that aren't wired in
 ### Audio
 - **Text-to-Speech**: Server-side voice via Magica (ElevenLabs multilingual v2), falling back to MiniMax `speech-02-hd`, falling back to OpenAI `tts-1`. Falls back further to the browser's `speechSynthesis` if none of those are configured or all fail
 - **Voice Input**: Native browser `SpeechRecognition`/`webkitSpeechRecognition` (Chrome/Edge) first. Safari, Firefox, and native-engine failures fall back to `MediaRecorder` capture (max 60 s / 4 MB) sent to `POST /api/transcribe`, which transcribes through Magica `ai_transcription` (needs `MAGICA_KEY`; the mic button stays hidden only if the browser has neither API)
+
+- **Pronunciation Practice**: A practice panel opened from a translation (`.practice-btn` in `index.html`, logic in `script.js`): play the reference phrase, record yourself and play it back. It loads `@xenova/transformers` from a CDN on first use (see below).
 
 ### Organization
 - **Favorites**: Star translations for quick access
@@ -53,6 +57,7 @@ These packages are in `package.json` but aren't imported by `index.html` or `scr
 - **`franc`, `compromise`, `natural`**: NLP/language-detection utilities exist at `src/lib/language.ts` but aren't used
 - **`@trigger.dev/sdk`**: `trigger.config.ts` points at `./src/trigger`, which doesn't exist yet (no jobs defined)
 - **`sharp`**: unused
+- **Gamification** (`lib/gamification/`: XP, streaks, achievements, progress): not imported by `index.html` or `script.js`. The GitHub repository description mentions gamification and spaced repetition; neither is active in the running app.
 - **Wiktionary lookups** (`src/lib/wiktionary.ts`): standalone, unused
 
 ## Installation
@@ -120,7 +125,7 @@ pnpm test:coverage # with coverage
 
 ## License
 
-MIT License
+MIT. See [LICENSE](LICENSE).
 
 ---
 
