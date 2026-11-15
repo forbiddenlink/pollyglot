@@ -534,12 +534,7 @@ async function handleTranslation() {
             })
         });
 
-        const data = await response.json();
-        if (!response.ok) {
-            const failure = new Error(data.error || 'Translation failed');
-            failure.status = response.status;
-            throw failure;
-        }
+        const data = await readTranslateResponse(response);
 
         const translationText = data.translation;
         if (requestVersion !== resultVersion || textInput.value.trim() !== text || selectedSourceLang !== requestSource || selectedTargetLang !== requestTarget || document.getElementById('formality').value !== requestTone) {
@@ -1749,6 +1744,30 @@ function showToast(message, type = 'success', duration = 3000) {
 
 function showLoading(show) {
     loadingOverlay.classList.toggle('hidden', !show);
+}
+
+// Check response.ok before parsing: gateways and edge errors return HTML, and
+// calling response.json() first throws a SyntaxError that hides the real HTTP status.
+async function readTranslateResponse(response) {
+    if (!response.ok) {
+        let detail = '';
+        try {
+            const body = await response.json();
+            if (body && typeof body.error === 'string') detail = body.error;
+        } catch (_) {
+            // Non-JSON error body (HTML error page, empty body): fall back to the status.
+        }
+        const failure = new Error(detail || 'Translation failed (HTTP ' + response.status + ')');
+        failure.status = response.status;
+        throw failure;
+    }
+    try {
+        return await response.json();
+    } catch (_) {
+        const failure = new Error('Translation response was unreadable. Please try again.');
+        failure.status = response.status;
+        throw failure;
+    }
 }
 
 // Fixed user-facing copy. Server error text is never shown to users.
