@@ -20,5 +20,7 @@ jobs:
           node-version: '22'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
+      - name: Install API dependencies
+        run: npm ci --prefix api
       - name: Run project tests
         run: pnpm test:run
