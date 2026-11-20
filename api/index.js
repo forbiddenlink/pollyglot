@@ -11,6 +11,26 @@ const {
 } = require("./stt");
 
 const app = express();
+if (process.env.SENTRY_DSN) {
+  const Sentry = require("@sentry/node");
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: "production",
+    defaultIntegrations: false,
+    skipOpenTelemetrySetup: true,
+    sendDefaultPii: false,
+    maxBreadcrumbs: 0,
+  });
+  app.use((req, res, next) => {
+    res.once("finish", () => {
+      if (res.statusCode < 500) return;
+      // Express supplies the route template. Never include learner text or audio.
+      const route = typeof req.route?.path === "string" ? req.route.path : "unknown route";
+      Sentry.captureMessage(`HTTP ${res.statusCode} on ${route}`, "error");
+    });
+    next();
+  });
+}
 const port = Number.parseInt(process.env.PORT, 10) || 3000;
 const OPENAI_TIMEOUT_MS =
   Number.parseInt(process.env.OPENAI_TIMEOUT_MS, 10) || 30000;
