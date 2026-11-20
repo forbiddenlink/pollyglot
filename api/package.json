@@ -11,6 +11,7 @@
     "@langfuse/tracing": "6.1.1",
     "@opentelemetry/api": "1.9.1",
     "@opentelemetry/sdk-trace-node": "2.12.0",
+    "@sentry/node": "^10.78.0",
     "@upstash/ratelimit": "^2.2.0",
     "@upstash/redis": "^1.39.0",
     "dotenv": "^17.4.2",
