@@ -920,6 +920,9 @@ app.post(
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  if (err?.type === "entity.parse.failed") {
+    return res.status(400).json({ error: "Invalid JSON" });
+  }
   if (err?.type === "entity.too.large") {
     return res.status(413).json({ error: "Request body too large" });
   }
