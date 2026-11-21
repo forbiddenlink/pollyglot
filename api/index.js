@@ -27,6 +27,8 @@ if (process.env.SENTRY_DSN) {
       // Express supplies the route template. Never include learner text or audio.
       const route = typeof req.route?.path === "string" ? req.route.path : "unknown route";
       Sentry.captureMessage(`HTTP ${res.statusCode} on ${route}`, "error");
+      // Serverless functions can freeze once the response ends; drain the queue.
+      Sentry.flush(2000).catch(() => {});
     });
     next();
   });
