@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.1](https://github.com/forbiddenlink/pollyglot/compare/v1.5.0...v1.5.1) (2026-11-21)
+
+
+### Bug Fixes
+
+* **deps:** resolve the minimatch advisory ([#122](https://github.com/forbiddenlink/pollyglot/issues/122)) ([6ead897](https://github.com/forbiddenlink/pollyglot/commit/6ead8975ab61a285745eefbf1e0fac9b93056b45))
+* keep invalid translation requests out of server error logs ([#125](https://github.com/forbiddenlink/pollyglot/issues/125)) ([2ad72e2](https://github.com/forbiddenlink/pollyglot/commit/2ad72e246dd6ed499fa1aa1238bce5fbb53db9a3))
+* **sentry:** flush after capturing 5xx messages ([#126](https://github.com/forbiddenlink/pollyglot/issues/126)) ([fe9df36](https://github.com/forbiddenlink/pollyglot/commit/fe9df361809d931c676a27877df31a66bc64be7b))
+* surface production failures without collecting user input ([#124](https://github.com/forbiddenlink/pollyglot/issues/124)) ([8b427d0](https://github.com/forbiddenlink/pollyglot/commit/8b427d00513e678bebd4697dd9dfa13a32f6f5b1))
+
 ## [1.5.0](https://github.com/forbiddenlink/pollyglot/compare/v1.4.3...v1.5.0) (2026-11-15)
 
 
