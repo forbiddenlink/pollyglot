@@ -46,6 +46,22 @@ function postJson(path, body) {
 }
 
 describe('POST /translate', () => {
+  it('returns 400 for malformed JSON without logging the request body', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+    try {
+      const res = await realFetch(base + '/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{"text":',
+      })
+      expect(res.status).toBe(400)
+      expect(await res.json()).toEqual({ error: 'Invalid JSON' })
+      expect(log).not.toHaveBeenCalled()
+    } finally {
+      log.mockRestore()
+    }
+  })
+
   it('translates and never calls an email provider, even when emailAddress is supplied', async () => {
     const outbound = stubProviders(() => openAiOk('Bonjour'))
     const res = await postJson('/translate', {
