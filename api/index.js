@@ -10,6 +10,7 @@ const {
   MAX_AUDIO_BYTES,
 } = require("./stt");
 const { runToCompletion } = require("./_lib/spiral");
+const { SYSTEM_PROMPT: TTS_SYSTEM_PROMPT, wrapForSpeech, maxAudioTokens, transcriptMatches } = require("./_lib/tts-guard");
 
 const app = express();
 if (process.env.SENTRY_DSN) {
@@ -724,7 +725,7 @@ function isTimeoutError(error) {
   return error?.name === "TimeoutError" || error?.name === "AbortError";
 }
 
-// TTS endpoint: Spiral (ElevenLabs), then MiniMax speech-02-hd, then OpenAI TTS
+// TTS endpoint: Spiral (ElevenLabs), then MiniMax speech-02-hd, then OpenAI audio output (gpt-audio-1.5)
 app.post("/tts", async (req, res) => {
   try {
     if (!(await checkRateLimit(getClientIp(req), "tts"))) {
@@ -824,11 +825,13 @@ app.post("/tts", async (req, res) => {
 
     const langCode = language || "en";
     const voice = ["zh", "ja", "ko", "ar", "hi", "th"].includes(langCode)
-      ? "nova"
+      ? "coral"
       : "alloy";
 
+    // tts-1 shuts down 2027-01-06 and its replacement (gpt-realtime-2.1-mini) is not
+    // served on /v1/audio/speech, so use Chat Completions audio output instead.
     const ttsRes = await ttsFetch(
-      "https://api.openai.com/v1/audio/speech",
+      "https://api.openai.com/v1/chat/completions",
       {
         method: "POST",
         headers: {
@@ -836,10 +839,14 @@ app.post("/tts", async (req, res) => {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "tts-1",
-          input: text.trim(),
-          voice,
-          response_format: "mp3",
+          model: "gpt-audio-1.5",
+          modalities: ["text", "audio"],
+          audio: { voice, format: "mp3" },
+          max_completion_tokens: maxAudioTokens(text.trim().length),
+          messages: [
+            { role: "system", content: TTS_SYSTEM_PROMPT },
+            { role: "user", content: wrapForSpeech(text.trim()) },
+          ],
         }),
       },
       { deadlineAt },
@@ -851,9 +858,16 @@ app.post("/tts", async (req, res) => {
       return res.status(502).json({ error: "Speech generation failed. Please try again." });
     }
 
+    const ttsData = await ttsRes.json().catch(() => ({}));
+    const b64Audio = ttsData?.choices?.[0]?.message?.audio?.data;
+    if (!b64Audio || !transcriptMatches(text, ttsData.choices[0].message.audio.transcript)) {
+      console.error(
+        b64Audio ? "OpenAI TTS rejected: transcript diverges from input" : "OpenAI TTS error: no audio in response",
+      );
+      return res.status(502).json({ error: "Speech generation failed. Please try again." });
+    }
     res.set("Content-Type", "audio/mpeg");
-    const audioBuffer = Buffer.from(await ttsRes.arrayBuffer());
-    return res.send(audioBuffer);
+    return res.send(Buffer.from(b64Audio, "base64"));
   } catch (error) {
     if (error instanceof RateLimitUnavailableError) {
       return res.status(503).json({ error: "Service temporarily unavailable" });

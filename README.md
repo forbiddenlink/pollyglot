@@ -16,7 +16,7 @@ The repo also carries a number of dependencies for features that aren't wired in
 - **Pronunciation Guide**: Phonetic spelling for non-Latin scripts (under 500 characters)
 
 ### Audio
-- **Text-to-Speech**: Server-side voice via Spiral (ElevenLabs multilingual v2), falling back to MiniMax `speech-02-hd`, falling back to OpenAI `tts-1`. Falls back further to the browser's `speechSynthesis` if none of those are configured or all fail
+- **Text-to-Speech**: Server-side voice via Spiral (ElevenLabs multilingual v2), falling back to MiniMax `speech-02-hd`, falling back to OpenAI `gpt-audio-1.5`. Falls back further to the browser's `speechSynthesis` if none of those are configured or all fail
 - **Voice Input**: Native browser `SpeechRecognition`/`webkitSpeechRecognition` (Chrome/Edge) first. Safari, Firefox, and native-engine failures fall back to `MediaRecorder` capture (max 60 s / 4 MB) sent to `POST /api/transcribe`, which transcribes through Spiral (AssemblyAI universal-2; needs `SPIRAL_API_KEY`; the mic button stays hidden only if the browser has neither API)
 
 - **Pronunciation Practice**: A practice panel opened from a translation (`.practice-btn` in `index.html`, logic in `script.js`): play the reference phrase, record yourself and play it back. It loads `@xenova/transformers` from a CDN on first use (see below).
@@ -119,7 +119,7 @@ pnpm test:coverage # with coverage
 - **Frontend**: Vanilla JavaScript, CSS3, Web Speech API
 - **Backend**: Node.js, Express (deployed as a single Vercel serverless function, routed via `vercel.json` rewrites)
 - **AI**: OpenAI GPT-4o-mini (translation, detection, pronunciation, alternatives)
-- **Voice**: Spiral (ElevenLabs) / MiniMax `speech-02-hd` / OpenAI `tts-1`, with browser `speechSynthesis` fallback; Spiral (AssemblyAI) for server speech-to-text
+- **Voice**: Spiral (ElevenLabs) / MiniMax `speech-02-hd` / OpenAI `gpt-audio-1.5`, with browser `speechSynthesis` fallback; Spiral (AssemblyAI) for server speech-to-text
 - **Observability**: Langfuse (tracing), PostHog (product analytics)
 - **Testing**: Vitest, Testing Library, MSW
 
