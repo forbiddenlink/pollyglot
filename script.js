@@ -50,7 +50,7 @@ const ttsUnavailableMsg = document.getElementById('tts-unavailable-msg');
 let selectedSourceLang = null;
 let selectedTargetLang = 'es'; // Default to Spanish
 let currentSpeech = null;
-let currentAudio = null; // Magica server-TTS audio element (for stop-toggle)
+let currentAudio = null; // Spiral server-TTS audio element (for stop-toggle)
 let availableVoices = [];
 let translationHistory = [];
 let recognition = null;
@@ -698,12 +698,12 @@ async function copyTranslation() {
     }
 }
 
-// Server-side TTS via Magica (better multilingual voices). Handles its own
+// Server-side TTS via Spiral (better multilingual voices). Handles its own
 // start/stop toggle. Returns true if it handled playback (started or stopped),
 // false if unavailable — in which case the caller falls back to the browser voice.
 // The API key stays server-side (see api/index.js /tts) — never in this file.
-async function speakWithMagica(text, langCode, button) {
-    // Toggle off if Magica audio is already playing.
+async function speakWithSpiral(text, langCode, button) {
+    // Toggle off if Spiral audio is already playing.
     if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
@@ -728,7 +728,7 @@ async function speakWithMagica(text, langCode, button) {
         await audio.play();
         return true;
     } catch (err) {
-        console.warn('Magica TTS unavailable, using browser voice:', err);
+        console.warn('Spiral TTS unavailable, using browser voice:', err);
         if (button) button.classList.remove('speaking');
         currentAudio = null;
         return false;
@@ -749,9 +749,9 @@ async function speakText(text, langCode) {
 
     const button = langCode === selectedSourceLang ? inputSpeakBtn : outputSpeakBtn;
 
-    // Prefer Magica server TTS; it manages its own start/stop. Fall back to the
+    // Prefer Spiral server TTS; it manages its own start/stop. Fall back to the
     // browser voice below if the server route is unavailable.
-    if (await speakWithMagica(text, langCode, button)) {
+    if (await speakWithSpiral(text, langCode, button)) {
         return;
     }
 
@@ -872,8 +872,8 @@ async function speakTextEnhanced(text, langCode) {
         return;
     }
 
-    // Prefer Magica server TTS (handles its own start/stop); fall back below.
-    if (await speakWithMagica(text, langCode, outputSpeakBtn)) {
+    // Prefer Spiral server TTS (handles its own start/stop); fall back below.
+    if (await speakWithSpiral(text, langCode, outputSpeakBtn)) {
         return;
     }
 

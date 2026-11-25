@@ -9,6 +9,7 @@ const {
   SttError,
   MAX_AUDIO_BYTES,
 } = require("./stt");
+const { runToCompletion } = require("./_lib/spiral");
 
 const app = express();
 if (process.env.SENTRY_DSN) {
@@ -723,7 +724,7 @@ function isTimeoutError(error) {
   return error?.name === "TimeoutError" || error?.name === "AbortError";
 }
 
-// TTS endpoint — MiniMax speech-02-hd with OpenAI TTS fallback
+// TTS endpoint: Spiral (ElevenLabs), then MiniMax speech-02-hd, then OpenAI TTS
 app.post("/tts", async (req, res) => {
   try {
     if (!(await checkRateLimit(getClientIp(req), "tts"))) {
@@ -745,52 +746,37 @@ app.post("/tts", async (req, res) => {
 
     const budgetMs = getTtsDeadlineMs();
     const deadlineAt = Date.now() + budgetMs;
-    // Magica may use half the budget (it polls), MiniMax a fifth; OpenAI gets what is left.
-    const magicaDeadline = { deadlineAt: Math.min(deadlineAt, Date.now() + budgetMs * 0.5) };
+    // Spiral may use half the budget (it long-polls), MiniMax a fifth; OpenAI gets what is left.
+    const spiralDeadline = { deadlineAt: Math.min(deadlineAt, Date.now() + budgetMs * 0.5) };
 
-    // Magica TTS (preferred when configured — ElevenLabs multilingual v2 via aggregator).
-    // Inert unless MAGICA_KEY is set; falls through to MiniMax/OpenAI on any failure.
-    if (process.env.MAGICA_KEY) {
+    // Spiral TTS (preferred when configured: ElevenLabs multilingual v2).
+    // Inert unless SPIRAL_API_KEY is set; falls through to MiniMax/OpenAI on any failure.
+    if (process.env.SPIRAL_API_KEY) {
       try {
-        const startRes = await ttsFetch(
-          "https://api.magica.com/api/v1/nodes/elevenlabs_multilingual_v2_tts/run",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${process.env.MAGICA_KEY}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              input: { text: text.trim(), voice_id: "21m00Tcm4TlvDq8ikWAM" },
-            }),
+        const call = (url, init) => ttsFetch(url, init, spiralDeadline);
+        const run = await runToCompletion({
+          apiKey: process.env.SPIRAL_API_KEY,
+          provider: "elevenlabs",
+          model: "eleven_multilingual_v2",
+          input: {
+            text: text.trim(),
+            voice_id: "21m00Tcm4TlvDq8ikWAM",
+            output_format: "mp3_44100_128",
           },
-          magicaDeadline,
-        );
-        if (startRes.ok) {
-          const { runId } = await startRes.json();
-          for (let i = 0; i < 30 && runId && Date.now() < magicaDeadline.deadlineAt; i++) {
-            const pollRes = await ttsFetch(
-              `https://api.magica.com/api/v1/nodes/runs/${runId}`,
-              { headers: { Authorization: `Bearer ${process.env.MAGICA_KEY}` } },
-              magicaDeadline,
-            );
-            const run = await pollRes.json();
-            if (!["RUNNING", "PENDING", "QUEUED"].includes(run.status)) {
-              const url = run?.output?.result?.[0];
-              if (run.status === "COMPLETED" && url) {
-                const audioRes = await ttsFetch(url, {}, magicaDeadline);
-                if (!audioRes.ok) break; // fall through to other providers
-                const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
-                res.set("Content-Type", "audio/mpeg");
-                return res.send(audioBuffer);
-              }
-              break; // failed — fall through to other providers
-            }
-            await new Promise((r) => setTimeout(r, 1500));
+          call,
+          remainingMs: () => spiralDeadline.deadlineAt - Date.now(),
+        });
+        const url = run.output?.items?.find((i) => i.type === "audio" && i.url)?.url;
+        if (url) {
+          const audioRes = await call(url, {});
+          if (audioRes.ok) {
+            const audioBuffer = Buffer.from(await audioRes.arrayBuffer());
+            res.set("Content-Type", "audio/mpeg");
+            return res.send(audioBuffer);
           }
         }
       } catch (err) {
-        console.error("Magica TTS failed, falling back:", err.message);
+        console.error("Spiral TTS failed, falling back:", err.message);
       }
     }
 
@@ -891,7 +877,7 @@ app.post(
           error: "Too many requests. Please try again later.",
         });
       }
-      if (!process.env.MAGICA_KEY) {
+      if (!process.env.SPIRAL_API_KEY) {
         return res.status(503).json({ error: "Transcription not configured" });
       }
 
@@ -905,7 +891,7 @@ app.post(
         body: req.body,
         contentType: checked.contentType,
         language: lang.valid ? lang.code : null,
-        apiKey: process.env.MAGICA_KEY,
+        apiKey: process.env.SPIRAL_API_KEY,
         fetchImpl,
       });
       return res.json({ text });

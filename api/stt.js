@@ -1,14 +1,11 @@
-// Server speech-to-text via Magica ai_transcription, for browsers without
-// SpeechRecognition (Safari, Firefox). MAGICA_KEY stays server-side.
+// Server speech-to-text via Spiral (AssemblyAI universal-2), for browsers without
+// SpeechRecognition (Safari, Firefox). SPIRAL_API_KEY stays server-side.
 
-const MAGICA_API = "https://api.magica.com/api/v1";
-const MAGICA_UPLOAD = "https://inference.magica.com/v1/uploads";
+const { uploadFile, runToCompletion, SpiralError } = require("./_lib/spiral");
 
 // Vercel rejects request bodies over 4.5MB, so the cap sits just under it.
 const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
 const MAX_AUDIO_SECONDS = 60;
-const POLL_INTERVAL_MS = 1500;
-const POLL_ATTEMPTS = 30;
 // Vercel maxDuration is 60s; answer with a controlled 504 before it kills the function.
 const DEADLINE_MS = 50000;
 
@@ -60,15 +57,33 @@ function validateAudio(body, contentTypeHeader) {
   return { ok: true, contentType };
 }
 
+// Pulls the transcript out of a completed run. universal-2 returns the transcript object
+// as a json item: inline in `data`, or behind `url` when it is too large to inline.
+async function extractText(run, call) {
+  for (const item of run?.output?.items || []) {
+    if (item.type !== "json" && item.type !== "text") continue;
+    let payload = item.data;
+    if (payload === undefined && item.url) {
+      const res = await call(item.url, {});
+      if (!res.ok) continue;
+      payload = item.type === "text" ? await res.text() : await res.json();
+    }
+    if (typeof payload === "string") return payload.trim();
+    if (typeof payload?.text === "string") return payload.text.trim();
+  }
+  throw new SttError("Transcription failed");
+}
+
 async function transcribeAudio({
   body,
   contentType,
   language,
   apiKey,
   fetchImpl,
-  sleep = (ms) => new Promise((r) => setTimeout(r, ms)),
+  sleep,
   deadlineMs = DEADLINE_MS,
 }) {
+  const deadlineAt = Date.now() + deadlineMs;
   const controller = new AbortController();
   const { signal } = controller;
   const timer = setTimeout(() => controller.abort(), deadlineMs);
@@ -77,65 +92,48 @@ async function transcribeAudio({
   });
   aborted.catch(() => {}); // avoid unhandled rejection when nothing is racing it
 
-  const guard = (promise) => Promise.race([promise, aborted]);
-  const auth = { Authorization: `Bearer ${apiKey}` };
-  const call = (url, init) => guard(fetchImpl(url, { ...init, signal }));
+  const call = (url, init) => Promise.race([fetchImpl(url, { ...init, signal }), aborted]);
 
   try {
-    const uploadRes = await call(MAGICA_UPLOAD, {
-      method: "POST",
-      headers: { ...auth, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        base64: body.toString("base64"),
-        content_type: contentType,
-        media_type: "audio",
-        filename: `speech.${extensionFor(contentType)}`,
-      }),
+    const audioUrl = await uploadFile({
+      apiKey,
+      body,
+      filename: `speech.${extensionFor(contentType)}`,
+      contentType,
+      call,
     });
-    if (!uploadRes.ok) throw new SttError("Audio upload failed");
-    const upload = await guard(uploadRes.json());
-    if (!upload?.url) throw new SttError("Audio upload failed");
 
-    const duration = upload.metadata?.duration;
-    // Fail closed: unknown duration could be a long low-bitrate file, billed per minute.
-    if (typeof duration !== "number" || !Number.isFinite(duration)) {
-      throw new SttError("Could not determine audio duration", 422);
-    }
-    if (duration > MAX_AUDIO_SECONDS + 1) {
-      throw new SttError(`Audio too long (max ${MAX_AUDIO_SECONDS}s)`, 413);
-    }
-
+    // Billing guard (replaces Magica's fail-closed upload-duration check; Spiral's upload
+    // does not report duration). universal-2 is billed per hour of audio, so duration is
+    // bounded in three layers: (1) audio_end_at makes the provider stop at
+    // MAX_AUDIO_SECONDS, (2) MAX_AUDIO_BYTES caps the file, and (3) the worst case if the
+    // provider bills the whole file anyway is 4MB at ~6kbps Opus (about 1.5h, roughly
+    // $0.29 at $0.195/h). Real MediaRecorder output is 32-128kbps, so 60s is under 1MB.
     const input = {
-      inputMode: "upload",
-      audioUrl: [upload.url],
-      output_format: "text",
-      diarize: false,
+      audio_url: audioUrl,
+      audio_end_at: MAX_AUDIO_SECONDS * 1000,
     };
-    if (language) input.language = language;
+    if (language) input.language_code = language;
 
-    const startRes = await call(`${MAGICA_API}/nodes/ai_transcription/run`, {
-      method: "POST",
-      headers: { ...auth, "Content-Type": "application/json" },
-      body: JSON.stringify({ input }),
+    const run = await runToCompletion({
+      apiKey,
+      provider: "assemblyai",
+      model: "universal-2",
+      input,
+      call,
+      remainingMs: () => deadlineAt - Date.now(),
+      sleep,
     });
-    if (!startRes.ok) throw new SttError("Transcription failed to start");
-    const { runId } = await guard(startRes.json());
-    if (!runId) throw new SttError("Transcription failed to start");
-
-    for (let i = 0; i < POLL_ATTEMPTS; i++) {
-      const pollRes = await call(`${MAGICA_API}/nodes/runs/${runId}`, { headers: auth });
-      const run = await guard(pollRes.json());
-      if (!["RUNNING", "PENDING", "QUEUED"].includes(run.status)) {
-        const text = run?.output?.result;
-        if (run.status === "COMPLETED" && typeof text === "string") return text.trim();
-        throw new SttError("Transcription failed");
-      }
-      await guard(sleep(POLL_INTERVAL_MS));
-    }
-    throw new SttError("Transcription timed out", 504);
+    return await extractText(run, call);
   } catch (err) {
     if (err instanceof SttError) throw err;
     if (signal.aborted) throw new SttError("Transcription timed out", 504);
+    if (err instanceof SpiralError) {
+      throw new SttError(
+        err.status === 504 ? "Transcription timed out" : "Transcription failed",
+        err.status === 504 ? 504 : 502,
+      );
+    }
     throw err;
   } finally {
     clearTimeout(timer);

@@ -2,7 +2,7 @@
 
 **Live site:** [pollyglot-topaz.vercel.app](https://pollyglot-topaz.vercel.app)
 
-A vanilla JS + Express translation app using OpenAI's GPT-4o-mini for translation, language detection, pronunciation guides, and alternative phrasings between 20 languages. Text-to-speech runs through a server-side voice pipeline (Magica/ElevenLabs, then MiniMax, then OpenAI TTS) with a browser `speechSynthesis` fallback. Voice input uses the browser's native Web Speech API, with server-side speech-to-text (Magica `ai_transcription`) for browsers that lack it or where it fails.
+A vanilla JS + Express translation app using OpenAI's GPT-4o-mini for translation, language detection, pronunciation guides, and alternative phrasings between 20 languages. Text-to-speech runs through a server-side voice pipeline (Spiral/ElevenLabs, then MiniMax, then OpenAI TTS) with a browser `speechSynthesis` fallback. Voice input uses the browser's native Web Speech API, with server-side speech-to-text (Magica `ai_transcription`) for browsers that lack it or where it fails.
 
 The repo also carries a number of dependencies for features that aren't wired into the running app yet (see "Not Yet Wired Up" below). Don't assume something works just because it's in `package.json`.
 
@@ -16,8 +16,8 @@ The repo also carries a number of dependencies for features that aren't wired in
 - **Pronunciation Guide**: Phonetic spelling for non-Latin scripts (under 500 characters)
 
 ### Audio
-- **Text-to-Speech**: Server-side voice via Magica (ElevenLabs multilingual v2), falling back to MiniMax `speech-02-hd`, falling back to OpenAI `tts-1`. Falls back further to the browser's `speechSynthesis` if none of those are configured or all fail
-- **Voice Input**: Native browser `SpeechRecognition`/`webkitSpeechRecognition` (Chrome/Edge) first. Safari, Firefox, and native-engine failures fall back to `MediaRecorder` capture (max 60 s / 4 MB) sent to `POST /api/transcribe`, which transcribes through Magica `ai_transcription` (needs `MAGICA_KEY`; the mic button stays hidden only if the browser has neither API)
+- **Text-to-Speech**: Server-side voice via Spiral (ElevenLabs multilingual v2), falling back to MiniMax `speech-02-hd`, falling back to OpenAI `tts-1`. Falls back further to the browser's `speechSynthesis` if none of those are configured or all fail
+- **Voice Input**: Native browser `SpeechRecognition`/`webkitSpeechRecognition` (Chrome/Edge) first. Safari, Firefox, and native-engine failures fall back to `MediaRecorder` capture (max 60 s / 4 MB) sent to `POST /api/transcribe`, which transcribes through Spiral (AssemblyAI universal-2; needs `SPIRAL_API_KEY`; the mic button stays hidden only if the browser has neither API)
 
 - **Pronunciation Practice**: A practice panel opened from a translation (`.practice-btn` in `index.html`, logic in `script.js`): play the reference phrase, record yourself and play it back. It loads `@xenova/transformers` from a CDN on first use (see below).
 
@@ -51,7 +51,7 @@ These packages are in `package.json` but aren't imported by `index.html` or `scr
 
 - **Next.js, `next-safe-action`**: no `app/`/`pages/` directory exists; `next` is only used for `next-sitemap`'s postbuild sitemap/robots.txt generation
 - **`@ai-sdk/google`, `ai`**: not imported anywhere
-- **`@xenova/transformers`**: an in-browser Whisper transcription module exists at `lib/speech-recognition.js`/`.ts` but isn't loaded by the app. Voice input uses the native Web Speech API, with `lib/server-stt.js` + `POST /api/transcribe` (Magica) as the fallback. `whisper-web-transcriber` was never imported and has been removed. The in-browser pronunciation-practice recorder still fetches `@xenova/transformers` from a CDN (`script.js`)
+- **`@xenova/transformers`**: an in-browser Whisper transcription module exists at `lib/speech-recognition.js`/`.ts` but isn't loaded by the app. Voice input uses the native Web Speech API, with `lib/server-stt.js` + `POST /api/transcribe` (Spiral) as the fallback. `whisper-web-transcriber` was never imported and has been removed. The in-browser pronunciation-practice recorder still fetches `@xenova/transformers` from a CDN (`script.js`)
 - **`wavesurfer.js`**: a waveform audio player exists at `lib/audio-player.js` but isn't used
 - **`ts-fsrs`**: a spaced-repetition scheduler exists at `lib/spaced-repetition.js` but isn't used
 - **`franc`, `compromise`, `natural`**: NLP/language-detection utilities exist at `src/lib/language.ts` but aren't used
@@ -65,7 +65,7 @@ These packages are in `package.json` but aren't imported by `index.html` or `scr
 ### Prerequisites
 - Node.js (v18+)
 - OpenAI API key ([Get one here](https://platform.openai.com/api-keys)) - required for translation, detection, pronunciation, and alternatives
-- Optional: Magica (TTS voices and speech-to-text), MiniMax, Langfuse, PostHog API keys for TTS voices and tracing/analytics; Upstash Redis REST credentials for a rate limit that holds across Vercel instances (each feature degrades gracefully if its key is missing)
+- Optional: Spiral (TTS voices and speech-to-text), MiniMax, Langfuse, PostHog API keys for TTS voices and tracing/analytics; Upstash Redis REST credentials for a rate limit that holds across Vercel instances (each feature degrades gracefully if its key is missing)
 
 ### Setup
 
@@ -119,7 +119,7 @@ pnpm test:coverage # with coverage
 - **Frontend**: Vanilla JavaScript, CSS3, Web Speech API
 - **Backend**: Node.js, Express (deployed as a single Vercel serverless function, routed via `vercel.json` rewrites)
 - **AI**: OpenAI GPT-4o-mini (translation, detection, pronunciation, alternatives)
-- **Voice**: Magica (ElevenLabs) / MiniMax `speech-02-hd` / OpenAI `tts-1`, with browser `speechSynthesis` fallback; Magica `ai_transcription` for server speech-to-text
+- **Voice**: Spiral (ElevenLabs) / MiniMax `speech-02-hd` / OpenAI `tts-1`, with browser `speechSynthesis` fallback; Spiral (AssemblyAI) for server speech-to-text
 - **Observability**: Langfuse (tracing), PostHog (product analytics)
 - **Testing**: Vitest, Testing Library, MSW
 
