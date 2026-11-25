@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0](https://github.com/forbiddenlink/pollyglot/compare/v1.5.1...v1.6.0) (2026-11-25)
+
+
+### Features
+
+* migrate TTS and STT from Magica to Spiral ([#127](https://github.com/forbiddenlink/pollyglot/issues/127)) ([59cadbc](https://github.com/forbiddenlink/pollyglot/commit/59cadbcdada670d36e97171cc5211b675f67a31c))
+
+
+### Bug Fixes
+
+* **ai:** move chat off gpt-4o-mini before its 2027-01-14 shutdown ([#128](https://github.com/forbiddenlink/pollyglot/issues/128)) ([89b7d4a](https://github.com/forbiddenlink/pollyglot/commit/89b7d4aa3237c1f76e961d8b10f26575639188fb))
+* **tts:** move OpenAI fallback off tts-1 ahead of 2027-01-06 shutdown ([#130](https://github.com/forbiddenlink/pollyglot/issues/130)) ([a6fdaa3](https://github.com/forbiddenlink/pollyglot/commit/a6fdaa39b55a5051fcfa5b4c185399e6dd01c4c6))
+
 ## [1.5.1](https://github.com/forbiddenlink/pollyglot/compare/v1.5.0...v1.5.1) (2026-11-21)
 
 
