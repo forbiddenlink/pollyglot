@@ -36,6 +36,7 @@ if (process.env.SENTRY_DSN) {
 const port = Number.parseInt(process.env.PORT, 10) || 3000;
 const OPENAI_TIMEOUT_MS =
   Number.parseInt(process.env.OPENAI_TIMEOUT_MS, 10) || 30000;
+const OPENAI_CHAT_MODEL = "gpt-6-luna";
 
 const SUPPORTED_LANGUAGES = Object.freeze({
   en: "English",
@@ -205,7 +206,7 @@ async function callOpenAI(messages, options = {}) {
     : null;
   const generation = trace?.generation({
     name: options.traceName ?? "openai-call",
-    model: "gpt-4o-mini",
+    model: OPENAI_CHAT_MODEL,
     input: messages,
   });
 
@@ -220,10 +221,11 @@ async function callOpenAI(messages, options = {}) {
         },
         signal: controller.signal,
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: OPENAI_CHAT_MODEL,
           messages,
           temperature: options.temperature ?? 0.3,
-          max_tokens: options.maxTokens ?? 500,
+          reasoning_effort: "none",
+          max_completion_tokens: options.maxTokens ?? 500,
         }),
       },
     );
