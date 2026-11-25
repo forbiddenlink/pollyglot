@@ -91,6 +91,9 @@ async function runToCompletion(args) {
 
 // Registers a file and PUTs the bytes. Returns the reference to pass to a model's url field.
 async function uploadFile({ apiKey, body, filename, contentType, call }) {
+  // The route validates the body, but this helper is exported: refuse anything that is
+  // not raw bytes so a string or array can never reach size_bytes or the PUT.
+  if (!Buffer.isBuffer(body)) throw new SpiralError("Audio upload failed");
   const res = await call(`${SPIRAL_API}/v1/files`, {
     method: "POST",
     headers: {
@@ -101,7 +104,7 @@ async function uploadFile({ apiKey, body, filename, contentType, call }) {
     body: JSON.stringify({
       filename,
       mime_type: contentType,
-      size_bytes: body.length,
+      size_bytes: Buffer.byteLength(body),
     }),
   });
   if (!res.ok) throw await problem(res, "Audio upload failed");
