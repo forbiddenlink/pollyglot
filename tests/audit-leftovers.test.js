@@ -101,7 +101,9 @@ describe('FUNC-003: Spiral audio download fails', () => {
       if (new URL(u).hostname === 'cdn.example.test') {
         return Promise.resolve(new Response('<Error>expired</Error>', { status: 403 }))
       }
-      return Promise.resolve(new Response('good-audio', { status: 200 }))
+      return Promise.resolve(
+        Response.json({ choices: [{ message: { audio: { data: Buffer.from('good-audio').toString('base64'), transcript: 'hello' } } }] }),
+      )
     })
     const res = await post('/tts', { text: 'hello', language: 'en' })
     expect(res.status).toBe(200)

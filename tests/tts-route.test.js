@@ -66,7 +66,7 @@ describe('POST /tts deadline', () => {
   it('falls through hung Spiral and MiniMax to OpenAI TTS', async () => {
     stub((url, init) => {
       if (new URL(url).hostname === 'api.openai.com') {
-        return Promise.resolve({ ok: true, status: 200, arrayBuffer: async () => new TextEncoder().encode('mp3').buffer })
+        return Promise.resolve(Response.json({ choices: [{ message: { audio: { data: Buffer.from('mp3').toString('base64'), transcript: 'Hello' } } }] }))
       }
       return hang(init)
     })
@@ -121,7 +121,7 @@ describe('POST /tts deadline', () => {
         return Promise.resolve(Response.json({ id: 'r', status: 'failed' }, { status: 200 }))
       }
       if (host === 'api.openai.com') {
-        return Promise.resolve({ ok: true, status: 200, arrayBuffer: async () => new TextEncoder().encode('mp3').buffer })
+        return Promise.resolve(Response.json({ choices: [{ message: { audio: { data: Buffer.from('mp3').toString('base64'), transcript: 'Hello' } } }] }))
       }
       return Promise.resolve(new Response('no', { status: 500 }))
     })
@@ -130,5 +130,21 @@ describe('POST /tts deadline', () => {
     vi.stubGlobal('fetch', realFetch)
     errSpy.mockRestore()
     expect(res.status).toBe(200)
+  })
+
+  it('rejects OpenAI audio whose transcript diverges from the input', async () => {
+    stub((url) => {
+      if (new URL(url).hostname === 'api.openai.com') {
+        return Promise.resolve(
+          Response.json({ choices: [{ message: { audio: { data: Buffer.from('mp3').toString('base64'), transcript: 'HACKED' } } }] }),
+        )
+      }
+      return Promise.resolve(new Response('no', { status: 500 }))
+    })
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const res = await postTts()
+    vi.stubGlobal('fetch', realFetch)
+    errSpy.mockRestore()
+    expect(res.status).toBe(502)
   })
 })
