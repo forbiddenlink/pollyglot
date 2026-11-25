@@ -2,7 +2,7 @@
 
 A vanilla JS + Express translation app using OpenAI GPT-4o-mini for translation, language
 detection, pronunciation guides, and alternative phrasings between 20 languages. Text-to-speech
-runs through a server-side voice pipeline (Magica/ElevenLabs, then MiniMax, then OpenAI TTS)
+runs through a server-side voice pipeline (Spiral/ElevenLabs, then MiniMax, then OpenAI TTS)
 with a browser `speechSynthesis` fallback. Voice input uses the browser's native Web Speech API.
 
 Repo: https://github.com/forbiddenlink/pollyglot
@@ -42,7 +42,7 @@ Frontend (no build): serve the repo root with any static server, e.g.
 - `PORT` - api/index.js listen port (default 3000)
 - `ALLOWED_ORIGINS` - CORS allowlist for the API
 - `OPENAI_TIMEOUT_MS` - request timeout override (default 30000)
-- `MAGICA_KEY` - Magica/ElevenLabs TTS voice (optional, first choice in the TTS fallback chain)
+- `SPIRAL_API_KEY` - Spiral API key: ElevenLabs TTS voice (first choice in the TTS fallback chain) and AssemblyAI server speech-to-text (optional)
 - `MINIMAX_API_KEY` - MiniMax `speech-02-hd` TTS (optional, second fallback)
 - `TTS_DEADLINE_MS` - total time budget for the /tts provider chain (default 50000, under the 60s function limit)
 - `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` / `LANGFUSE_HOST` - LLM call tracing (optional)
@@ -59,7 +59,7 @@ These are real dependencies in root `package.json` with no import path reaching 
 - `@ai-sdk/google`, `ai` - not imported anywhere
 - `@xenova/transformers` - an in-browser Whisper module exists at
   `lib/speech-recognition.js`/`.ts` but isn't loaded; voice input uses the native Web Speech API,
-  falling back to `POST /api/transcribe` (Magica) via `lib/server-stt.js`
+  falling back to `POST /api/transcribe` (Spiral) via `lib/server-stt.js`
 - `wavesurfer.js` - a waveform player exists at `lib/audio-player.js` but isn't used
 - `ts-fsrs` - a spaced-repetition scheduler exists at `lib/spaced-repetition.js` but isn't used
 - `franc`, `compromise`, `natural` - language utilities exist at `src/lib/language.ts` but

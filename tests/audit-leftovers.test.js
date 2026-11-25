@@ -30,7 +30,7 @@ beforeAll(async () => {
   delete process.env.UPSTASH_REDIS_REST_URL
   delete process.env.KV_REST_API_URL
   delete process.env.MINIMAX_API_KEY
-  delete process.env.MAGICA_KEY
+  delete process.env.SPIRAL_API_KEY
   delete process.env.OPENAI_API_KEY
   process.env.POSTHOG_API_KEY = 'test-posthog'
   const app = require('../api/index.js')
@@ -45,7 +45,7 @@ afterAll(() => new Promise((resolve) => server.close(resolve)))
 afterEach(() => {
   vi.unstubAllGlobals()
   delete process.env.OPENAI_API_KEY
-  delete process.env.MAGICA_KEY
+  delete process.env.SPIRAL_API_KEY
   captured.length = 0
   flushCalls = 0
 })
@@ -85,18 +85,18 @@ describe('FUNC-004: missing OPENAI_API_KEY', () => {
   })
 })
 
-describe('FUNC-003: Magica audio download fails', () => {
+describe('FUNC-003: Spiral audio download fails', () => {
   it('falls through to OpenAI instead of returning the error body as audio', async () => {
     process.env.OPENAI_API_KEY = 'test-key'
-    process.env.MAGICA_KEY = 'test-magica'
+    process.env.SPIRAL_API_KEY = 'test-spiral'
     vi.stubGlobal('fetch', (url, init) => {
       const u = String(url)
       if (u.startsWith(base)) return realFetch(url, init)
-      if (new URL(u).hostname === 'api.magica.com') {
+      if (new URL(u).hostname === 'api.spiral.ai') {
         if (u.includes('/runs/')) {
-          return Promise.resolve(Response.json({ status: 'COMPLETED', output: { result: ['https://cdn.example.test/a.mp3'] } }))
+          return Promise.resolve(Response.json({ id: 'r1', status: 'completed', output: { items: [{ type: 'audio', url: 'https://cdn.example.test/a.mp3' }] } }))
         }
-        return Promise.resolve(Response.json({ runId: 'r1', id: 'r1', run_id: 'r1' }))
+        return Promise.resolve(Response.json({ id: 'r1', status: 'queued' }, { status: 202 }))
       }
       if (new URL(u).hostname === 'cdn.example.test') {
         return Promise.resolve(new Response('<Error>expired</Error>', { status: 403 }))
