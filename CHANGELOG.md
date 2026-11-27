@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/forbiddenlink/pollyglot/compare/v1.6.0...v1.6.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* **practice:** make Pronunciation Practice heading readable on dark header ([#133](https://github.com/forbiddenlink/pollyglot/issues/133)) ([e0fc611](https://github.com/forbiddenlink/pollyglot/commit/e0fc611001aa9b870934525c7625c63d99750615))
+* **ui:** stop toasts hiding early, size toast to its text, make example chips match their text ([#131](https://github.com/forbiddenlink/pollyglot/issues/131)) ([e695943](https://github.com/forbiddenlink/pollyglot/commit/e69594399ae8604f8c13597f51a25494272c262e))
+
 ## [1.6.0](https://github.com/forbiddenlink/pollyglot/compare/v1.5.1...v1.6.0) (2026-11-25)
 
 
