@@ -1747,7 +1747,11 @@ function handleGlobalKeyPress(event) {
 }
 
 // Utility Functions
+let toastHideTimer = null;
+
 function showToast(message, type = 'success', duration = 3000) {
+    // Cancel the previous toast's timer, otherwise it hides a newer toast early.
+    clearTimeout(toastHideTimer);
     const toastMessage = toast.querySelector('p');
     toastMessage.textContent = message;
     
@@ -1755,7 +1759,7 @@ function showToast(message, type = 'success', duration = 3000) {
     toast.classList.add(type);
     toast.classList.remove('hidden');
     
-    setTimeout(() => {
+    toastHideTimer = setTimeout(() => {
         toast.classList.add('hidden');
     }, duration);
 }

@@ -250,7 +250,7 @@ kbd { background: var(--surface); color: var(--muted); border: 1px solid var(--l
 .loading-overlay { position: fixed; pointer-events: none; top: auto; left: auto; right: 24px; bottom: 24px; width: auto; height: auto; display: flex; gap: 12px; padding: 14px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 25px #102a231a; }
 .loading-overlay .loading-spinner { width: 20px; height: 20px; border-width: 2px; }
 .loading-overlay p { margin: 0; color: var(--forest); font-size: 13px; }
-.toast { max-width: calc(100% - 32px); z-index: 1100; }
+.toast { width: max-content; max-width: calc(100% - 32px); z-index: 1100; }
 .alternatives-section { border-color: var(--line); }
 .pronunciation-practice-section { background: var(--surface); border-color: var(--line); box-shadow: none; }
 .help-dialog { width: min(520px,calc(100% - 32px)); padding: 28px; color: var(--forest); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
