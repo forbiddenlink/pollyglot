@@ -1881,6 +1881,7 @@ body.fullscreen footer {
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0;
+    color: var(--cream);
 }
 
 .close-practice-btn {
